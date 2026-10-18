@@ -5,6 +5,9 @@ import json, re, pathlib, html
 SRC = pathlib.Path(__file__).parent / "src"
 OUT = pathlib.Path(__file__).parent / "site"
 COURSE = "KKKC6353 Nanoelectronic Devices"
+AUTHOR, UNI = "Dr Muhammad Faiz Bukhori", "Universiti Kebangsaan Malaysia"
+BASE = "https://faizverse.github.io/nanoelectronic-devices/"
+BYLINE = f"{AUTHOR} · {UNI} · 2026"
 css = (SRC / "common.css").read_text()
 js = (SRC / "common.js").read_text()
 
@@ -23,12 +26,31 @@ TOP = """<div class="top"><div class="wrap">
 <div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
 <button id="ttheme" type="button" title="Switch light/dark">Theme</button>{fs}</div></div></div>"""
 
-def shell(title, desc, body, home, fs=True, crumb=COURSE + ' · Lecture 1 animations'):
+def shell(title, desc, body, home, fs=True, crumb=COURSE + ' · Lecture 1 animations', path=""):
+    e = html.escape; d = f"{desc} {AUTHOR}, {UNI}."
+    og = f"""<meta name="author" content="{AUTHOR}, {UNI}">
+<link rel="canonical" href="{BASE}{path}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{COURSE} · {UNI}">
+<meta property="og:title" content="{e(title)}">
+<meta property="og:description" content="{e(d)}">
+<meta property="og:url" content="{BASE}{path}">
+<meta property="og:image" content="{BASE}og-image.jpg">
+<meta property="og:image:secure_url" content="{BASE}og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{COURSE}: {AUTHOR}, {UNI}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{e(title)}">
+<meta name="twitter:description" content="{e(d)}">
+<meta name="twitter:image" content="{BASE}og-image.jpg">"""
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(title)}</title>
-<meta name="description" content="{html.escape(desc)}">
+<meta name="description" content="{html.escape(d)}">
+{og}
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
 <style>{css}</style>
 <script>{js}</script></head>
@@ -48,8 +70,8 @@ for i, (m, body) in enumerate(pages):
 <p class="kicker">Animation {m['num']} of {N} · {m['ref']}</p>
 <h1>{m['title']}</h1><p class="lede">{m['blurb']}</p></header>"""
     page = hero + body.replace("</main>", "</main>", 1) + nav + \
-        f'<p class="wrap foot">{COURSE}. Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>'
-    (OUT / "L1" / f"{m['slug']}.html").write_text(shell(f"{m['title']} · L1 animation", m["blurb"], page, "index.html"))
+        f'<p class="wrap foot">{COURSE} · {BYLINE}.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>'
+    (OUT / "L1" / f"{m['slug']}.html").write_text(shell(f"{m['title']} · KKKC6353 Lecture 1", m["blurb"], page, "index.html", path=f"L1/{m['slug']}.html"))
 
 # ---- L1 index
 cards = "".join(f"""<a class="card tile" href="{m['slug']}.html">
@@ -63,21 +85,37 @@ idx_css = """<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,m
 .tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
 .tile .b{color:var(--muted);font-size:.92rem;flex:1}
 .tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
-.howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}</style>"""
+.howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
+.byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
+.banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
+ background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
+.banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
+.banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
+.banner h1{color:#fff;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:.3rem 0 .6rem}
+.banner .sub{color:#d6e2f0;margin:0 0 1.1rem;font-size:1.05rem}
+.banner .who{border-top:3px solid #d6683e;padding-top:.8rem;display:inline-block}
+.banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
+.artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}</style>"""
 idx = f"""{idx_css}<div class="wrap"><header class="hero"><p class="kicker">{COURSE}</p>
-<h1>Lecture 1 — interactive animations</h1>
+<h1>Lecture 1 — interactive animations</h1><p class="byline">{BYLINE}</p>
 <p class="lede">Eleven interactive models that go with the Lecture 1 notes: how a MOSFET works, how it fails as it shrinks, and why the industry changed the device. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p></header>
 <div class="tiles">{cards}</div>
 <section class="card howto"><h2>Using these in class</h2>
 <ul><li>Use <b>A+</b> for larger text when projecting, and <b>Full screen</b> to show just the animation.</li>
 <li>Every page works offline: save it (File → Save Page As) and it runs without a network connection.</li>
 <li>The models are deliberately simple and each page says what is left out. They reproduce trends and orders of magnitude, not a specific process.</li></ul></section></div>"""
-(OUT / "L1" / "index.html").write_text(shell("Lecture 1 animations · KKKC6353", "Interactive animations for KKKC6353 Lecture 1.", idx, "index.html", fs=False))
+(OUT / "L1" / "index.html").write_text(shell("Lecture 1 animations · KKKC6353 Nanoelectronic Devices", "Eleven interactive animations for KKKC6353 Lecture 1: MOSFET basics and short-channel effects.", idx, "index.html", fs=False, path="L1/"))
 
 # ---- site root
-root = f"""{idx_css}<div class="wrap"><header class="hero"><p class="kicker">Course materials</p>
-<h1>{COURSE}</h1><p class="lede">Interactive animations for the course, by lecture.</p></header>
-<div class="tiles"><a class="card tile" href="L1/index.html"><span class="num">L1</span><span class="t">CMOS technology, device physics and short-channel effects</span><span class="b">{N} animations</span></a></div></div>"""
-(OUT / "index.html").write_text(shell(COURSE, "Interactive animations for " + COURSE, root, "index.html", fs=False, crumb=COURSE))
+root = f"""{idx_css}<div class="wrap">
+<section class="banner" aria-label="{COURSE}"><div class="in"><p class="k">KKKC6353</p><h1>Nanoelectronic Devices</h1>
+<p class="sub">Interactive animations and course materials</p>
+<div class="who"><b>{AUTHOR}</b><span>{UNI} · 2026</span></div></div></section>
+<p class="artnote">Banner: original artwork made for this course, chip wiring giving way to a quantum interference pattern.</p>
+<div class="tiles"><a class="card tile" href="L1/index.html"><span class="num">LECTURE 1</span><span class="t">CMOS technology, device physics and short-channel effects</span><span class="b">{N} interactive animations, with things to try in class and check questions.</span></a></div>
+<p class="wrap foot" style="padding:0">{COURSE} · {BYLINE}</p></div>"""
+(OUT / "index.html").write_text(shell(COURSE, "Interactive animations and course materials for " + COURSE + ".", root, "index.html", fs=False, crumb=COURSE))
+import shutil
+for img in ("hero.jpg", "og-image.jpg"): shutil.copy(pathlib.Path(__file__).parent / "art" / img, OUT / img)
 (OUT / ".nojekyll").write_text("")
 print("built", N, "pages")
