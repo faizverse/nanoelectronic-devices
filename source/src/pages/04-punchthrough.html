@@ -1,0 +1,130 @@
+<!--META
+{"num":4,"slug":"punchthrough","title":"Punchthrough","ref":"Document 3, Section 2.3","blurb":"Raise the drain voltage until the source and drain depletion regions meet below the surface. The barrier vanishes where the gate cannot reach, and current flows through the bulk."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Cross-section, gate off (V<sub>GS</sub> = 0), drawn to scale</h3><canvas id="xs"></canvas>
+      <div class="legend"><span><i style="background:var(--depl);height:9px;outline:1px solid var(--line)"></i>depletion region</span><span><i style="background:var(--rust);height:9px;opacity:.35"></i>merged: no barrier left</span><span><i class="dot" style="background:var(--electron)"></i>punchthrough electrons</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Electron energy along a line below the surface</h3><canvas id="band"></canvas></div>
+      <div class="fig"><h3>Off-state drain current I<sub>D</sub>–V<sub>DS</sub></h3><canvas id="iv"></canvas>
+        <div class="legend"><span><i style="background:var(--muted)"></i>surface (gate-controlled) leakage</span><span><i style="background:var(--rust)"></i>total</span></div></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>Each n⁺/p junction carries a depletion region whose width grows with reverse bias:</p>
+<span class="eq">W = √( 2ε<sub>Si</sub>(V<sub>bi</sub> + V) / qN<sub>A</sub> )</span>
+<p>The drain junction is reverse-biased by <var>V</var><sub>DS</sub>, so its depletion region spreads toward the source. While a strip of neutral p-type silicon remains between the two, electrons from the source face the full built-in barrier (≈ 0.9 eV) and essentially none cross below the surface.</p>
+<p>When the two depletion regions <b>touch</b> — at the punchthrough voltage <var>V</var><sub>PT</sub> — the drain's potential reaches the source directly. The barrier starts to fall with every extra volt on the drain, and current rises exponentially along a path <b>below</b> the surface where the gate has almost no control. Turning the gate further off does not help. Touching is the onset: the barrier has to fall by a few tenths of an eV before the bulk current overtakes the surface leakage, so the current takes off somewhat above <var>V</var><sub>PT</sub>.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Defaults (<var>L</var> = 250 nm, 10¹⁷ cm⁻³). Raise <var>V</var><sub>DS</sub> slowly. Watch the drain depletion region grow and note the voltage at which it touches the source side.</li>
+<li>Go a little past <var>V</var><sub>PT</sub>: the barrier in the middle plot drops and the current jumps by decades. Ask: <i>what would you see on a curve tracer?</i></li>
+<li>Shorten the channel to 120 nm. <var>V</var><sub>PT</sub> falls below a typical supply.</li>
+<li>Raise the body doping to 5×10¹⁷ cm⁻³. The depletion regions shrink and <var>V</var><sub>PT</sub> recovers. That was the classical fix — and Document 3, Section 6 explains why it stopped working.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why can't the gate stop punchthrough current?</summary>The current flows below the surface, at around the junction depth. The gate's field is screened by the inversion/depletion charge near the surface and cannot reach the deep path. Only the doping, or removing the deep silicon (SOI, FinFET, GAA), controls it.</details>
+<details><summary>Raising N<sub>A</sub> everywhere suppresses punchthrough. What does it cost?</summary>Higher V<sub>T</sub> and body factor, lower mobility (more ionised-impurity scattering), more junction capacitance and band-to-band leakage, and more random dopant fluctuation (Animation 11). Halo and retrograde implants put the doping only where it is needed.</details>
+<details><summary>Is punchthrough a different effect from DIBL?</summary>No — it is the terminal case of the same loss of electrostatic control. DIBL lowers the barrier at the surface; punchthrough removes it below the surface.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>One-dimensional depletion approximation along a line at the junction depth, with the source at 0 V and the neutral body as reference. Before the regions meet, the potential is pinned at zero between them and the barrier for electrons is <var>V</var><sub>bi</sub>. After they meet, the region is fully depleted and</p>
+<span class="eq">ψ(x) = V<sub>bi</sub> + V<sub>DS</sub>·x/L − (qN<sub>A</sub>/2ε<sub>Si</sub>)·x(L − x)</span>
+<p>whose minimum sets the barrier E<sub>b</sub> = V<sub>bi</sub> − ψ<sub>min</sub>. The bulk current is I<sub>0</sub>·exp(−E<sub>b</sub>/kT) with I<sub>0</sub> = 1 mA/µm. Surface leakage uses V<sub>T</sub> = 0.4 V, SS = 85 mV/dec and DIBL = 40 mV/V.</p>
+<p class="caveat">V<sub>bi</sub> = 0.9 V; L is the spacing between the junctions. Real punchthrough is two-dimensional and, once the barrier is gone, the current becomes space-charge limited rather than growing without bound.</p></section>
+</main>
+<script>
+(() => {
+  const C = NX.C, Vbi = 0.9, q = C.q, es = C.epsSi;
+  const st = { VD: 0.3, L: 250, lgN: 17 };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "VD", label: "Drain voltage V<sub>DS</sub>", min: 0, max: 4, step: 0.02, value: st.VD, unit: "V", on: v => { st.VD = v; update(); } });
+  NX.slider(ctl, { id: "L", label: "Junction spacing L", min: 50, max: 400, step: 5, value: st.L, fmt: v => v + " nm", on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "NA", label: "Body doping N<sub>A</sub>", min: 16, max: 18, step: 0.05, value: st.lgN, fmt: v => NX.fmt(Math.pow(10, v), 1) + " cm⁻³", on: v => { st.lgN = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const band = new NX.Plot(document.getElementById("band"), { aspect: 1.1, y: [-4.2, 1.2], xlabel: "Position from source junction (nm)", ylabel: "Electron energy (eV)" });
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 1.1, x: [0, 4], y: [1e-12, 1e-2], ylog: true, xlabel: "Drain voltage VDS (V)", ylabel: "ID (A/µm)" });
+  const NA = () => Math.pow(10, st.lgN) * 1e6;                       // m^-3
+  const W = V => Math.sqrt(2 * es * V / (q * NA())) * 1e9;            // nm
+  function solve(VD, L) {
+    const Ws = W(Vbi), Wd = W(Vbi + VD), merged = Ws + Wd >= L;
+    const a = q * NA() / (2 * es) * 1e-18;                              // V per nm^2
+    const psi = x => {
+      if (x <= 0) return Vbi; if (x >= L) return Vbi + VD;
+      if (!merged) return Math.max(x < Ws ? a * (Ws - x) ** 2 : 0, x > L - Wd ? a * (x - (L - Wd)) ** 2 : 0);
+      return Vbi + VD * x / L - a * x * (L - x);
+    };
+    let xm = merged ? Math.min(L, Math.max(0, L / 2 - VD / (2 * a * L))) : Ws + (L - Ws - Wd) / 2;
+    const pmin = merged ? Math.max(0, psi(xm)) : 0;
+    return { Ws, Wd, merged, psi, xm, Eb: Vbi - pmin };
+  }
+  const Isurf = VD => 1e-10 * Math.pow(10, VD * 0.04 / 0.085) * (1 - Math.exp(-VD / C.Vt));
+  const Ipt = VD => 1e-3 * Math.exp(-Math.max(0, solve(VD, st.L).Eb) / C.Vt) * (1 - Math.exp(-VD / C.Vt));
+  const Itot = VD => Isurf(VD) + Ipt(VD);
+  let S = {}, VPT;
+  function update() {
+    S = solve(st.VD, st.L);
+    const Ws = W(Vbi); VPT = q * NA() * ((st.L - Ws) * 1e-9) ** 2 / (2 * es) - Vbi;
+    const pre = st.L - S.Ws - S.Wd;
+    status.className = "status " + (S.merged ? "bad" : pre < 30 ? "" : "good");
+    status.textContent = S.merged ? "Punched through: the depletion regions have merged and the barrier is falling." : pre < 30 ? "Close: only a thin neutral strip separates the depletion regions." : "Safe: a neutral strip of body still separates source and drain.";
+    ro.innerHTML = `<dt>Source depletion W<sub>S</sub></dt><dd>${S.Ws.toFixed(0)} nm</dd><dt>Drain depletion W<sub>D</sub></dt><dd>${S.Wd.toFixed(0)} nm</dd>
+      <dt>Neutral gap left</dt><dd class="${pre <= 0 ? "warn" : ""}">${Math.max(0, pre).toFixed(0)} nm</dd>
+      <dt>Punchthrough voltage</dt><dd class="${VPT < 1 ? "warn" : ""}">${VPT <= 0 ? "≤ 0 V" : VPT > 50 ? "> 50 V" : VPT.toFixed(2) + " V"}</dd>
+      <dt>Barrier below surface</dt><dd>${(S.Eb * 1000).toFixed(0)} meV</dd>
+      <dt>Bulk current</dt><dd>${Ipt(st.VD) < 1e-15 ? "&lt; 1 fA/µm" : NX.si(Ipt(st.VD), "A/µm", 2)}</dd><dt>Total I<sub>D</sub></dt><dd>${NX.si(Itot(st.VD), "A/µm", 2)}</dd>`;
+    drawPlots();
+  }
+  function drawPlots() {
+    const t = NX.tok, pad = st.L * 0.18;
+    band.setX(-pad, st.L + pad); band.begin().axes();
+    band.band(-pad, 0, t.electron, 0.08); band.band(st.L, st.L + pad, t.electron, 0.08);
+    band.fn(x => Vbi - S.psi(x), { color: t.rust, width: 2.6 }, 300);
+    band.hline(0, { color: t.muted, dash: [2, 4] });
+    if (S.Eb > 0.01) band.clip(g => NX.arrow(g, band.tx(S.xm), band.ty(0), band.tx(S.xm), band.ty(S.Eb) + 2, t.ink, 1.4, 7));
+    band.text(S.xm, S.Eb / 2, "  Eb = " + (S.Eb * 1000).toFixed(0) + " meV", { size: 12 });
+    band.text(-pad / 2, -3.9, "source", { align: "center", color: t.muted }); band.text(st.L + pad / 2, -3.9, "drain", { align: "center", color: t.muted });
+    iv.begin().axes();
+    iv.fn(Isurf, { color: t.muted, dash: [6, 4], width: 2 });
+    iv.fn(Itot, { color: t.rust, width: 2.6 }, 400);
+    if (VPT > 0 && VPT < 4) iv.vline(VPT, { color: t.rust, label: "V_PT", dy: 0 });
+    iv.point(st.VD, Itot(st.VD), { color: t.navy });
+  }
+  const parts = []; let acc = 0;
+  function frame(dt) {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("xs"), 2.05);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const px = (w * 0.5) / 400, Lp = st.L * px, cx = w / 2, sE = cx - Lp / 2, dS = cx + Lp / 2, y0 = h * 0.24, xj = 70 * px;
+    const bodyH = h * 0.68;
+    NX.rect(g, w * 0.03, y0, w * 0.94, bodyH, t.pbody);
+    // depletion regions (drawn as the junction outline expanded by W)
+    const dep = (x0, x1, Wn, side) => { g.beginPath(); const r = xj + Wn * px; if (side < 0) { g.moveTo(w * 0.03, y0); g.lineTo(x1 - xj, y0); g.arc(x1 - xj, y0, r, 0, Math.PI / 2); g.lineTo(w * 0.03, y0 + r); } else { g.moveTo(w * 0.97, y0); g.lineTo(x0 + xj, y0); g.arc(x0 + xj, y0, r, Math.PI, Math.PI / 2, true); g.lineTo(w * 0.97, y0 + r); } g.closePath(); };
+    g.save(); g.beginPath(); g.rect(w * 0.03, y0, w * 0.94, bodyH); g.clip();
+    g.fillStyle = t.depl; dep(0, sE, S.Ws, -1); g.fill(); dep(dS, 0, S.Wd, 1); g.fill();
+    g.strokeStyle = t.muted; g.setLineDash([4, 4]); g.lineWidth = 1; dep(0, sE, S.Ws, -1); g.stroke(); dep(dS, 0, S.Wd, 1); g.stroke(); g.setLineDash([]);
+    if (S.merged) { g.globalAlpha = 0.3; g.fillStyle = t.rust; g.save(); dep(0, sE, S.Ws, -1); g.clip(); dep(dS, 0, S.Wd, 1); g.fill(); g.restore(); g.globalAlpha = 1; }
+    // wells
+    g.fillStyle = t.nplus;
+    g.beginPath(); g.moveTo(w * 0.03, y0); g.lineTo(sE - xj, y0); g.arc(sE - xj, y0, xj, 0, Math.PI / 2); g.lineTo(w * 0.03, y0 + xj); g.closePath(); g.fill();
+    g.beginPath(); g.moveTo(w * 0.97, y0); g.lineTo(dS + xj, y0); g.arc(dS + xj, y0, xj, Math.PI, Math.PI / 2, true); g.lineTo(w * 0.97, y0 + xj); g.closePath(); g.fill();
+    g.restore();
+    NX.rect(g, sE - xj * 0.6, y0 - 6, Lp + xj * 1.2, 6, t.oxide); NX.rect(g, sE - xj * 0.6, y0 - 6 - h * 0.1, Lp + xj * 1.2, h * 0.1, t.metal);
+    NX.label(g, "gate  0 V", cx, y0 - 6 - h * 0.05, { color: "#fff", bold: true, size: 12 });
+    NX.label(g, "n⁺ source", (w * 0.03 + sE - xj) / 2, y0 + xj * 0.45, { bold: true, size: 13 });
+    NX.label(g, "n⁺ drain  " + st.VD.toFixed(2) + " V", (dS + xj + w * 0.97) / 2, y0 + xj * 0.45, { bold: true, size: 13, color: t.rust });
+    NX.label(g, "p body  " + NX.fmt(Math.pow(10, st.lgN), 1) + " cm⁻³", cx, h * 0.92, { size: 12, color: t.muted });
+    // electrons on the deep path
+    const rate = Math.min(30, 3e7 * Ipt(st.VD));
+    acc += dt * rate; while (acc > 1) { acc -= 1; parts.push({ f: 0, dy: (Math.random() - .5) * 0.5 }); }
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i]; p.f += dt * 0.45; if (p.f > 1) { parts.splice(i, 1); continue; }
+      const X = sE - xj * 0.3 + p.f * (Lp + xj * 0.6), Y = y0 + xj * (1.05 + p.dy) + Math.sin(p.f * Math.PI) * xj * 0.25;
+      NX.dot(g, X, Y, 3.4, t.electron);
+    }
+    NX.label(g, "100 nm", w * 0.06 + 50 * px, h * 0.06, { size: 12 }); g.strokeStyle = t.ink; g.lineWidth = 2; g.beginPath(); g.moveTo(w * 0.06, h * 0.11); g.lineTo(w * 0.06 + 100 * px, h * 0.11); g.stroke();
+  }
+  NX.onRedraw(() => { update(); frame(0); }); update(); frame(0); NX.loop(frame);
+})();
+</script>

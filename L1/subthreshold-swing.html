@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Subthreshold swing degradation · L1 animation</title>
+<meta name="description" content="How many millivolts of gate voltage does it take to change the current tenfold? In a short channel the drain competes with the gate for control of the channel, and the answer gets worse.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
+<style>:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2430; --muted:#5b6876; --line:#d8dee6; --grid:#e7ebf0;
+  --navy:#1f3a5f; --blue:#2e75b6; --rust:#b4451f; --green:#2f8a5b; --gold:#c08a12; --violet:#7a4fb5;
+  --electron:#2e75b6; --hole:#c8402a; --oxide:#e9d9a6; --si:#dfe7ef; --nplus:#b9d3ee; --pbody:#f2dcd2;
+  --metal:#7d8794; --depl:#f6efe0; --chip:#eef3f9; --focus:#2e75b6;
+  --radius:10px; --shadow:0 1px 2px rgba(20,30,45,.06),0 4px 14px rgba(20,30,45,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body.big{font-size:19px}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.top{background:#1f3a5f;color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:center;justify-content:space-between;padding:.6rem 16px}
+.top a{color:#fff;text-decoration:none;opacity:.9}
+.top a:hover{opacity:1;text-decoration:underline}
+.crumb{font-size:.85rem;letter-spacing:.02em;opacity:.92}
+.tools{display:flex;gap:.4rem}
+.tools button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:.25rem .6rem;font:inherit;font-size:.8rem;cursor:pointer}
+.tools button:hover{background:rgba(255,255,255,.22)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.hero{padding:1.4rem 0 .6rem}
+.kicker{color:var(--rust);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;margin:0 0 .25rem}
+h1{font-size:clamp(1.5rem,3.2vw,2.1rem);line-height:1.2;margin:0 0 .4rem;color:var(--navy);text-wrap:balance}
+.lede{color:var(--muted);max-width:70ch;margin:0}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;margin:1rem 0}
+.lab:fullscreen{background:var(--bg);padding:16px;align-content:center}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.stage{padding:10px;display:grid;gap:10px;min-width:0}
+.stage canvas{width:100%;display:block;border-radius:6px}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:10px}
+.fig{min-width:0}
+.fig h3{font-size:.82rem;font-weight:600;color:var(--muted);margin:.1rem .2rem .3rem;letter-spacing:.02em}
+.controls{padding:14px 14px 10px;display:flex;flex-direction:column;gap:12px;align-self:start}
+.controls h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0}
+.ctl label{display:flex;justify-content:space-between;gap:.5rem;font-size:.92rem;margin-bottom:2px}
+.ctl label b{font-weight:600}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--rust);font-weight:600;white-space:nowrap}
+.ctl input[type=range]{width:100%;accent-color:var(--rust);margin:2px 0}
+.ctl .hint{font-size:.78rem;color:var(--muted);margin-top:1px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{flex:1 1 auto;font:inherit;font-size:.84rem;padding:.35rem .5rem;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--panel)}
+.btn{font:inherit;font-size:.88rem;padding:.42rem .7rem;border-radius:6px;border:1px solid var(--rust);background:var(--rust);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--rust)}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px}
+.readout{display:grid;grid-template-columns:1fr auto;gap:4px 8px;font-size:.84rem;line-height:1.35;border-top:1px solid var(--line);padding-top:10px}
+.readout dt{color:var(--muted)}
+.readout dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.readout dd.warn{color:var(--rust)}
+.status{font-size:.86rem;padding:.45rem .6rem;border-radius:6px;background:var(--chip);border-left:3px solid var(--blue)}
+.status.bad{border-left-color:var(--rust)}
+.status.good{border-left-color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted);padding:0 .2rem}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+main.notes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin:0 0 1rem}
+@media (max-width:860px){main.notes{grid-template-columns:minmax(0,1fr)}}
+.notes section{padding:16px 18px}
+.notes section.wide{grid-column:1/-1}
+.notes h2{font-size:1.08rem;color:var(--navy);margin:0 0 .5rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+.notes p,.notes li{max-width:75ch}
+.notes ol,.notes ul{padding-left:1.25rem;margin:.4rem 0}
+.notes li{margin:.25rem 0}
+.eq{display:block;text-align:center;margin:.6rem 0;font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.12em;overflow-x:auto}
+var{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-style:italic}
+details{border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem;margin:.45rem 0;background:var(--bg)}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:.35rem}
+.pill{display:inline-block;font-size:.75rem;padding:.05rem .45rem;border-radius:99px;background:var(--chip);color:var(--muted);border:1px solid var(--line)}
+.caveat{font-size:.9rem;color:var(--muted)}
+footer.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1rem 0 2rem;border-top:1px solid var(--line);margin-top:.5rem}
+footer.nav a{text-decoration:none;font-weight:600}
+footer.nav small{display:block;color:var(--muted);font-weight:400}
+.foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<script>/* Shared helpers for the KKKC6353 animations: theme tokens, controls, plots, animation loop. */
+const NX = (() => {
+  const root = document.documentElement;
+  let tok = {};
+  function readTokens() {
+    const cs = getComputedStyle(root);
+    ["bg","panel","ink","muted","line","grid","navy","blue","rust","green","gold","violet","electron","hole",
+     "oxide","si","nplus","pbody","metal","depl","chip"].forEach(k => tok[k] = cs.getPropertyValue("--" + k).trim());
+    return tok;
+  }
+  readTokens();
+  const redrawers = new Set();
+  function onRedraw(fn) { redrawers.add(fn); }
+  function redrawAll() { readTokens(); redrawers.forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+  let rT; addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(redrawAll, 80); });
+
+  /* ---------- number formatting ---------- */
+  function fmt(v, d = 2) {
+    if (!isFinite(v)) return "—";
+    const a = Math.abs(v);
+    if (a !== 0 && (a < 1e-2 || a >= 1e4)) {
+      const e = Math.floor(Math.log10(a)), m = v / Math.pow(10, e);
+      return m.toFixed(1) + "×10" + sup(e);
+    }
+    return v.toFixed(d);
+  }
+  function sup(n) { const s = "⁰¹²³⁴⁵⁶⁷⁸⁹"; return String(n).replace("-", "⁻").replace(/\d/g, c => s[c]); }
+  function si(v, unit, d = 3) {
+    if (!isFinite(v) || v === 0) return (v === 0 ? "0 " : "— ") + unit;
+    if (Math.abs(v) < 1e-15) return "< 1 f" + unit;
+    const p = ["f","p","n","µ","m","","k","M","G"]; let e = Math.floor(Math.log10(Math.abs(v)) / 3);
+    e = Math.max(-5, Math.min(3, e));
+    const m = v / Math.pow(1000, e);
+    return (+m.toPrecision(d)) + " " + p[e + 5] + unit;
+  }
+
+  /* ---------- controls ---------- */
+  function slider(host, o) {
+    const id = "s_" + o.id;
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label for="${id}"><b>${o.label}</b><output id="${id}_o"></output></label>
+      <input type="range" id="${id}" min="${o.min}" max="${o.max}" step="${o.step}" value="${o.value}">
+      ${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    host.appendChild(w);
+    const inp = w.querySelector("input"), out = w.querySelector("output");
+    const show = () => { out.textContent = (o.fmt ? o.fmt(+inp.value) : (+inp.value).toFixed(o.dp ?? 2) + (o.unit ? " " + o.unit : "")); };
+    inp.addEventListener("input", () => { show(); o.on && o.on(+inp.value); });
+    show();
+    return { get value() { return +inp.value; }, set value(v) { inp.value = v; show(); }, input: inp, el: w };
+  }
+  function seg(host, o) {
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label><b>${o.label}</b></label><div class="seg" role="group" aria-label="${o.label}"></div>${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    const g = w.querySelector(".seg"); let val = o.value;
+    const btns = o.options.map(([v, t]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+      b.setAttribute("aria-pressed", v === val); b.onclick = () => { set(v); o.on && o.on(v); };
+      g.appendChild(b); return [v, b];
+    });
+    function set(v) { val = v; btns.forEach(([k, b]) => b.setAttribute("aria-pressed", k === v)); }
+    host.appendChild(w);
+    return { get value() { return val; }, set value(v) { set(v); }, el: w };
+  }
+
+  /* ---------- canvas with DPR handling ---------- */
+  function fitCanvas(cv, aspect) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const w = Math.max(200, cv.clientWidth || cv.parentElement.clientWidth);
+    const h = Math.round(w / aspect);
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.height = h + "px";
+    }
+    const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { g, w, h };
+  }
+
+  /* ---------- 2-D plot ---------- */
+  function niceTicks(a, b, n = 5) {
+    const span = b - a, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const r = step0 / mag, step = (r < 1.5 ? 1 : r < 3.5 ? 2 : r < 7.5 ? 5 : 10) * mag;
+    const t = []; for (let v = Math.ceil(a / step - 1e-9) * step; v <= b + step * 1e-6; v += step) t.push(+v.toFixed(12));
+    return t;
+  }
+  class Plot {
+    constructor(cv, o) { this.cv = cv; this.o = Object.assign({ aspect: 1.45, m: [14, 16, 44, 58] }, o); }
+    setX(a, b) { this.o.x = [a, b]; } setY(a, b) { this.o.y = [a, b]; }
+    begin() {
+      const { g, w, h } = fitCanvas(this.cv, this.o.aspect); this.g = g; this.w = w; this.h = h;
+      const [mt, mr, mb, ml] = this.o.m; this.L = ml; this.R = w - mr; this.T = mt; this.B = h - mb;
+      g.clearRect(0, 0, w, h); g.fillStyle = tok.panel; g.fillRect(0, 0, w, h);
+      return this;
+    }
+    tx(v) { const [a, b] = this.o.x; const f = this.o.xlog ? (Math.log10(v) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.L + f * (this.R - this.L); }
+    ty(v) { const [a, b] = this.o.y; const f = this.o.ylog ? (Math.log10(Math.max(v, 1e-300)) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.B - f * (this.B - this.T); }
+    axes() {
+      const g = this.g, o = this.o; g.save();
+      g.font = "12px system-ui,sans-serif"; g.lineWidth = 1;
+      const ticks = (lo, hi, log) => log ? (() => { const t = []; for (let e = Math.ceil(Math.log10(lo) - 1e-9); e <= Math.floor(Math.log10(hi) + 1e-9); e++) t.push(Math.pow(10, e)); return t; })() : niceTicks(lo, hi, o.nt || 5);
+      const xt = ticks(o.x[0], o.x[1], o.xlog), yt0 = ticks(o.y[0], o.y[1], o.ylog);
+      const yt = o.ylog && yt0.length > 8 ? yt0.filter((v, i) => i % 2 === (yt0.length % 2 ? 0 : 1)) : yt0;
+      g.strokeStyle = tok.grid;
+      xt.forEach(v => { const X = this.tx(v); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); });
+      yt.forEach(v => { const Y = this.ty(v); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); });
+      g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
+      g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
+      const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
+      xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      g.textAlign = "right"; g.textBaseline = "middle";
+      yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
+      g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";
+      if (o.xlabel) { g.textAlign = "center"; g.textBaseline = "bottom"; g.fillText(o.xlabel, (this.L + this.R) / 2, this.h - 4); }
+      if (o.ylabel) { g.save(); g.translate(13, (this.T + this.B) / 2); g.rotate(-Math.PI / 2); g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(o.ylabel, 0, 0); g.restore(); }
+      g.restore(); return this;
+    }
+    clip(fn) { const g = this.g; g.save(); g.beginPath(); g.rect(this.L, this.T, this.R - this.L, this.B - this.T); g.clip(); fn(g); g.restore(); return this; }
+    line(xs, ys, s = {}) {
+      return this.clip(g => {
+        g.strokeStyle = s.color || tok.ink; g.lineWidth = s.width || 2; g.setLineDash(s.dash || []); g.lineJoin = "round";
+        g.beginPath(); let pen = false;
+        for (let i = 0; i < xs.length; i++) {
+          const y = ys[i]; if (!isFinite(y) || (this.o.ylog && y <= 0)) { pen = false; continue; }
+          const X = this.tx(xs[i]), Y = Math.max(-1e4, Math.min(1e4, this.ty(y)));
+          pen ? g.lineTo(X, Y) : g.moveTo(X, Y); pen = true;
+        }
+        g.stroke();
+      });
+    }
+    fn(f, s = {}, n = 240) {
+      const [a, b] = this.o.x, xs = [], ys = [];
+      for (let i = 0; i <= n; i++) { const x = this.o.xlog ? a * Math.pow(b / a, i / n) : a + (b - a) * i / n; xs.push(x); ys.push(f(x)); }
+      return this.line(xs, ys, s);
+    }
+    point(x, y, s = {}) { return this.clip(g => { g.fillStyle = s.color || tok.rust; g.strokeStyle = tok.panel; g.lineWidth = 2; g.beginPath(); g.arc(this.tx(x), this.ty(y), s.r || 5, 0, 7); g.fill(); g.stroke(); }); }
+    vline(x, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const X = this.tx(x); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "left"; g.textBaseline = "top"; g.fillText(s.label, X + (s.align === "right" ? -4 : 4), this.T + 4 + (s.dy || 0)); } }); }
+    hline(y, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const Y = this.ty(y); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "right"; g.textBaseline = "bottom"; g.fillText(s.label, s.align === "left" ? this.L + 4 : this.R - 4, Y - 3); } }); }
+    band(x0, x1, color, alpha = .12) { return this.clip(g => { g.globalAlpha = alpha; g.fillStyle = color; g.fillRect(this.tx(x0), this.T, this.tx(x1) - this.tx(x0), this.B - this.T); }); }
+    text(x, y, t, s = {}) { const g = this.g; g.save(); g.font = (s.bold ? "600 " : "") + (s.size || 12) + "px system-ui,sans-serif"; g.fillStyle = s.color || tok.ink; g.textAlign = s.align || "left"; g.textBaseline = s.base || "middle"; g.fillText(t, this.tx(x) + (s.dx || 0), this.ty(y) + (s.dy || 0)); g.restore(); return this; }
+  }
+
+  /* ---------- drawing utilities for device pictures ---------- */
+  function rect(g, x, y, w, h, fill, stroke) { g.fillStyle = fill; g.fillRect(x, y, w, h); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1; g.strokeRect(x + .5, y + .5, w - 1, h - 1); } }
+  function label(g, t, x, y, o = {}) { g.save(); g.font = (o.bold ? "600 " : "") + (o.size || 13) + "px system-ui,sans-serif"; g.fillStyle = o.color || tok.ink; g.textAlign = o.align || "center"; g.textBaseline = o.base || "middle"; g.fillText(t, x, y); g.restore(); }
+  function arrow(g, x0, y0, x1, y1, color, w = 2, head = 8) {
+    g.save(); g.strokeStyle = color; g.fillStyle = color; g.lineWidth = w; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+    const a = Math.atan2(y1 - y0, x1 - x0); g.beginPath(); g.moveTo(x1, y1);
+    g.lineTo(x1 - head * Math.cos(a - .4), y1 - head * Math.sin(a - .4)); g.lineTo(x1 - head * Math.cos(a + .4), y1 - head * Math.sin(a + .4)); g.closePath(); g.fill(); g.restore();
+  }
+  function dot(g, x, y, r, fill, sign) { g.fillStyle = fill; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); if (sign && r >= 4) { g.strokeStyle = "#fff"; g.lineWidth = 1.3; g.beginPath(); g.moveTo(x - r * .55, y); g.lineTo(x + r * .55, y); if (sign === "+") { g.moveTo(x, y - r * .55); g.lineTo(x, y + r * .55); } g.stroke(); } }
+
+  /* ---------- animation loop that pauses off-screen / when paused ---------- */
+  function loop(step) {
+    let last = 0, running = true, visible = true;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const st = { get running() { return running; }, set running(v) { running = v; } };
+    if (reduce) running = false;
+    function f(t) { const dt = Math.min(0.05, (t - last) / 1000 || 0); last = t; if (running && visible && !document.hidden) step(dt); requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+    return st;
+  }
+
+  /* ---------- page chrome: text size, theme, full screen ---------- */
+  function chrome() {
+    const big = document.getElementById("tbig"), th = document.getElementById("ttheme"), fs = document.getElementById("tfs");
+    try { if (localStorage.getItem("nx-big") === "1") document.body.classList.add("big"); const t = localStorage.getItem("nx-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+    big && (big.onclick = () => { const on = document.body.classList.toggle("big"); try { localStorage.setItem("nx-big", on ? "1" : "0"); } catch (e) {} redrawAll(); });
+    th && (th.onclick = () => { const dark = getComputedStyle(root).getPropertyValue("color-scheme").trim() === "dark"; root.dataset.theme = dark ? "light" : "dark"; try { localStorage.setItem("nx-theme", root.dataset.theme); } catch (e) {} redrawAll(); });
+    const lab = document.querySelector(".lab");
+    fs && lab && lab.requestFullscreen ? (fs.onclick = () => document.fullscreenElement ? document.exitFullscreen() : lab.requestFullscreen()) : fs && (fs.hidden = true);
+    document.addEventListener("fullscreenchange", () => setTimeout(redrawAll, 60));
+    readTokens();
+  }
+  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", chrome) : chrome();
+
+  /* ---------- physical constants (SI unless stated) ---------- */
+  const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
+  C.Vt = C.k * C.T / C.q;
+
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+})();
+</script></head>
+<body>
+<div class="top"><div class="wrap">
+<a class="crumb" href="index.html">KKKC6353 Nanoelectronic Devices · Lecture 1 animations</a>
+<div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
+<button id="ttheme" type="button" title="Switch light/dark">Theme</button><button id="tfs" type="button" title="Show the animation full screen">Full screen</button></div></div></div>
+<div class="wrap"><header class="hero">
+<p class="kicker">Animation 5 of 11 · Document 3, Section 2.4</p>
+<h1>Subthreshold swing degradation</h1><p class="lede">How many millivolts of gate voltage does it take to change the current tenfold? In a short channel the drain competes with the gate for control of the channel, and the answer gets worse.</p></header>
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>Transfer curves as the gate shortens (log scale)</h3><canvas id="iv"></canvas>
+        <div class="legend"><span><i style="background:var(--line)"></i><span id="lens">other lengths</span></span><span><i style="background:var(--rust)"></i>selected L</span><span><i style="background:var(--navy)"></i>slope = 1 decade per SS</span></div></div>
+      <div class="fig"><h3>Swing against gate length, three architectures</h3><canvas id="ss"></canvas>
+        <div class="legend"><span><i style="background:var(--rust)"></i>planar bulk</span><span><i style="background:var(--blue)"></i>FinFET</span><span><i style="background:var(--green)"></i>GAA</span></div></div>
+    </div>
+    <div class="fig"><h3>Who controls the channel? The capacitor divider</h3><canvas id="cap"></canvas></div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>Below threshold, current is set by the barrier height, and every <b>kT·ln10 = 59.5 mV</b> of barrier is one decade of current at 300 K. The gate does not move the barrier one-for-one, though: it is one capacitor in a divider. The barrier potential follows the gate only by the fraction C<sub>ox</sub>/(C<sub>ox</sub> + C<sub>d</sub> + C<sub>drain</sub>), so</p>
+<span class="eq">SS ≈ (1 + (C<sub>d</sub> + C<sub>drain</sub>)/C<sub>ox</sub>) · (kT/q) · ln10</span>
+<p>In a long bulk device only the depletion capacitance C<sub>d</sub> competes, giving 65–80 mV/dec. Shorten the channel and the source and drain couple to the barrier too (C<sub>drain</sub>), the gate's share falls, and the swing rises past 100 mV/dec.</p>
+<p>The three short-channel symptoms then compound (left plot): the curve moves left (roll-off and DIBL) <i>and</i> flattens (swing), so the current at V<sub>GS</sub> = 0 climbs by orders of magnitude.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Planar bulk, <var>L</var> = 100 nm: read SS (≈ 69 mV/dec) and note the gate's share in the divider.</li>
+<li>Slide <var>L</var> down to 25 nm. Watch the drain capacitor grow and SS pass 100 mV/dec. Read I<sub>OFF</sub>.</li>
+<li>Ask: <i>with SS fixed at 60 mV/dec and V<sub>T</sub> = 0.3 V, what is the best possible I<sub>ON</sub>/I<sub>OFF</sub> per 0.3 V?</i> (5 decades.) Then compare with the readout.</li>
+<li>Switch to FinFET and GAA at the same <var>L</var>. The depletion capacitor vanishes (fully depleted body) and the drain capacitor shrinks.</li>
+<li>Finally: no setting goes below 59.5 mV/dec. Ask why — and point to steep-slope devices (tunnel FETs, negative capacitance) as the only way past it.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why can't any MOSFET beat 60 mV/dec at room temperature?</summary>Current over a barrier is set by the Boltzmann tail of the source electrons: it changes by 10× per kT·ln10 of barrier. Even with perfect gate control (n = 1) the barrier moves one-for-one with V<sub>GS</sub>, so 59.5 mV per decade is the floor. Beating it needs a different injection mechanism, such as band-to-band tunnelling.</details>
+<details><summary>A chip needs I<sub>ON</sub>/I<sub>OFF</sub> = 10⁵ with V<sub>DD</sub> = 0.7 V. What is the largest SS it can tolerate if V<sub>T</sub> = 0.3 V?</summary>The off-current is set by the 0.3 V below threshold. Roughly 5 decades must fit into it, so SS ≤ 300/5 = 60 mV/dec — at the limit. That is why V<sub>T</sub>, and with it V<sub>DD</sub>, stopped scaling.</details>
+<details><summary>Why does the multi-gate body have almost no C<sub>d</sub>?</summary>The thin body is fully depleted and is not tied to a substrate, so there is no depletion region whose edge moves with the gate. The body factor m approaches 1.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Scale-length model of Animation 3. The swing factor is n = m/η, where m = 1 + C<sub>d</sub>/C<sub>ox</sub> is the long-channel body factor and η = ∂ψ<sub>min</sub>/∂ψ<sub>L</sub> is how strongly the barrier top follows the gate:</p>
+<span class="eq">η = 1 − [sinh((L−x<sub>m</sub>)/λ) + sinh(x<sub>m</sub>/λ)] / sinh(L/λ)</span>
+<p>with x<sub>m</sub> the position of the barrier top. The divider drawing uses C<sub>drain</sub>/C<sub>ox</sub> = n − m, which is exactly the extra coupling that reproduces the computed swing.</p>
+<p class="caveat">EOT 1 nm; bodies 20 / 6 / 5 nm. Interface traps, which add their own capacitance in parallel with C<sub>d</sub>, are left out.</p></section>
+</main>
+<script>
+/* Quasi-2-D natural-length model of a short-channel MOSFET (used by roll-off, DIBL and swing pages).
+   Surface potential along the channel (x from source, 0..L):
+     psi(x) = psiL + (Vbi-psiL) sinh((L-x)/lam)/sinh(L/lam) + (Vbi+VD-psiL) sinh(x/lam)/sinh(L/lam)
+   psiL = long-channel surface potential set by the gate. Potentials in volts, lengths in nm. */
+const SCE = (() => {
+  const P = { Vbi: 1.10, psiTh: 0.90, VTlong: 0.30, mu: 250e-4 /* m2/Vs */, W: 1e-6 };
+  const ARCH = {
+    bulk: { name: "Planar bulk", N: 1, tSi: 20, tag: "depletion depth" },
+    fin:  { name: "FinFET / double gate", N: 2, tSi: 6, tag: "fin width" },
+    gaa:  { name: "GAA nanosheet", N: 4, tSi: 5, tag: "sheet thickness" }
+  };
+  const lambda = (tSi, eot, N) => Math.sqrt((11.7 / 3.9) * tSi * eot / N);
+  // body factor m = 1 + Cdep/Cox for bulk; fully depleted multi-gate bodies are close to ideal
+  const mFac = (N, tSi, eot) => N === 1 ? 1 + (11.7 / tSi) / (3.9 / eot) : 1.03;
+  function psi(x, psiL, L, VD, lam) {
+    const r = L / lam;
+    if (r > 600) return psiL;
+    const s = Math.sinh(r);
+    return psiL + (P.Vbi - psiL) * Math.sinh((L - x) / lam) / s + (P.Vbi + VD - psiL) * Math.sinh(x / lam) / s;
+  }
+  function minimum(psiL, L, VD, lam) {
+    // golden-section search for the potential minimum (the top of the electron barrier)
+    let a = 0, b = L; const g = 0.381966;
+    let c = a + g * (b - a), d = b - g * (b - a), fc = psi(c, psiL, L, VD, lam), fd = psi(d, psiL, L, VD, lam);
+    for (let i = 0; i < 46; i++) {
+      if (fc < fd) { b = d; d = c; fd = fc; c = a + g * (b - a); fc = psi(c, psiL, L, VD, lam); }
+      else { a = c; c = d; fc = fd; d = b - g * (b - a); fd = psi(d, psiL, L, VD, lam); }
+    }
+    const x = (a + b) / 2, r = L / lam;
+    const eta = r > 600 ? 1 : 1 - (Math.sinh((L - x) / lam) + Math.sinh(x / lam)) / Math.sinh(r);
+    return { x, psi: psi(x, psiL, L, VD, lam), eta: Math.max(eta, 0.02) };
+  }
+  // Device: {L, VD, tSi, eot, N}. Threshold = gate voltage at which the barrier top reaches psiTh.
+  function device(o) {
+    const lam = lambda(o.tSi, o.eot, o.N), m = mFac(o.N, o.tSi, o.eot);
+    let lo = P.psiTh - 3, hi = P.psiTh + 0.5;
+    for (let i = 0; i < 40; i++) { const mid = (lo + hi) / 2; (minimum(mid, o.L, o.VD, lam).psi < P.psiTh) ? lo = mid : hi = mid; }
+    const psiL = (lo + hi) / 2, mn = minimum(psiL, o.L, o.VD, lam);
+    const VT = P.VTlong + m * (psiL - P.psiTh);
+    const n = m / mn.eta;                         // effective swing factor
+    const SS = n * NX.C.Vt * Math.log(10) * 1000; // mV/decade
+    const Cox = NX.C.epsOx / (o.eot * 1e-9);
+    const Ispec = 2 * n * P.mu * Cox * (P.W / (o.L * 1e-9)) * NX.C.Vt ** 2; // A per um of width
+    // EKV-style interpolation (exponential below VT, square law above) in series with a
+    // velocity-saturation limit W*Cox*vsat*Vov, which only matters well above threshold
+    const Id = VG => {
+      const u = (VG - VT) / (2 * n * NX.C.Vt); const s = u > 30 ? u : Math.log1p(Math.exp(u));
+      const Iekv = Ispec * s * s, Ivs = P.W * Cox * 1e5 * 2 * n * NX.C.Vt * s;
+      return 1 / (1 / Iekv + 1 / Ivs);
+    };
+    return { lam, m, n, VT, SS, Id, xBar: mn.x, eta: mn.eta, psiLofVG: VG => P.psiTh + (VG - P.VTlong) / m };
+  }
+  // barrier for electrons (eV), measured from the source conduction-band edge, at gate voltage VG
+  function barrier(o, VG) {
+    const lam = lambda(o.tSi, o.eot, o.N), m = mFac(o.N, o.tSi, o.eot);
+    const psiL = P.psiTh + (VG - P.VTlong) / m;
+    const mn = minimum(psiL, o.L, o.VD, lam);
+    return { Eb: P.Vbi - mn.psi, x: mn.x, psiL, lam };
+  }
+  return { P, ARCH, lambda, mFac, psi, minimum, device, barrier };
+})();
+
+(() => {
+  const LS = { bulk: [100, 60, 40, 30, 22], fin: [40, 25, 18, 14, 11], gaa: [30, 18, 13, 10, 8] };
+  const st = { arch: "bulk", L: 40, VD: 0.7 };
+  const ctl = document.getElementById("ctl"); let sL;
+  NX.seg(ctl, { label: "Architecture", value: "bulk", options: [["bulk", "Planar bulk"], ["fin", "FinFET"], ["gaa", "GAA"]], on: v => { st.arch = v; st.L = LS[v][2]; sL.value = st.L; update(); } });
+  sL = NX.slider(ctl, { id: "L", label: "Gate length L", min: 6, max: 100, step: 1, value: st.L, fmt: v => v + " nm", on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "VD", label: "Drain voltage V<sub>DS</sub>", min: 0.05, max: 1, step: 0.01, value: st.VD, unit: "V", on: v => { st.VD = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 1.0, x: [-0.3, 0.8], y: [1e-12, 1e-2], ylog: true, xlabel: "Gate voltage VGS (V)", ylabel: "ID (A/µm)" });
+  const ss = new NX.Plot(document.getElementById("ss"), { aspect: 1.0, x: [5, 100], y: [50, 200], xlabel: "Gate length L (nm)", ylabel: "SS (mV/decade)" });
+  const dev = (arch, L) => { const A = SCE.ARCH[arch]; return SCE.device({ L, VD: st.VD, tSi: A.tSi, eot: 1, N: A.N }); };
+  let D;
+  function update() {
+    D = dev(st.arch, st.L);
+    const share = 1 / D.n, ratio = D.Id(0.7) / D.Id(0);
+    status.className = "status " + (D.SS < 75 ? "good" : D.SS < 100 ? "" : "bad");
+    status.textContent = D.SS < 75 ? "Near-ideal: the gate dominates the divider." : D.SS < 100 ? "Degrading: the drain is taking a share of control." : "Poor: the drain controls the barrier as much as the gate does.";
+    ro.innerHTML = `<dt>Subthreshold swing</dt><dd class="${D.SS > 100 ? "warn" : ""}">${D.SS.toFixed(0)} mV/dec</dd><dt>Swing factor n</dt><dd>${D.n.toFixed(2)}</dd>
+      <dt>Gate's share of control</dt><dd>${(share * 100).toFixed(0)}%</dd><dt>V<sub>T</sub></dt><dd>${D.VT.toFixed(3)} V</dd>
+      <dt>I<sub>OFF</sub> (V<sub>GS</sub> = 0)</dt><dd>${NX.si(D.Id(0), "A/µm", 2)}</dd><dt>I<sub>ON</sub> (V<sub>GS</sub> = 0.7 V)</dt><dd>${NX.si(D.Id(0.7), "A/µm", 2)}</dd>
+      <dt>I<sub>ON</sub>/I<sub>OFF</sub></dt><dd class="${ratio < 1e4 ? "warn" : ""}">${NX.fmt(ratio, 0)}</dd>`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok;
+    iv.begin().axes();
+    LS[st.arch].forEach(L => { const d = dev(st.arch, L); iv.fn(d.Id, { color: t.line, width: 1.6 }); });
+    document.getElementById("lens").textContent = "other lengths: " + LS[st.arch].join(", ") + " nm";
+    iv.fn(D.Id, { color: t.rust, width: 2.8 });
+    // tangent showing the swing at the steepest subthreshold point
+    const v0 = D.VT - 0.18, I0 = D.Id(v0), dec = 0.25 / (D.SS / 1000);
+    iv.line([v0 - 0.12, v0 + 0.13], [I0 * Math.pow(10, -0.12 / (D.SS / 1000)), I0 * Math.pow(10, 0.13 / (D.SS / 1000))], { color: t.navy, width: 1.6, dash: [5, 3] });
+    iv.text(v0 + 0.14, I0 * Math.pow(10, 0.13 / (D.SS / 1000)), "SS = " + D.SS.toFixed(0) + " mV/dec", { color: t.navy, size: 12, bold: true });
+    iv.vline(0, { color: t.muted, dash: [2, 3] });
+    ss.begin().axes();
+    ss.hline(59.5, { color: t.ink, label: "60 mV/dec floor (300 K)", align: "right" });
+    [["bulk", t.rust], ["fin", t.blue], ["gaa", t.green]].forEach(([a, c]) => ss.fn(L => dev(a, L).SS, { color: c, width: a === st.arch ? 3 : 1.6, dash: a === st.arch ? [] : [5, 4] }, 50));
+    ss.point(st.L, Math.min(200, D.SS), { color: t.navy });
+    drawCap();
+  }
+  function drawCap() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("cap"), 3.4);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const cd = D.m - 1, cdr = Math.max(0, D.n - D.m), tot = 1 + cd + cdr;
+    const node = { x: w * 0.33, y: h * 0.52 }, s = Math.max(12, h * 0.07);
+    const cap = (x0, y0, x1, y1, val, col, lab) => {
+      const mx = (x0 + x1) / 2, my = (y0 + y1) / 2, ang = Math.atan2(y1 - y0, x1 - x0), gap = 6, pl = 10 + 22 * Math.min(1.5, val);
+      g.strokeStyle = col; g.lineWidth = 2.5;
+      const ux = Math.cos(ang), uy = Math.sin(ang);
+      g.beginPath(); g.moveTo(x0, y0); g.lineTo(mx - ux * gap, my - uy * gap); g.moveTo(mx + ux * gap, my + uy * gap); g.lineTo(x1, y1); g.stroke();
+      g.lineWidth = 4; g.beginPath();
+      g.moveTo(mx - ux * gap - uy * pl, my - uy * gap + ux * pl); g.lineTo(mx - ux * gap + uy * pl, my - uy * gap - ux * pl);
+      g.moveTo(mx + ux * gap - uy * pl, my + uy * gap + ux * pl); g.lineTo(mx + ux * gap + uy * pl, my + uy * gap - ux * pl); g.stroke();
+      NX.label(g, lab, mx + (Math.abs(uy) > .5 ? pl + 10 : 0), my + (Math.abs(uy) > .5 ? 0 : -pl - 10), { align: Math.abs(uy) > .5 ? "left" : "center", size: s * 0.85, color: col, bold: true });
+    };
+    cap(node.x, h * 0.08, node.x, node.y, 1, t.navy, "C_ox = 1");
+    cap(node.x, node.y, node.x, h * 0.95, cd, t.muted, "C_d = " + cd.toFixed(2));
+    cap(node.x, node.y, w * 0.6, node.y, cdr, t.rust, "C_drain = " + cdr.toFixed(2));
+    NX.label(g, "gate", node.x - 30, h * 0.08, { size: s, bold: true, align: "right" });
+    NX.label(g, "body", node.x - 30, h * 0.95, { size: s, bold: true, align: "right" });
+    NX.label(g, "source / drain", w * 0.6 + 8, node.y, { size: s, bold: true, align: "left" });
+    NX.dot(g, node.x, node.y, 6, t.ink); NX.label(g, "barrier", node.x - 12, node.y, { size: s * 0.85, align: "right", color: t.ink });
+    // gate share bar
+    const bx = w * 0.8, bw = w * 0.15, by = h * 0.2, bh = h * 0.6;
+    const seg = [[1 / tot, t.navy, "gate"], [cd / tot, t.muted, "body"], [cdr / tot, t.rust, "S/D"]];
+    let yy = by; seg.forEach(([f, c, l]) => { const hh = f * bh; NX.rect(g, bx, yy, bw, hh, c); if (hh > 16) NX.label(g, l + " " + (f * 100).toFixed(0) + "%", bx + bw / 2, yy + hh / 2, { color: "#fff", size: s * 0.8, bold: true }); yy += hh; });
+    NX.label(g, "share of control", bx + bw / 2, by - 14, { size: s * 0.8, color: t.muted });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>
+<footer class="nav wrap"><a href="punchthrough.html" rel="prev"><small>← Previous</small>Punchthrough</a><a href="channel-length-modulation.html" rel="next" style="text-align:right"><small>Next →</small>Channel-length modulation</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices. Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
+</body></html>

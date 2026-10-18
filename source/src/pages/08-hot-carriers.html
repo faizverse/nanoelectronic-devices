@@ -1,0 +1,130 @@
+<!--META
+{"num":8,"slug":"hot-carriers","title":"Hot carriers and impact ionisation","ref":"Document 3, Sections 3.3 and 3.4","blurb":"Electrons pick up energy in the high-field region at the drain. A few gain enough to knock loose electron–hole pairs or jump into the gate oxide. See why this ruled the 5 V era and fades at 0.7 V.","new":false}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Electrons crossing the channel, coloured by energy</h3><canvas id="xs"></canvas>
+      <div class="legend"><span><i class="dot" style="background:var(--electron)"></i>&lt; 1 eV</span><span><i class="dot" style="background:var(--gold)"></i>1–1.5 eV</span><span><i class="dot" style="background:var(--rust)"></i>&gt; 1.5 eV (can ionise)</span><span><i class="dot" style="background:var(--hole)"></i>hole → substrate</span><span><i class="dot" style="background:var(--violet)"></i>charge trapped in oxide</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Lateral field along the channel</h3><canvas id="ef"></canvas></div>
+      <div class="fig"><h3>Substrate current against gate voltage</h3><canvas id="isub"></canvas>
+        <div class="legend"><span><i style="background:var(--rust)"></i>I<sub>sub</sub></span><span><i style="background:var(--muted)"></i>I<sub>D</sub></span></div></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>In saturation most of the drain voltage drops across the short pinch-off region at the drain, so the lateral field there peaks at several 10⁵ V/cm. An electron gains energy <i>q</i>ΔV for every volt it falls through without colliding. Most collide every ~10 nm and stay cool; a few <b>lucky electrons</b> run further and get hot.</p>
+<ul><li>Above about <b>1.5 eV</b> (the 1.1 eV gap plus momentum conservation) an electron can create an electron–hole pair by <b>impact ionisation</b>. The hole flows to the body as <b>substrate current</b>.</li>
+<li>Above about <b>3.1 eV</b> (the Si/SiO₂ barrier for electrons) it can be <b>injected into the oxide</b> and trapped, shifting V<sub>T</sub> over the device lifetime.</li></ul>
+<p>The substrate current peaks at roughly <var>V</var><sub>GS</sub> ≈ <var>V</var><sub>DS</sub>/2: at low gate voltage there are few electrons; at high gate voltage V<sub>DS,sat</sub> rises and the peak field falls. Because both effects come from the same hot electrons, I<sub>sub</sub> is the standard monitor for hot-carrier damage.</p>
+<p><b>The modern twist:</b> no electron can gain more energy than <i>q</i>V<sub>DS</sub> from the supply. At 0.7 V there are no 1.5 eV or 3.1 eV electrons. Hot-carrier damage today comes from many moderately energetic carriers breaking interface bonds cumulatively — not shown in this model.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Start with the <b>1990 · 5 V</b> preset. Watch electrons turn gold and red near the drain, and holes drop into the substrate. Count the oxide injections (rare — that is the point: lifetime is years, not seconds).</li>
+<li>Sweep <var>V</var><sub>GS</sub> and find the peak of I<sub>sub</sub>. Compare with <var>V</var><sub>DS</sub>/2.</li>
+<li>Turn on the <b>lightly doped drain (LDD)</b>. The field peak spreads and flattens; read the change in I<sub>sub</sub> and lifetime. This is why LDD was invented.</li>
+<li>Switch to <b>Today · 0.7 V</b>. The peak field is still high (the channel is tiny), yet nothing gets hot. Ask the class why: energy, not field, is the limit.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>The peak field in the 0.7 V device is similar to the 5 V device. Why no impact ionisation?</summary>The field is high but the region is only ~10 nm long and the total potential drop is at most 0.7 V. An electron's energy is bounded by the voltage it has fallen through, so it can never reach 1.5 eV.</details>
+<details><summary>Why does substrate current matter beyond reliability?</summary>Holes flowing through the body's resistance raise the local body potential. Near 0.6 V the source–body junction forward-biases and the parasitic npn bipolar turns on; with avalanche feedback this causes snapback breakdown. In SOI and FinFETs the body floats, so even small hole currents shift the body potential (floating-body effect).</details>
+<details><summary>How did the LDD help, and what did it cost?</summary>A lightly doped region at the drain edge spreads the voltage drop over a longer distance, lowering the peak field. The cost is extra series resistance, which lowers drive current.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Velocity-saturated channel (Animation 7) with a pinch-off region of characteristic length <span class="eq">l ≈ 0.22 · t<sub>ox</sub><sup>1/3</sup> · x<sub>j</sub><sup>1/2</sup> (cm)</span> in which V(x) = V<sub>DS,sat</sub> + lE<sub>c</sub>·sinh((x − x<sub>p</sub>)/l), so the peak field is E<sub>m</sub> = √(E<sub>c</sub>² + ((V<sub>DS</sub> − V<sub>DS,sat</sub>)/l)²). Substrate current uses the classic form</p>
+<span class="eq">I<sub>sub</sub>/I<sub>D</sub> = (A<sub>i</sub>/B<sub>i</sub>)(V<sub>DS</sub> − V<sub>DS,sat</sub>) exp(−B<sub>i</sub>/E<sub>m</sub>) · S(V<sub>DS</sub>)</span>
+<p>with B<sub>i</sub> = 1.7 MV/cm, A<sub>i</sub>/B<sub>i</sub> = 0.3 V⁻¹ and an energy cut-off S = 1/(1 + exp((1.5 − V<sub>DS</sub>)/0.08)). Relative lifetime follows Hu's empirical law τ ∝ (W/I<sub>D</sub>)(I<sub>sub</sub>/I<sub>D</sub>)<sup>−2.9</sup>, referenced to the 1990 preset at 5 V. The particles are a lucky-electron Monte Carlo: energy gained equals potential fallen through since the last collision (mean free path 9.2 nm).</p>
+<p class="caveat">Representative constants; LDD is modelled only as l × 2.5. Bias-temperature instability, now usually the leading wear-out mechanism, is not included.</p></section>
+</main>
+<script>
+/*INCLUDE device.js*/
+(() => {
+  const mu = 300, vs = 1e7, Ec = vs / mu * 1e-7;   // Ec in V/nm
+  const P = { old: { L: 500, tox: 10, xj: 150, VT: 0.7, VD: 5, VG: 2.5 }, now: { L: 30, tox: 1, xj: 10, VT: 0.3, VD: 0.7, VG: 0.7 } };
+  const st = Object.assign({ era: "old", ldd: false }, P.old);
+  const ctl = document.getElementById("ctl"); let sVD, sVG;
+  NX.seg(ctl, { label: "Technology", value: "old", options: [["old", "1990 · 5 V · 0.5 µm"], ["now", "Today · 0.7 V · 30 nm"]], on: v => { Object.assign(st, P[v], { era: v }); sVD.value = st.VD; sVG.value = st.VG; trapped.length = 0; cnt.ii = cnt.inj = 0; update(); } });
+  sVD = NX.slider(ctl, { id: "VD", label: "Drain voltage V<sub>DS</sub>", min: 0.3, max: 6, step: 0.05, value: st.VD, unit: "V", on: v => { st.VD = v; update(); } });
+  sVG = NX.slider(ctl, { id: "VG", label: "Gate voltage V<sub>GS</sub>", min: 0.3, max: 5, step: 0.05, value: st.VG, unit: "V", on: v => { st.VG = v; update(); } });
+  NX.seg(ctl, { label: "Lightly doped drain (LDD)", value: false, options: [[false, "Off"], [true, "On"]], on: v => { st.ldd = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const ef = new NX.Plot(document.getElementById("ef"), { aspect: 1.1, y: [0, 1e6], xlabel: "Position along channel (nm)", ylabel: "Lateral field (V/cm)", tickfmt: v => v === 0 ? "0" : NX.fmt(v, 0) });
+  const ip = new NX.Plot(document.getElementById("isub"), { aspect: 1.1, x: [0.3, 5], y: [1e-12, 1e-2], ylog: true, xlabel: "Gate voltage VGS (V)", ylabel: "Current (A/µm)" });
+  const cox = tox => 3.45e-13 / (tox * 1e-7);   // F/cm^2
+  function model(VG, VD) {
+    const o = Math.max(1e-4, VG - st.VT), Lcm = st.L * 1e-7, EcL = Ec * st.L;
+    const VDs = 2 * o / (1 + Math.sqrt(1 + 2 * o / EcL));
+    const l = 0.22 * Math.cbrt(st.tox * 1e-7) * Math.sqrt(st.xj * 1e-7) * 1e7 * (st.ldd ? 2.5 : 1); // nm
+    const sat = VD > VDs, dV = Math.max(0, VD - VDs);
+    const dL = sat ? Math.min(0.6 * st.L, l * Math.asinh(dV / (l * Ec))) : 0, xp = st.L - dL;
+    const Em = sat ? Math.sqrt(Ec * Ec + (dV / l) ** 2) : Ec * 0.5;           // V/nm
+    const Id = sat ? 1e-4 * cox(st.tox) * vs * (o - VDs) : mu * cox(st.tox) * 1e-4 / Lcm * (o * VD - VD * VD / 2) / (1 + VD / EcL);
+    const S = 1 / (1 + Math.exp((1.5 - VD) / 0.08));
+    const ratio = sat ? 0.3 * dV * Math.exp(-1.7e6 / (Em * 1e7)) * S : 0;
+    const Vd = Math.min(VD, VDs), F = o * Vd - Vd * Vd / 2;
+    const V = x => x <= xp ? o - Math.sqrt(Math.max(0, o * o - 2 * (x / xp) * F)) : VDs + l * Ec * Math.sinh((x - xp) / l);
+    const E = x => x <= xp ? Math.min(Ec, F / (xp * Math.sqrt(Math.max(1e-6, o * o - 2 * (x / xp) * F)))) : Ec * Math.cosh((x - xp) / l);
+    return { o, VDs, l, sat, dL, xp, Em, Id, ratio, Isub: Id * ratio, V, E };
+  }
+  const ref = (() => { const s = Object.assign({}, st); Object.assign(st, P.old, { ldd: false }); const m = model(2.5, 5); Object.assign(st, s); return m; })();
+  let M;
+  function update() {
+    M = model(st.VG, st.VD);
+    const life = M.ratio > 0 ? (ref.Id / M.Id) * Math.pow(ref.ratio / M.ratio, 2.9) : Infinity;
+    M.life = life;
+    status.className = "status " + (st.VD < 1.3 ? "good" : M.ratio > 1e-3 ? "bad" : "");
+    status.textContent = st.VD < 1.3 ? "Energy-limited: no electron can reach 1.5 eV at this drain voltage." : M.ratio > 1e-3 ? "Strong hot-carrier stress: impact ionisation near the drain." : "Moderate hot-carrier activity.";
+    ro.innerHTML = `<dt>V<sub>DS,sat</sub></dt><dd>${M.VDs.toFixed(2)} V</dd><dt>Pinch-off length l</dt><dd>${M.l.toFixed(0)} nm</dd>
+      <dt>Peak field E<sub>m</sub></dt><dd>${NX.fmt(M.Em * 1e7, 1)} V/cm</dd><dt>Max electron energy</dt><dd>${st.VD.toFixed(2)} eV</dd>
+      <dt>I<sub>D</sub></dt><dd>${NX.si(M.Id, "A/µm", 3)}</dd><dt>I<sub>sub</sub>/I<sub>D</sub></dt><dd class="${M.ratio > 1e-3 ? "warn" : ""}">${M.ratio > 0 ? NX.fmt(M.ratio, 3) : "0"}</dd>
+      <dt>Relative lifetime</dt><dd>${!isFinite(life) || life > 1e9 ? "unlimited" : NX.fmt(life, 1) + "×"}</dd>
+      <dt>Impact ionisations / injections</dt><dd>${cnt.ii} / ${cnt.inj}</dd>`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok;
+    ef.setX(0, st.L); ef.setY(0, Math.max(2e5, M.Em * 1e7 * 1.15)); ef.begin().axes();
+    if (M.sat) ef.band(M.xp, st.L, t.rust, 0.1);
+    ef.fn(x => M.E(x) * 1e7, { color: t.rust, width: 2.6 }, 300);
+    ef.hline(Ec * 1e7, { color: t.muted, label: "Ec", align: "left" });
+    if (M.sat) ef.text(M.xp, M.Em * 1e7 * 1.08, "pinch-off region", { color: t.rust, size: 11.5 });
+    ip.begin().axes();
+    ip.fn(v => model(v, st.VD).Id, { color: t.muted, width: 2, dash: [6, 4] });
+    ip.fn(v => model(v, st.VD).Isub, { color: t.rust, width: 2.6 }, 300);
+    ip.vline(st.VD / 2, { color: t.muted, label: "VDS/2", dy: 0 });
+    if (M.Isub > 0) ip.point(st.VG, M.Isub, { color: t.navy });
+  }
+  // lucky-electron Monte Carlo
+  const parts = [], holes = [], trapped = [], cnt = { ii: 0, inj: 0 }; let acc = 0, lastRO = 0;
+  const lam = 9.2;
+  function frame(dt) {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("xs"), 2.5);
+    const pin = M.xp / st.L, o = M.o, VDs = Math.min(st.VD, M.VDs), F = o * VDs - VDs * VDs / 2;
+    const qn = f => f <= pin ? Math.sqrt(Math.max(0, o * o - 2 * (f / pin) * F)) / Math.max(o, 0.5) : 0;
+    const G = DEV.draw(g, w, h, { VG: st.VG, VD: st.VD, qn, pinch: pin, dep: f => 0.45 + 0.2 * f, dDrain: 0.3 * Math.sqrt((0.9 + st.VD) / 0.9) });
+    if (st.ldd) { g.fillStyle = t.nplus; g.globalAlpha = 0.55; g.fillRect(G.dS - G.L * 0.08, G.y0, G.L * 0.08, h * 0.05); g.globalAlpha = 1; NX.label(g, "LDD", G.dS - G.L * 0.04, G.y0 + h * 0.09, { size: 11, color: t.muted }); }
+    const transit = 3.0, nmps = st.L / transit, steps = 4;
+    acc += dt * 18; while (acc > 1) { acc -= 1; parts.push({ x: 0, Vc: 0, en: 0, r: Math.random() }); }
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      for (let s = 0; s < steps; s++) {
+        const dx = nmps * dt / steps * (p.x > M.xp ? 2.5 : 1); p.x += dx;
+        if (p.x >= st.L) break;
+        const Vx = M.V(p.x); p.en = Math.max(0, Vx - p.Vc);
+        if (Math.random() < 1 - Math.exp(-dx / lam)) { p.Vc = Vx - p.en * 0.15; p.en *= 0.15; }
+        if (p.en >= 1.5 && Math.random() < 0.35) { holes.push({ x: p.x, y: 0 }); cnt.ii++; p.Vc += 1.5; p.en -= 1.5; }
+        if (p.en >= 3.1 && p.x > M.xp - 5 && Math.random() < 0.3) { trapped.push(p.x / st.L); cnt.inj++; p.x = st.L; break; }
+      }
+      if (p.x >= st.L) { parts.splice(i, 1); continue; }
+      const f = p.x / st.L, col = p.en >= 1.5 ? t.rust : p.en >= 1 ? t.gold : t.electron;
+      NX.dot(g, G.fx(f), G.y0 + 2 + p.r * Math.max(2, h * 0.03 * Math.max(qn(f), 0.15) - 3), Math.max(2.4, h * 0.01) + (p.en >= 1 ? 1 : 0), col);
+    }
+    for (let i = holes.length - 1; i >= 0; i--) { const hh = holes[i]; hh.y += dt * h * 0.25; if (hh.y > h * 0.5) { holes.splice(i, 1); continue; } NX.dot(g, G.fx(hh.x / st.L) + Math.sin(hh.y * .08) * 4, G.y0 + 8 + hh.y, Math.max(2.6, h * 0.011), t.hole, "+"); }
+    if (trapped.length > 40) trapped.splice(0, trapped.length - 40);
+    trapped.forEach((f, k) => NX.dot(g, G.fx(f) - (k % 5) * 3, G.y0 - G.tox / 2, 3, t.violet));
+    if (holes.length || cnt.ii) NX.label(g, "substrate current ↓", G.dS - G.L * 0.12, h * 0.8, { color: t.hole, size: Math.max(12, h * 0.04), bold: true });
+    lastRO += dt; if (lastRO > 0.5) { lastRO = 0; const dd = ro.querySelectorAll("dd"); dd[dd.length - 1].textContent = cnt.ii + " / " + cnt.inj; }
+  }
+  NX.onRedraw(() => { update(); frame(0); }); update(); frame(0); NX.loop(frame);
+})();
+</script>

@@ -1,0 +1,147 @@
+<!--META
+{"num":9,"slug":"oxide-breakdown","title":"Oxide breakdown (TDDB)","ref":"Document 3, Section 3.4","blurb":"Under stress, defects appear at random in the gate dielectric. When a chain of them links gate to channel, the oxide breaks down. Run it once, then run it hundreds of times to see why breakdown is statistical and why thin oxides are fragile."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Gate dielectric under stress: traps appear at random (percolation model)</h3><canvas id="ox"></canvas>
+      <div class="legend"><span><i style="background:var(--metal);height:9px"></i>gate</span><span><i class="dot" style="background:var(--gold)"></i>trap</span><span><i class="dot" style="background:var(--rust)"></i>conducting path = breakdown</span><span><i style="background:var(--si);height:9px;outline:1px solid var(--line)"></i>silicon channel</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Gate leakage during this run</h3><canvas id="ig"></canvas></div>
+      <div class="fig"><h3>Weibull plot of breakdown times</h3><canvas id="wb"></canvas>
+        <div class="legend" id="wleg"></div></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>A gate dielectric under a strong field slowly accumulates defects (traps), generated at random positions. Each trap lets electrons hop a little way. On its own a trap does little; nearby traps together give <b>stress-induced leakage current</b> (SILC) that creeps up with time. When a continuous chain of traps finally connects gate to channel, current runs through it and the oxide <b>breaks down</b>.</p>
+<p>Because trap positions are random, the breakdown time is a random variable. Its distribution is <b>Weibull</b>:</p>
+<span class="eq">F(t) = 1 − exp(−(t/η)<sup>β</sup>) &nbsp;⇒&nbsp; ln(−ln(1−F)) = β ln t − β ln η</span>
+<p>so on a Weibull plot the samples fall on a straight line of slope β. Percolation predicts β roughly proportional to oxide thickness: a thin oxide needs only a short chain, so a few unlucky traps are enough. Its failures come earlier <i>and</i> are spread more widely.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Thickness 5.4 nm. Press <b>Stress one device</b> and watch traps accumulate until a path forms. Note the leakage jump.</li>
+<li>Run it again: a different breakdown time. Ask the class why.</li>
+<li>Press <b>Test 300 devices</b>. The points line up on the Weibull plot; read the slope β.</li>
+<li>Change to 2 nm and test 300 again. The new line is shallower (smaller β) and sits to the left. Discuss what that means for a chip with a billion gates.</li>
+<li>Increase the area (more columns) at fixed thickness: the line shifts left with the same slope — weakest-link scaling.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does a larger gate area fail sooner?</summary>Breakdown happens at the first path anywhere in the area. More area means more chances, so the time to the first failure falls. For a Weibull distribution, t<sub>63%</sub> scales as (area)<sup>−1/β</sup>.</details>
+<details><summary>Why does a shallow Weibull slope (small β) worry a reliability engineer?</summary>Products are specified at tiny failure fractions (parts per million). The lifetime at F = 10⁻⁶ is extrapolated down the Weibull line; a shallow line puts that point much earlier than the median, so the usable lifetime shrinks drastically.</details>
+<details><summary>Thin SiO₂ breakdowns are often "soft". What does that mean?</summary>In ultra-thin oxides the first percolation path often carries only a limited current: the leakage jumps but the transistor may still work. Repeated soft breakdowns and progressive growth of the path eventually lead to hard failure.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>A cell-based percolation model (after Degraeve et al., 1995). The dielectric is a grid of cells about 0.9 nm across: <var>n</var> = t<sub>ox</sub>/0.9 nm layers deep and a chosen number of columns wide. Each cell becomes a trap at an independent, exponentially distributed random time. Traps in the same or neighbouring columns of adjacent layers connect. Breakdown is the moment a connected chain spans all layers, found with a union–find over the cells in order of trap time.</p>
+<p>Leakage is drawn as direct tunnelling plus a SILC term proportional to trap density, with a jump of four decades at breakdown.</p>
+<p class="caveat">Time is in arbitrary units; trap generation rate depends strongly on field and temperature, which set the absolute lifetime. The model reproduces the statistics, not a specific dielectric.</p></section>
+</main>
+<script>
+(() => {
+  const st = { tox: 5.4, cols: 40 };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "tox", label: "Oxide thickness", min: 1.8, max: 7.2, step: 0.9, value: st.tox, fmt: v => v.toFixed(1) + " nm (" + Math.round(v / 0.9) + " layers)", on: v => { st.tox = v; reset(); } });
+  NX.slider(ctl, { id: "cols", label: "Gate area (columns)", min: 20, max: 160, step: 10, value: st.cols, fmt: v => v + " columns", on: v => { st.cols = v; reset(); } });
+  const br = document.createElement("div"); br.className = "btnrow";
+  br.innerHTML = '<button class="btn" type="button" id="one">Stress one device</button><button class="btn ghost" type="button" id="many">Test 300 devices</button><button class="btn ghost" type="button" id="clr">Clear plot</button>';
+  ctl.appendChild(br);
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const igP = new NX.Plot(document.getElementById("ig"), { aspect: 1.1, x: [0, 1], y: [1e-3, 1e5], ylog: true, xlabel: "Stress time (arb. units)", ylabel: "Gate current (rel.)" });
+  const wbP = new NX.Plot(document.getElementById("wb"), { aspect: 1.1, x: [1e-4, 3], y: [-7, 2.5], xlog: true, xlabel: "Time to breakdown (arb. units)", ylabel: "ln(−ln(1−F))" });
+  const layers = () => Math.max(2, Math.round(st.tox / 0.9));
+
+  // one device: trap times + breakdown time + path
+  function sample(n, m, keepPath) {
+    const N = n * m, tt = new Float64Array(N); for (let i = 0; i < N; i++) tt[i] = -Math.log(1 - Math.random());
+    const order = Array.from({ length: N }, (_, i) => i).sort((a, b) => tt[a] - tt[b]);
+    const par = new Int32Array(N + 2).map((_, i) => i), on = new Uint8Array(N), TOP = N, BOT = N + 1;
+    const find = x => { while (par[x] !== x) { par[x] = par[par[x]]; x = par[x]; } return x; };
+    const uni = (a, b) => { a = find(a); b = find(b); if (a !== b) par[a] = b; };
+    for (const id of order) {
+      on[id] = 1; const r = Math.floor(id / m), c = id % m;
+      if (r === 0) uni(id, TOP); if (r === n - 1) uni(id, BOT);
+      for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+        if (!dr && !dc) continue; const rr = r + dr, cc = c + dc;
+        if (rr < 0 || rr >= n || cc < 0 || cc >= m || (dr && dc && false)) continue;
+        if (dr !== 0 && Math.abs(dc) > 1) continue;
+        const j = rr * m + cc; if (on[j]) uni(id, j);
+      }
+      if (find(TOP) === find(BOT)) {
+        let path = null;
+        if (keepPath) { // BFS through traps with t <= tbd from top to bottom
+          const tb = tt[id], prev = new Int32Array(N).fill(-2), q = [];
+          for (let c2 = 0; c2 < m; c2++) if (tt[c2] <= tb) { prev[c2] = -1; q.push(c2); }
+          let end = -1;
+          for (let k = 0; k < q.length && end < 0; k++) { const u = q[k], r1 = Math.floor(u / m), c1 = u % m; if (r1 === n - 1) { end = u; break; }
+            for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) { const rr = r1 + dr, cc = c1 + dc; if ((!dr && !dc) || rr < 0 || rr >= n || cc < 0 || cc >= m) continue; const j = rr * m + cc; if (prev[j] === -2 && tt[j] <= tb) { prev[j] = u; q.push(j); } } }
+          path = []; for (let u = end; u >= 0; u = prev[u]) path.push(u);
+        }
+        return { tt, tbd: tt[id], path };
+      }
+    }
+    return { tt, tbd: Infinity, path: [] };
+  }
+  const sets = []; let run = null, clock = 0, playing = false;
+  const palette = () => [NX.tok.rust, NX.tok.blue, NX.tok.green, NX.tok.violet, NX.tok.gold];
+  function reset() { run = sample(layers(), st.cols, true); clock = 0; playing = false; info(); drawStatic(); }
+  document.getElementById("one").onclick = () => { run = sample(layers(), st.cols, true); clock = 0; playing = true; };
+  document.getElementById("many").onclick = () => {
+    const ts = []; for (let i = 0; i < 300; i++) ts.push(sample(layers(), st.cols, false).tbd);
+    ts.sort((a, b) => a - b); const pts = ts.map((t, i) => [t, Math.log(-Math.log(1 - (i + 0.7) / (300 + 0.4)))]);
+    // least-squares slope beta
+    let sx = 0, sy = 0, sxx = 0, sxy = 0; pts.forEach(([t, y]) => { const x = Math.log(t); sx += x; sy += y; sxx += x * x; sxy += x * y; });
+    const n = pts.length, beta = (n * sxy - sx * sy) / (n * sxx - sx * sx), eta = Math.exp(-(sy - beta * sx) / n / beta);
+    sets.push({ pts, beta, eta, tox: st.tox, cols: st.cols }); if (sets.length > 5) sets.shift();
+    info(); drawStatic();
+  };
+  document.getElementById("clr").onclick = () => { sets.length = 0; info(); drawStatic(); };
+  function info() {
+    const last = sets[sets.length - 1];
+    status.className = "status " + (layers() <= 3 ? "bad" : "");
+    status.textContent = layers() <= 3 ? "Thin oxide: a chain of only " + layers() + " traps breaks it." : "Thicker oxide: a chain of " + layers() + " traps is needed.";
+    ro.innerHTML = `<dt>Layers to cross</dt><dd>${layers()}</dd><dt>Cells</dt><dd>${layers() * st.cols}</dd>
+      <dt>This device: t<sub>BD</sub></dt><dd>${run && isFinite(run.tbd) ? run.tbd.toFixed(4) : "—"}</dd>
+      ${sets.map((s, i) => `<dt><span style="color:${palette()[i]}">●</span> ${s.tox.toFixed(1)} nm, ${s.cols} col.</dt><dd>β = ${s.beta.toFixed(2)}</dd>`).join("")}`;
+    document.getElementById("wleg").innerHTML = sets.length ? sets.map((s, i) => `<span><i class="dot" style="background:${palette()[i]}"></i>${s.tox.toFixed(1)} nm · ${s.cols} col · β ${s.beta.toFixed(1)}</span>`).join("") : "<span>Press “Test 300 devices” to add a data set.</span>";
+  }
+  function drawStatic() {
+    const t = NX.tok;
+    wbP.begin().axes();
+    sets.forEach((s, i) => {
+      const c = palette()[i];
+      s.pts.forEach(([x, y]) => wbP.point(x, y, { color: c, r: 2.4 }));
+      wbP.fn(x => s.beta * (Math.log(x) - Math.log(s.eta)), { color: c, width: 1.4, dash: [5, 4] });
+    });
+    wbP.hline(0, { color: t.muted, label: "63%", align: "left" });
+    wbP.hline(Math.log(-Math.log(1 - 0.01)), { color: t.muted, label: "1%", align: "left" });
+  }
+  function frame(dt) {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("ox"), 3.0);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const n = layers(), m = st.cols, tbd = run.tbd;
+    if (playing) { clock += dt * Math.max(tbd, 0.002) / 4.0; if (clock >= tbd) { clock = tbd; playing = false; info(); } }
+    const x0 = w * 0.04, x1 = w * 0.96, gy = h * 0.06, gh = h * 0.18, oy = gy + gh, sy0 = h * 0.82;
+    const cw = (x1 - x0) / m, ch = (sy0 - oy) / n, R = Math.max(1.6, Math.min(cw, ch) * 0.42);
+    NX.rect(g, x0, gy, x1 - x0, gh, t.metal); NX.label(g, "gate (stress voltage)", (x0 + x1) / 2, gy + gh / 2, { color: "#fff", bold: true, size: 13 });
+    NX.rect(g, x0, oy, x1 - x0, sy0 - oy, t.oxide); NX.rect(g, x0, sy0, x1 - x0, h * 0.14, t.si);
+    NX.label(g, "silicon", (x0 + x1) / 2, sy0 + h * 0.07, { color: t.muted, size: 12 });
+    const broke = clock >= tbd && isFinite(tbd);
+    for (let i = 0; i < n * m; i++) if (run.tt[i] <= clock) { const r = Math.floor(i / m), c = i % m; NX.dot(g, x0 + (c + .5) * cw, oy + (r + .5) * ch, R, t.gold); }
+    if (broke) {
+      g.strokeStyle = t.rust; g.lineWidth = Math.max(2, R * 0.9); g.beginPath();
+      const pth = run.path.map(i => [x0 + (i % m + .5) * cw, oy + (Math.floor(i / m) + .5) * ch]);
+      if (pth.length) { g.moveTo(pth[0][0], sy0); pth.forEach(([X, Y]) => g.lineTo(X, Y)); g.lineTo(pth[pth.length - 1][0], oy); g.stroke(); pth.forEach(([X, Y]) => NX.dot(g, X, Y, R * 1.15, t.rust)); }
+      NX.label(g, "BREAKDOWN", x1 - 8, gy + gh + 14, { align: "right", color: t.rust, bold: true, size: 15 });
+    }
+    // leakage trace for this run
+    igP.setX(0, Math.max(tbd * 1.25, 1e-3)); igP.begin().axes();
+    const N = n * m, dens = tc => { let k = 0; for (let i = 0; i < N; i++) if (run.tt[i] <= tc) k++; return k / N; };
+    const I = tc => (1 + 400 * Math.pow(dens(tc), 2)) * (tc >= tbd ? 1e4 : 1);
+    const xs = [], ys = []; for (let i = 0; i <= 120; i++) { const tc = Math.min(clock, igP.o.x[1]) * i / 120; xs.push(tc); ys.push(I(tc)); }
+    if (clock > 0) igP.line(xs, ys, { color: broke ? t.rust : t.navy, width: 2.4 });
+    if (isFinite(tbd) && broke) igP.vline(tbd, { color: t.rust, label: "t_BD", dy: 0 });
+    igP.text(igP.o.x[1] * 0.02, 3e4, "SILC rises as traps accumulate", { color: t.muted, size: 11.5, dy: 8 });
+  }
+  NX.onRedraw(() => { info(); drawStatic(); frame(0); });
+  reset(); NX.loop(frame);
+})();
+</script>

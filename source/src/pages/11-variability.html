@@ -1,0 +1,117 @@
+<!--META
+{"num":11,"slug":"variability","title":"Variability: random dopants","ref":"Document 3, Section 5","blurb":"Fabricate a thousand nominally identical transistors. In a small channel there are only a handful of dopant atoms, their number and positions are random, and so is every device's threshold voltage.","new":true}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Six of the devices: dopant atoms in the depletion region under the gate (side view, to scale)</h3><canvas id="dev"></canvas></div>
+    <div class="figs">
+      <div class="fig"><h3>Threshold voltage of every device</h3><canvas id="hist"></canvas>
+        <div class="legend"><span><i style="background:var(--blue);height:9px;opacity:.6"></i>histogram</span><span><i style="background:var(--rust)"></i>Gaussian fit</span><span><i style="background:var(--muted)"></i>±5σ</span></div></div>
+      <div class="fig"><h3>Pelgrom scaling: σ<sub>VT</sub> against 1/√(WL)</h3><canvas id="pel"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>The threshold voltage of a doped-channel MOSFET depends on the depletion charge under the gate — that is, on the dopant atoms there. In a large device the count is huge and averages out. In a nanoscale device it is not: a 15 × 15 nm channel doped at 10¹⁸ cm⁻³ holds <b>fewer than ten</b> atoms in its depletion region. Their number is Poisson-distributed and their positions random, so V<sub>T</sub> varies from device to device:</p>
+<span class="eq">σ<sub>VT</sub> ≈ (q/C<sub>ox</sub>) · √( N<sub>A</sub>W<sub>dm</sub> / 3WL ) &nbsp;∝&nbsp; 1/√(WL)</span>
+<p>The 1/√(WL) law is <b>Pelgrom's law</b>, written σ<sub>VT</sub> = A<sub>VT</sub>/√(WL). An atom near the surface counts for more than one deep in the depletion region, which is where the factor 3 comes from.</p>
+<p>The fix the industry adopted is radical: leave the channel <b>undoped</b> (FinFET, nanosheet, fully depleted SOI) and set V<sub>T</sub> with the gate metal's work function. Random dopant fluctuation then largely disappears; line-edge roughness and metal-grain variation remain.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Start at W = L = 200 nm. Fabricate: thousands of atoms per device, a narrow histogram.</li>
+<li>Shrink to 20 × 20 nm and fabricate again. Count the atoms in each sample device and read σ<sub>VT</sub>.</li>
+<li>Look at the ±5σ lines: with 10¹⁰ transistors on a die, devices that far out exist. Ask whether a 6-transistor SRAM cell still works if one of its transistors is 5σ off.</li>
+<li>Halve the oxide thickness: σ falls (q/C<sub>ox</sub> shrinks). Then press <b>Undoped channel</b>: the dopant spread vanishes, leaving the other sources.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does an atom near the surface affect V<sub>T</sub> more than a deep one?</summary>The gate couples to a charge through the oxide plus the silicon above it. A charge at depth y in a depletion region of width W<sub>dm</sub> is screened partly by the body, and its effect on V<sub>T</sub> falls roughly as (1 − y/W<sub>dm</sub>).</details>
+<details><summary>Doubling both W and L — what happens to σ<sub>VT</sub>?</summary>The area quadruples, so σ<sub>VT</sub> halves. That is why analogue designers use large matched devices, and why minimum-size SRAM transistors are the worst case.</details>
+<details><summary>If RDF disappears in undoped channels, why is variability still a problem?</summary>Line-edge roughness turns into gate-length variation, which roll-off converts into V<sub>T</sub> spread; metal-gate grains have different work functions; fin width and sheet thickness vary. Typical A<sub>VT</sub> improved, but devices also became smaller.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>For each device the dopant count in the volume W × L × W<sub>dm</sub> is drawn from a Poisson distribution with mean N<sub>A</sub>WLW<sub>dm</sub>, and each atom gets a random depth y. The threshold is</p>
+<span class="eq">V<sub>T</sub> = V<sub>T0</sub> + (q / C<sub>ox</sub>WL) · [ Σ(1 − y<sub>i</sub>/W<sub>dm</sub>) − mean ]</span>
+<p>whose standard deviation reproduces the formula above (Stolk et al., 1998). W<sub>dm</sub> = √(4ε<sub>Si</sub>φ<sub>F</sub>/qN<sub>A</sub>); for the undoped option the body is a 6 nm fin with 10¹⁵ cm⁻³ background doping. The optional "other sources" term adds an independent Gaussian of 0.8 mV·µm/√(WL) for line-edge roughness and metal-gate granularity.</p>
+<p class="caveat">V<sub>T0</sub> = 0.35 V. Atom positions along the channel are drawn but do not enter the threshold (a fuller treatment needs 3-D simulation; percolation through low-doped paths makes real distributions slightly skewed).</p></section>
+</main>
+<script>
+(() => {
+  const C = NX.C, VT0 = 0.35, Nd = 1000;
+  const st = { W: 20, L: 20, lgN: 18, eot: 1.2, undoped: false, other: false };
+  const ctl = document.getElementById("ctl");
+  const lg = (id, label, val, lo, hi, on) => NX.slider(ctl, { id, label, min: Math.log10(lo), max: Math.log10(hi), step: 0.01, value: Math.log10(val), fmt: v => Math.round(Math.pow(10, v)) + " nm", on: v => { on(Math.pow(10, v)); fab(); } });
+  lg("W", "Width W", st.W, 10, 300, v => st.W = v);
+  lg("L", "Length L", st.L, 10, 300, v => st.L = v);
+  NX.slider(ctl, { id: "NA", label: "Channel doping N<sub>A</sub>", min: 17, max: 18.7, step: 0.05, value: st.lgN, fmt: v => NX.fmt(Math.pow(10, v), 1) + " cm⁻³", on: v => { st.lgN = v; fab(); } });
+  NX.slider(ctl, { id: "eot", label: "Oxide thickness (EOT)", min: 0.6, max: 3, step: 0.1, value: st.eot, fmt: v => v.toFixed(1) + " nm", on: v => { st.eot = v; fab(); } });
+  NX.seg(ctl, { label: "Channel", value: false, options: [[false, "Doped"], [true, "Undoped (FinFET/GAA)"]], on: v => { st.undoped = v; fab(); } });
+  NX.seg(ctl, { label: "Other sources (LER, metal grains)", value: false, options: [[false, "Off"], [true, "On"]], on: v => { st.other = v; fab(); } });
+  const br = document.createElement("div"); br.className = "btnrow"; br.innerHTML = '<button class="btn" type="button" id="fab">Fabricate 1000 devices</button>'; ctl.appendChild(br);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  document.getElementById("fab").onclick = () => fab();
+  const hist = new NX.Plot(document.getElementById("hist"), { aspect: 1.1, y: [0, 1], xlabel: "Threshold voltage VT (V)", ylabel: "Fraction of devices" });
+  const pel = new NX.Plot(document.getElementById("pel"), { aspect: 1.1, x: [0, 0.12], y: [0, 120], xlabel: "1/√(WL)  (nm⁻¹)", ylabel: "σVT (mV)" });
+  const poisson = m => { if (m > 60) return Math.max(0, Math.round(m + Math.sqrt(m) * gauss())); let L = Math.exp(-m), k = 0, p = 1; do { k++; p *= Math.random(); } while (p > L); return k - 1; };
+  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const params = () => {
+    const NA = (st.undoped ? 1e15 : Math.pow(10, st.lgN)) * 1e6, phiF = C.Vt * Math.log(NA / 1e16);
+    const Wdm = st.undoped ? 6e-9 : Math.sqrt(4 * C.epsSi * phiF / (C.q * NA));   // m (undoped: thin body, 6 nm)
+    const Cox = C.epsOx / (st.eot * 1e-9), A = st.W * st.L * 1e-18;
+    const mean = NA * A * Wdm, sig = C.q / Cox * Math.sqrt(NA * Wdm / (3 * A));
+    const sigO = st.other ? 0.8 / Math.sqrt(st.W * st.L) : 0;   // A = 0.8 mV·µm, in volts
+    return { NA, Wdm, Cox, A, mean, sig, sigO };
+  };
+  let R = {};
+  function fab() {
+    const p = params(), vts = [], samples = [];
+    const k = C.q / (p.Cox * p.A);
+    for (let i = 0; i < Nd; i++) {
+      const n = poisson(p.mean); let s = 0; const atoms = [];
+      for (let j = 0; j < n; j++) { const y = Math.random(); s += 1 - y; if (i < 6 && atoms.length < 400) atoms.push([Math.random(), y]); }
+      const vt = VT0 + k * (s - p.mean / 2) + (p.sigO ? p.sigO * gauss() : 0);
+      vts.push(vt); if (i < 6) samples.push({ n, atoms, vt });
+    }
+    const mu = vts.reduce((a, b) => a + b, 0) / Nd, sd = Math.sqrt(vts.reduce((a, b) => a + (b - mu) ** 2, 0) / (Nd - 1));
+    R = { p, vts, samples, mu, sd };
+    ro.innerHTML = `<dt>Depletion depth W<sub>dm</sub></dt><dd>${(p.Wdm * 1e9).toFixed(0)} nm</dd><dt>Mean dopants per device</dt><dd>${p.mean < 10 ? p.mean.toFixed(1) : NX.fmt(p.mean, 0)}</dd>
+      <dt>σ<sub>VT</sub> from 1000 devices</dt><dd class="${sd > 0.03 ? "warn" : ""}">${(sd * 1000).toFixed(1)} mV</dd><dt>σ<sub>VT</sub> formula (RDF)</dt><dd>${(p.sig * 1000).toFixed(1)} mV</dd>
+      <dt>A<sub>VT</sub> = σ√(WL)</dt><dd>${(sd * 1000 * Math.sqrt(st.W * st.L) / 1000).toFixed(2)} mV·µm</dd><dt>5σ excursion</dt><dd>${(5 * sd * 1000).toFixed(0)} mV</dd>`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok, { vts, mu, sd } = R, span = Math.max(0.05, 6 * sd);
+    const lo = mu - span, hi = mu + span, nb = 40, bins = new Array(nb).fill(0);
+    vts.forEach(v => { const b = Math.floor((v - lo) / (hi - lo) * nb); if (b >= 0 && b < nb) bins[b]++; });
+    const mx = Math.max(...bins) / Nd;
+    hist.setX(lo, hi); hist.setY(0, mx * 1.25); hist.o.tickfmt = v => v.toFixed(Math.abs(hi - lo) < 0.1 ? 3 : 2); hist.begin().axes();
+    hist.clip(g => { g.fillStyle = t.blue; g.globalAlpha = 0.55; bins.forEach((c, i) => { const x0 = hist.tx(lo + (hi - lo) * i / nb), x1 = hist.tx(lo + (hi - lo) * (i + 1) / nb); g.fillRect(x0 + .5, hist.ty(c / Nd), x1 - x0 - 1, hist.B - hist.ty(c / Nd)); }); g.globalAlpha = 1; });
+    const bw = (hi - lo) / nb; if (sd > 1e-6) hist.fn(v => bw * Math.exp(-((v - mu) ** 2) / (2 * sd * sd)) / (sd * Math.sqrt(2 * Math.PI)), { color: t.rust, width: 2.2 });
+    if (sd > 1e-6 && 5 * sd < span) { hist.vline(mu - 5 * sd, { label: "−5σ" }); hist.vline(mu + 5 * sd, { label: "+5σ" }); }
+    hist.vline(VT0, { color: t.ink, dash: [2, 3] });
+    // Pelgrom plot
+    const p = R.p, Avt = p.sig * Math.sqrt(st.W * st.L);  // V·nm
+    pel.begin().axes();
+    pel.fn(x => Avt * x * 1000, { color: t.rust, width: 2.4 });
+    pel.point(1 / Math.sqrt(st.W * st.L), sd * 1000, { color: t.navy });
+    pel.text(0.004, 110, "A_VT = " + (Avt).toFixed(2) + " mV·µm (RDF)", { color: t.rust, size: 12 });
+    drawDevices();
+  }
+  function drawDevices() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("dev"), 3.6);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const cols = 6, cw = w / cols, pad = 10, maxDim = Math.max(st.L, R.p.Wdm * 1e9);
+    const sc = Math.min((cw - 2 * pad) / st.L, (h * 0.62) / (R.p.Wdm * 1e9 + 1e-9), 6);
+    R.samples.forEach((s, i) => {
+      const bw = st.L * sc, bh = Math.max(6, R.p.Wdm * 1e9 * sc), x0 = i * cw + (cw - bw) / 2, y0 = h * 0.16;
+      NX.rect(g, x0 - 3, y0 - 8, bw + 6, 8, t.metal);
+      NX.rect(g, x0, y0, bw, bh, t.depl, t.line);
+      const r = Math.max(2, Math.min(5, sc * 0.5));
+      s.atoms.forEach(([fx, fy]) => NX.dot(g, x0 + fx * bw, y0 + fy * bh, r, t.rust, "−"));
+      const dv = (s.vt - VT0) * 1000;
+      NX.label(g, s.n + " atoms", x0 + bw / 2, y0 + bh + 16, { size: 12, color: t.muted });
+      NX.label(g, "V_T " + (dv >= 0 ? "+" : "−") + Math.abs(dv).toFixed(0) + " mV", x0 + bw / 2, y0 + bh + 34, { size: 12.5, bold: true, color: Math.abs(dv) > 2 * R.sd * 1000 ? t.rust : t.ink });
+    });
+    if (R.samples.length && R.samples[0].atoms.length >= 400) NX.label(g, "(first 400 atoms drawn)", w - 6, h - 8, { align: "right", size: 11, color: t.muted });
+  }
+  NX.onRedraw(draw); fab();
+})();
+</script>

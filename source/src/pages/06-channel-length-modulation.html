@@ -1,0 +1,105 @@
+<!--META
+{"num":6,"slug":"channel-length-modulation","title":"Channel-length modulation","ref":"Document 3, Section 2.5","blurb":"Past pinch-off, extra drain voltage widens the depleted gap at the drain and shortens the channel. The current keeps creeping up, and the transistor's analogue gain falls."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Cross-section in saturation: the pinch-off point moves toward the source</h3><canvas id="xs"></canvas>
+      <div class="legend"><span><i style="background:var(--electron)"></i>inverted channel (length L′)</span><span><i style="background:var(--rust);height:9px;opacity:.45"></i>depleted gap ΔL</span><span><i class="dot" style="background:var(--electron)"></i>electrons</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Output characteristics with CLM</h3><canvas id="out"></canvas>
+        <div class="legend"><span><i style="background:var(--rust)"></i>selected V<sub>GS</sub></span><span><i style="background:var(--muted)"></i>without CLM</span><span><i style="background:var(--navy)"></i>tangent → −V<sub>A</sub></span></div></div>
+      <div class="fig"><h3>Intrinsic gain g<sub>m</sub>r<sub>o</sub> against channel length</h3><canvas id="gain"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>Once <var>V</var><sub>DS</sub> passes <var>V</var><sub>DS,sat</sub> the channel pinches off. The excess voltage <var>V</var><sub>DS</sub> − <var>V</var><sub>DS,sat</sub> is dropped across a depleted gap ΔL next to the drain, and that gap widens as the drain voltage rises — exactly as any reverse-biased depletion region does. The inverted channel that actually sets the current is now <b>L′ = L − ΔL</b>, so</p>
+<span class="eq">I<sub>D</sub> = I<sub>D,sat</sub> · L / (L − ΔL) ≈ I<sub>D,sat</sub>(1 + λ<sub>CLM</sub>V<sub>DS</sub>)</span>
+<p>The same ΔL is a bigger fraction of a short channel, so the output curves tilt more as <var>L</var> falls. For a circuit this is a finite output resistance <var>r</var><sub>o</sub>, and the best voltage gain a single transistor can give, <var>g</var><sub>m</sub><var>r</var><sub>o</sub>, falls with it.</p>
+<p class="caveat">Notation: λ<sub>CLM</sub> is the circuit parameter (V⁻¹). It has nothing to do with the natural length λ of Animation 2.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li><var>L</var> = 1 µm, <var>V</var><sub>GS</sub> = 1.2 V. Sweep <var>V</var><sub>DS</sub> from 0 to 3 V and watch the pinch-off point leave the drain once <var>V</var><sub>DS</sub> &gt; 0.7 V.</li>
+<li>Read ΔL and the current increase at 3 V. Then set <var>L</var> = 0.25 µm and repeat: same ΔL, much larger fractional change.</li>
+<li>Note how the tangent's intercept −<var>V</var><sub>A</sub> (Early voltage) moves toward the origin, and read the intrinsic gain.</li>
+<li>Raise the body doping: the gap shrinks (narrower depletion) and the gain recovers. Ask what this does to the threshold and to the junction capacitance.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why is CLM mainly an analogue concern?</summary>A digital gate only needs the device to switch hard; a few percent more current in saturation barely matters. An amplifier's gain is g<sub>m</sub>r<sub>o</sub>, and r<sub>o</sub> = 1/(λ<sub>CLM</sub>I<sub>D</sub>) is set directly by CLM. In short channels DIBL adds to the output conductance too.</details>
+<details><summary>An analogue designer wants g<sub>m</sub>r<sub>o</sub> ≥ 50 at V<sub>ov</sub> = 0.2 V. Roughly what V<sub>A</sub> does that need?</summary>For a square-law device g<sub>m</sub>r<sub>o</sub> = 2V<sub>A</sub>/V<sub>ov</sub>, so V<sub>A</sub> ≥ 50 × 0.2/2 = 5 V. That is why analogue blocks use longer-than-minimum channels.</details>
+<details><summary>Does the electron current really flow through a "depleted" region?</summary>Yes. Depleted means the electron density is small compared with the doping, not zero. The electrons crossing the gap move fast in its high field, so a small density carries the full current.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Square law with <var>V</var><sub>T</sub> = 0.5 V, μ<sub>n</sub>C<sub>ox</sub> = 200 µA/V² and W = 5 µm, using the effective length L′ = L − ΔL in saturation. The gap width uses the depletion approximation with a small offset φ (0.5 V) that avoids an unphysical infinite slope at V<sub>DS,sat</sub>:</p>
+<span class="eq">ΔL = √(2ε<sub>Si</sub>/qN<sub>A</sub>) · [ √(φ + V<sub>DS</sub> − V<sub>DS,sat</sub>) − √φ ]</span>
+<p>g<sub>m</sub> and r<sub>o</sub> are evaluated numerically at the operating point.</p>
+<p class="caveat">Long-channel picture: no DIBL, no velocity saturation. In real short devices the gap is two-dimensional and DIBL adds to the output conductance.</p></section>
+</main>
+<script>
+/*INCLUDE device.js*/
+(() => {
+  const C = NX.C, VT = 0.5, kp = 200e-6, W = 5, phi = 0.5;
+  const st = { VG: 1.2, VD: 2.0, L: 0.5, lgN: 17 };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "VG", label: "Gate voltage V<sub>GS</sub>", min: 0.7, max: 2, step: 0.01, value: st.VG, unit: "V", on: v => { st.VG = v; update(); } });
+  NX.slider(ctl, { id: "VD", label: "Drain voltage V<sub>DS</sub>", min: 0, max: 3, step: 0.01, value: st.VD, unit: "V", on: v => { st.VD = v; update(); } });
+  NX.slider(ctl, { id: "L", label: "Channel length L", min: 0.15, max: 2, step: 0.01, value: st.L, fmt: v => v.toFixed(2) + " µm", on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "NA", label: "Body doping N<sub>A</sub>", min: 16.5, max: 18, step: 0.05, value: st.lgN, fmt: v => NX.fmt(Math.pow(10, v), 1) + " cm⁻³", on: v => { st.lgN = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const out = new NX.Plot(document.getElementById("out"), { aspect: 1.05, x: [0, 3], y: [0, 1], xlabel: "Drain voltage VDS (V)", ylabel: "ID (mA)" });
+  const gainP = new NX.Plot(document.getElementById("gain"), { aspect: 1.05, x: [0.15, 2], y: [1, 300], xlog: true, ylog: true, xlabel: "Channel length L (µm)", ylabel: "gm·ro" });
+  const dL = (VD, VG, L) => { const vs = Math.max(0, VG - VT); if (VD <= vs) return 0; const k = Math.sqrt(2 * C.epsSi / (C.q * Math.pow(10, st.lgN) * 1e6)) * 1e6; return Math.min(0.7 * L, k * (Math.sqrt(phi + VD - vs) - Math.sqrt(phi))); }; // µm
+  const Id = (VG, VD, L, clm = true) => { const o = VG - VT; if (o <= 0) return 0; const b = kp * W / L; if (VD < o) return b * (o * VD - VD * VD / 2); const Le = clm ? L - dL(VD, VG, L) : L; return kp * W / Le * o * o / 2; };
+  let M = {};
+  function update() {
+    const o = st.VG - VT, d = dL(st.VD, st.VG, st.L), I = Id(st.VG, st.VD, st.L), I0 = Id(st.VG, st.VD, st.L, false);
+    const h = 1e-3, gds = (Id(st.VG, st.VD + h, st.L) - Id(st.VG, st.VD - h, st.L)) / (2 * h), gm = (Id(st.VG + h, st.VD, st.L) - Id(st.VG - h, st.VD, st.L)) / (2 * h);
+    const sat = st.VD >= o, VA = sat && gds > 0 ? I / gds - st.VD : Infinity;
+    M = { o, d, I, I0, gds, gm, sat, VA };
+    status.className = "status " + (sat ? (d / st.L > 0.1 ? "bad" : "") : "");
+    status.textContent = !sat ? "Linear region: the channel reaches the drain; no CLM yet." : d / st.L > 0.1 ? "Strong CLM: the depleted gap is over 10% of the channel." : "Saturation: a depleted gap has opened at the drain.";
+    ro.innerHTML = `<dt>V<sub>DS,sat</sub></dt><dd>${o.toFixed(2)} V</dd><dt>Gap ΔL</dt><dd>${(d * 1000).toFixed(0)} nm</dd><dt>ΔL / L</dt><dd>${(d / st.L * 100).toFixed(1)}%</dd>
+      <dt>I<sub>D</sub> / without CLM</dt><dd>${(I * 1e3).toFixed(3)} / ${(I0 * 1e3).toFixed(3)} mA</dd>
+      <dt>λ<sub>CLM</sub> = g<sub>ds</sub>/I<sub>D</sub></dt><dd>${sat ? (gds / I).toFixed(3) + " V⁻¹" : "—"}</dd><dt>Early voltage V<sub>A</sub></dt><dd>${sat && isFinite(VA) ? VA.toFixed(1) + " V" : "—"}</dd>
+      <dt>Intrinsic gain g<sub>m</sub>r<sub>o</sub></dt><dd>${sat ? (gm / gds).toFixed(0) : "—"}</dd>`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok, ymax = Math.max(0.2, Id(2, 3, st.L) * 1e3 * 1.05);
+    out.setY(0, ymax); out.begin().axes();
+    [0.9, 1.2, 1.5, 1.8].forEach(vg => out.fn(v => Id(vg, v, st.L) * 1e3, { color: t.line, width: 1.5 }));
+    out.fn(v => Id(st.VG, v, st.L, false) * 1e3, { color: t.muted, dash: [6, 4], width: 1.8 });
+    out.fn(v => Id(st.VG, v, st.L) * 1e3, { color: t.rust, width: 2.6 });
+    if (M.sat && M.gds > 0) out.line([0, 3], [(M.I - M.gds * st.VD) * 1e3, (M.I + M.gds * (3 - st.VD)) * 1e3], { color: t.navy, width: 1.4, dash: [5, 3] });
+    out.point(st.VD, M.I * 1e3, { color: t.navy });
+    gainP.begin().axes();
+    const vd = Math.max(st.VD, M.o + 0.3);
+    gainP.fn(L => { const h = 1e-3; const g1 = (Id(st.VG + h, vd, L) - Id(st.VG - h, vd, L)) / (2 * h), g2 = (Id(st.VG, vd + h, L) - Id(st.VG, vd - h, L)) / (2 * h); return g1 / g2; }, { color: t.rust, width: 2.6 }, 120);
+    gainP.text(0.17, 2, "at V_DS = " + vd.toFixed(2) + " V", { color: t.muted, size: 11.5 });
+    if (M.sat) gainP.point(st.L, M.gm / M.gds, { color: t.navy });
+  }
+  const parts = [];
+  function frame(dt) {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("xs"), 2.6);
+    const pin = M.sat ? 1 - M.d / st.L : 1, o = Math.max(0, M.o), VDe = Math.min(st.VD, o), F = o * VDe - VDe * VDe / 2;
+    const qn = f => Math.sqrt(Math.max(0, o * o - 2 * (f / pin) * F)) / 1.5;
+    const G = DEV.draw(g, w, h, { VG: st.VG, VD: st.VD, qn, pinch: pin, dep: f => 0.45 + 0.25 * f, dDrain: 0.3 * Math.sqrt((0.9 + st.VD) / 0.9) });
+    if (M.sat) {
+      const x1 = G.fx(pin), x2 = G.dS; g.fillStyle = t.rust; g.globalAlpha = 0.4; g.fillRect(x1, G.y0, x2 - x1, h * 0.06); g.globalAlpha = 1;
+      g.strokeStyle = t.rust; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x1, G.y0 + h * 0.08); g.lineTo(x1, G.y0 + h * 0.13); g.moveTo(x2, G.y0 + h * 0.08); g.lineTo(x2, G.y0 + h * 0.13); g.moveTo(x1, G.y0 + h * 0.105); g.lineTo(x2, G.y0 + h * 0.105); g.stroke();
+      NX.label(g, "ΔL", (x1 + x2) / 2, G.y0 + h * 0.15, { color: t.rust, bold: true, size: Math.max(12, h * 0.045) });
+      NX.label(g, "L′", (G.sE + x1) / 2, G.y0 + h * 0.12, { color: t.electron, bold: true, size: Math.max(12, h * 0.045) });
+    }
+    const target = 55;
+    while (parts.length < target) parts.push({ f: Math.random(), r: Math.random() });
+    const th = Math.max(5, h * 0.03), I = M.I / 1e-3;
+    parts.forEach(p => {
+      const q = p.f < pin ? Math.max(0.05, qn(p.f)) : 0.05;
+      p.f += Math.min(1.2, 0.35 * I / q) * dt * 0.6; if (p.f > 1) { p.f -= 1; p.r = Math.random(); }
+      const Y = G.y0 + 1.5 + p.r * Math.max(2, th * (p.f < pin ? qn(p.f) : 0.08) - 3);
+      NX.dot(g, G.fx(p.f), Y, Math.max(2.2, h * 0.009), t.electron);
+    });
+  }
+  NX.onRedraw(() => { update(); frame(0); }); update(); frame(0); NX.loop(frame);
+})();
+</script>
