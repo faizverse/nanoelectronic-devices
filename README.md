@@ -1,1 +1,28 @@
-# nanoelectronic-devices
+# KKKC6353 Nanoelectronic Devices — interactive animations
+
+Teaching animations for the postgraduate course KKKC6353 Nanoelectronic Devices, published at
+**https://faizverse.github.io/nanoelectronic-devices/**.
+
+## Lecture 1
+
+| # | Animation | Notes section |
+|---|---|---|
+| 1 | [MOSFET basics](https://faizverse.github.io/nanoelectronic-devices/L1/mosfet-basics.html) | Doc 2, §3 |
+| 2 | [Natural length and threshold roll-off](https://faizverse.github.io/nanoelectronic-devices/L1/vt-rolloff.html) | Doc 3, §1.1, 2.1 |
+| 3 | [Drain-induced barrier lowering](https://faizverse.github.io/nanoelectronic-devices/L1/dibl.html) | Doc 3, §2.2 |
+| 4 | [Punchthrough](https://faizverse.github.io/nanoelectronic-devices/L1/punchthrough.html) | Doc 3, §2.3 |
+| 5 | [Subthreshold swing degradation](https://faizverse.github.io/nanoelectronic-devices/L1/subthreshold-swing.html) | Doc 3, §2.4 |
+| 6 | [Channel-length modulation](https://faizverse.github.io/nanoelectronic-devices/L1/channel-length-modulation.html) | Doc 3, §2.5 |
+| 7 | [Carrier velocity saturation](https://faizverse.github.io/nanoelectronic-devices/L1/velocity-saturation.html) | Doc 3, §3.1 |
+| 8 | [Hot carriers and impact ionisation](https://faizverse.github.io/nanoelectronic-devices/L1/hot-carriers.html) | Doc 3, §3.3–3.4 |
+| 9 | [Oxide breakdown (TDDB)](https://faizverse.github.io/nanoelectronic-devices/L1/oxide-breakdown.html) | Doc 3, §3.4 |
+| 10 | [Gate-induced drain leakage](https://faizverse.github.io/nanoelectronic-devices/L1/gidl.html) | Doc 3, §4 |
+| 11 | [Variability: random dopants](https://faizverse.github.io/nanoelectronic-devices/L1/variability.html) | Doc 3, §5 |
+
+Each page is a single self-contained HTML file (no external dependencies; it works offline).
+
+## Editing
+
+The published pages are generated. Edit the files in `source/src/` and run `python3 build.py`
+from `source/`; it inlines the shared CSS/JS into each page and writes them to `source/site/`.
+Copy `source/site/index.html` and `source/site/L1/` to the repository root to publish.

@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hot carriers and impact ionisation · L1 animation</title>
+<meta name="description" content="Electrons pick up energy in the high-field region at the drain. A few gain enough to knock loose electron–hole pairs or jump into the gate oxide. See why this ruled the 5 V era and fades at 0.7 V.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
+<style>:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2430; --muted:#5b6876; --line:#d8dee6; --grid:#e7ebf0;
+  --navy:#1f3a5f; --blue:#2e75b6; --rust:#b4451f; --green:#2f8a5b; --gold:#c08a12; --violet:#7a4fb5;
+  --electron:#2e75b6; --hole:#c8402a; --oxide:#e9d9a6; --si:#dfe7ef; --nplus:#b9d3ee; --pbody:#f2dcd2;
+  --metal:#7d8794; --depl:#f6efe0; --chip:#eef3f9; --focus:#2e75b6;
+  --radius:10px; --shadow:0 1px 2px rgba(20,30,45,.06),0 4px 14px rgba(20,30,45,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body.big{font-size:19px}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.top{background:#1f3a5f;color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:center;justify-content:space-between;padding:.6rem 16px}
+.top a{color:#fff;text-decoration:none;opacity:.9}
+.top a:hover{opacity:1;text-decoration:underline}
+.crumb{font-size:.85rem;letter-spacing:.02em;opacity:.92}
+.tools{display:flex;gap:.4rem}
+.tools button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:.25rem .6rem;font:inherit;font-size:.8rem;cursor:pointer}
+.tools button:hover{background:rgba(255,255,255,.22)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.hero{padding:1.4rem 0 .6rem}
+.kicker{color:var(--rust);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;margin:0 0 .25rem}
+h1{font-size:clamp(1.5rem,3.2vw,2.1rem);line-height:1.2;margin:0 0 .4rem;color:var(--navy);text-wrap:balance}
+.lede{color:var(--muted);max-width:70ch;margin:0}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;margin:1rem 0}
+.lab:fullscreen{background:var(--bg);padding:16px;align-content:center}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.stage{padding:10px;display:grid;gap:10px;min-width:0}
+.stage canvas{width:100%;display:block;border-radius:6px}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:10px}
+.fig{min-width:0}
+.fig h3{font-size:.82rem;font-weight:600;color:var(--muted);margin:.1rem .2rem .3rem;letter-spacing:.02em}
+.controls{padding:14px 14px 10px;display:flex;flex-direction:column;gap:12px;align-self:start}
+.controls h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0}
+.ctl label{display:flex;justify-content:space-between;gap:.5rem;font-size:.92rem;margin-bottom:2px}
+.ctl label b{font-weight:600}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--rust);font-weight:600;white-space:nowrap}
+.ctl input[type=range]{width:100%;accent-color:var(--rust);margin:2px 0}
+.ctl .hint{font-size:.78rem;color:var(--muted);margin-top:1px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{flex:1 1 auto;font:inherit;font-size:.84rem;padding:.35rem .5rem;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--panel)}
+.btn{font:inherit;font-size:.88rem;padding:.42rem .7rem;border-radius:6px;border:1px solid var(--rust);background:var(--rust);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--rust)}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px}
+.readout{display:grid;grid-template-columns:1fr auto;gap:4px 8px;font-size:.84rem;line-height:1.35;border-top:1px solid var(--line);padding-top:10px}
+.readout dt{color:var(--muted)}
+.readout dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.readout dd.warn{color:var(--rust)}
+.status{font-size:.86rem;padding:.45rem .6rem;border-radius:6px;background:var(--chip);border-left:3px solid var(--blue)}
+.status.bad{border-left-color:var(--rust)}
+.status.good{border-left-color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted);padding:0 .2rem}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+main.notes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin:0 0 1rem}
+@media (max-width:860px){main.notes{grid-template-columns:minmax(0,1fr)}}
+.notes section{padding:16px 18px}
+.notes section.wide{grid-column:1/-1}
+.notes h2{font-size:1.08rem;color:var(--navy);margin:0 0 .5rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+.notes p,.notes li{max-width:75ch}
+.notes ol,.notes ul{padding-left:1.25rem;margin:.4rem 0}
+.notes li{margin:.25rem 0}
+.eq{display:block;text-align:center;margin:.6rem 0;font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.12em;overflow-x:auto}
+var{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-style:italic}
+details{border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem;margin:.45rem 0;background:var(--bg)}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:.35rem}
+.pill{display:inline-block;font-size:.75rem;padding:.05rem .45rem;border-radius:99px;background:var(--chip);color:var(--muted);border:1px solid var(--line)}
+.caveat{font-size:.9rem;color:var(--muted)}
+footer.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1rem 0 2rem;border-top:1px solid var(--line);margin-top:.5rem}
+footer.nav a{text-decoration:none;font-weight:600}
+footer.nav small{display:block;color:var(--muted);font-weight:400}
+.foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<script>/* Shared helpers for the KKKC6353 animations: theme tokens, controls, plots, animation loop. */
+const NX = (() => {
+  const root = document.documentElement;
+  let tok = {};
+  function readTokens() {
+    const cs = getComputedStyle(root);
+    ["bg","panel","ink","muted","line","grid","navy","blue","rust","green","gold","violet","electron","hole",
+     "oxide","si","nplus","pbody","metal","depl","chip"].forEach(k => tok[k] = cs.getPropertyValue("--" + k).trim());
+    return tok;
+  }
+  readTokens();
+  const redrawers = new Set();
+  function onRedraw(fn) { redrawers.add(fn); }
+  function redrawAll() { readTokens(); redrawers.forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+  let rT; addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(redrawAll, 80); });
+
+  /* ---------- number formatting ---------- */
+  function fmt(v, d = 2) {
+    if (!isFinite(v)) return "—";
+    const a = Math.abs(v);
+    if (a !== 0 && (a < 1e-2 || a >= 1e4)) {
+      const e = Math.floor(Math.log10(a)), m = v / Math.pow(10, e);
+      return m.toFixed(1) + "×10" + sup(e);
+    }
+    return v.toFixed(d);
+  }
+  function sup(n) { const s = "⁰¹²³⁴⁵⁶⁷⁸⁹"; return String(n).replace("-", "⁻").replace(/\d/g, c => s[c]); }
+  function si(v, unit, d = 3) {
+    if (!isFinite(v) || v === 0) return (v === 0 ? "0 " : "— ") + unit;
+    if (Math.abs(v) < 1e-15) return "< 1 f" + unit;
+    const p = ["f","p","n","µ","m","","k","M","G"]; let e = Math.floor(Math.log10(Math.abs(v)) / 3);
+    e = Math.max(-5, Math.min(3, e));
+    const m = v / Math.pow(1000, e);
+    return (+m.toPrecision(d)) + " " + p[e + 5] + unit;
+  }
+
+  /* ---------- controls ---------- */
+  function slider(host, o) {
+    const id = "s_" + o.id;
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label for="${id}"><b>${o.label}</b><output id="${id}_o"></output></label>
+      <input type="range" id="${id}" min="${o.min}" max="${o.max}" step="${o.step}" value="${o.value}">
+      ${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    host.appendChild(w);
+    const inp = w.querySelector("input"), out = w.querySelector("output");
+    const show = () => { out.textContent = (o.fmt ? o.fmt(+inp.value) : (+inp.value).toFixed(o.dp ?? 2) + (o.unit ? " " + o.unit : "")); };
+    inp.addEventListener("input", () => { show(); o.on && o.on(+inp.value); });
+    show();
+    return { get value() { return +inp.value; }, set value(v) { inp.value = v; show(); }, input: inp, el: w };
+  }
+  function seg(host, o) {
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label><b>${o.label}</b></label><div class="seg" role="group" aria-label="${o.label}"></div>${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    const g = w.querySelector(".seg"); let val = o.value;
+    const btns = o.options.map(([v, t]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+      b.setAttribute("aria-pressed", v === val); b.onclick = () => { set(v); o.on && o.on(v); };
+      g.appendChild(b); return [v, b];
+    });
+    function set(v) { val = v; btns.forEach(([k, b]) => b.setAttribute("aria-pressed", k === v)); }
+    host.appendChild(w);
+    return { get value() { return val; }, set value(v) { set(v); }, el: w };
+  }
+
+  /* ---------- canvas with DPR handling ---------- */
+  function fitCanvas(cv, aspect) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const w = Math.max(200, cv.clientWidth || cv.parentElement.clientWidth);
+    const h = Math.round(w / aspect);
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.height = h + "px";
+    }
+    const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { g, w, h };
+  }
+
+  /* ---------- 2-D plot ---------- */
+  function niceTicks(a, b, n = 5) {
+    const span = b - a, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const r = step0 / mag, step = (r < 1.5 ? 1 : r < 3.5 ? 2 : r < 7.5 ? 5 : 10) * mag;
+    const t = []; for (let v = Math.ceil(a / step - 1e-9) * step; v <= b + step * 1e-6; v += step) t.push(+v.toFixed(12));
+    return t;
+  }
+  class Plot {
+    constructor(cv, o) { this.cv = cv; this.o = Object.assign({ aspect: 1.45, m: [14, 16, 44, 58] }, o); }
+    setX(a, b) { this.o.x = [a, b]; } setY(a, b) { this.o.y = [a, b]; }
+    begin() {
+      const { g, w, h } = fitCanvas(this.cv, this.o.aspect); this.g = g; this.w = w; this.h = h;
+      const [mt, mr, mb, ml] = this.o.m; this.L = ml; this.R = w - mr; this.T = mt; this.B = h - mb;
+      g.clearRect(0, 0, w, h); g.fillStyle = tok.panel; g.fillRect(0, 0, w, h);
+      return this;
+    }
+    tx(v) { const [a, b] = this.o.x; const f = this.o.xlog ? (Math.log10(v) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.L + f * (this.R - this.L); }
+    ty(v) { const [a, b] = this.o.y; const f = this.o.ylog ? (Math.log10(Math.max(v, 1e-300)) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.B - f * (this.B - this.T); }
+    axes() {
+      const g = this.g, o = this.o; g.save();
+      g.font = "12px system-ui,sans-serif"; g.lineWidth = 1;
+      const ticks = (lo, hi, log) => log ? (() => { const t = []; for (let e = Math.ceil(Math.log10(lo) - 1e-9); e <= Math.floor(Math.log10(hi) + 1e-9); e++) t.push(Math.pow(10, e)); return t; })() : niceTicks(lo, hi, o.nt || 5);
+      const xt = ticks(o.x[0], o.x[1], o.xlog), yt0 = ticks(o.y[0], o.y[1], o.ylog);
+      const yt = o.ylog && yt0.length > 8 ? yt0.filter((v, i) => i % 2 === (yt0.length % 2 ? 0 : 1)) : yt0;
+      g.strokeStyle = tok.grid;
+      xt.forEach(v => { const X = this.tx(v); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); });
+      yt.forEach(v => { const Y = this.ty(v); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); });
+      g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
+      g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
+      const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
+      xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      g.textAlign = "right"; g.textBaseline = "middle";
+      yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
+      g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";
+      if (o.xlabel) { g.textAlign = "center"; g.textBaseline = "bottom"; g.fillText(o.xlabel, (this.L + this.R) / 2, this.h - 4); }
+      if (o.ylabel) { g.save(); g.translate(13, (this.T + this.B) / 2); g.rotate(-Math.PI / 2); g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(o.ylabel, 0, 0); g.restore(); }
+      g.restore(); return this;
+    }
+    clip(fn) { const g = this.g; g.save(); g.beginPath(); g.rect(this.L, this.T, this.R - this.L, this.B - this.T); g.clip(); fn(g); g.restore(); return this; }
+    line(xs, ys, s = {}) {
+      return this.clip(g => {
+        g.strokeStyle = s.color || tok.ink; g.lineWidth = s.width || 2; g.setLineDash(s.dash || []); g.lineJoin = "round";
+        g.beginPath(); let pen = false;
+        for (let i = 0; i < xs.length; i++) {
+          const y = ys[i]; if (!isFinite(y) || (this.o.ylog && y <= 0)) { pen = false; continue; }
+          const X = this.tx(xs[i]), Y = Math.max(-1e4, Math.min(1e4, this.ty(y)));
+          pen ? g.lineTo(X, Y) : g.moveTo(X, Y); pen = true;
+        }
+        g.stroke();
+      });
+    }
+    fn(f, s = {}, n = 240) {
+      const [a, b] = this.o.x, xs = [], ys = [];
+      for (let i = 0; i <= n; i++) { const x = this.o.xlog ? a * Math.pow(b / a, i / n) : a + (b - a) * i / n; xs.push(x); ys.push(f(x)); }
+      return this.line(xs, ys, s);
+    }
+    point(x, y, s = {}) { return this.clip(g => { g.fillStyle = s.color || tok.rust; g.strokeStyle = tok.panel; g.lineWidth = 2; g.beginPath(); g.arc(this.tx(x), this.ty(y), s.r || 5, 0, 7); g.fill(); g.stroke(); }); }
+    vline(x, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const X = this.tx(x); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "left"; g.textBaseline = "top"; g.fillText(s.label, X + (s.align === "right" ? -4 : 4), this.T + 4 + (s.dy || 0)); } }); }
+    hline(y, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const Y = this.ty(y); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "right"; g.textBaseline = "bottom"; g.fillText(s.label, s.align === "left" ? this.L + 4 : this.R - 4, Y - 3); } }); }
+    band(x0, x1, color, alpha = .12) { return this.clip(g => { g.globalAlpha = alpha; g.fillStyle = color; g.fillRect(this.tx(x0), this.T, this.tx(x1) - this.tx(x0), this.B - this.T); }); }
+    text(x, y, t, s = {}) { const g = this.g; g.save(); g.font = (s.bold ? "600 " : "") + (s.size || 12) + "px system-ui,sans-serif"; g.fillStyle = s.color || tok.ink; g.textAlign = s.align || "left"; g.textBaseline = s.base || "middle"; g.fillText(t, this.tx(x) + (s.dx || 0), this.ty(y) + (s.dy || 0)); g.restore(); return this; }
+  }
+
+  /* ---------- drawing utilities for device pictures ---------- */
+  function rect(g, x, y, w, h, fill, stroke) { g.fillStyle = fill; g.fillRect(x, y, w, h); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1; g.strokeRect(x + .5, y + .5, w - 1, h - 1); } }
+  function label(g, t, x, y, o = {}) { g.save(); g.font = (o.bold ? "600 " : "") + (o.size || 13) + "px system-ui,sans-serif"; g.fillStyle = o.color || tok.ink; g.textAlign = o.align || "center"; g.textBaseline = o.base || "middle"; g.fillText(t, x, y); g.restore(); }
+  function arrow(g, x0, y0, x1, y1, color, w = 2, head = 8) {
+    g.save(); g.strokeStyle = color; g.fillStyle = color; g.lineWidth = w; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+    const a = Math.atan2(y1 - y0, x1 - x0); g.beginPath(); g.moveTo(x1, y1);
+    g.lineTo(x1 - head * Math.cos(a - .4), y1 - head * Math.sin(a - .4)); g.lineTo(x1 - head * Math.cos(a + .4), y1 - head * Math.sin(a + .4)); g.closePath(); g.fill(); g.restore();
+  }
+  function dot(g, x, y, r, fill, sign) { g.fillStyle = fill; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); if (sign && r >= 4) { g.strokeStyle = "#fff"; g.lineWidth = 1.3; g.beginPath(); g.moveTo(x - r * .55, y); g.lineTo(x + r * .55, y); if (sign === "+") { g.moveTo(x, y - r * .55); g.lineTo(x, y + r * .55); } g.stroke(); } }
+
+  /* ---------- animation loop that pauses off-screen / when paused ---------- */
+  function loop(step) {
+    let last = 0, running = true, visible = true;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const st = { get running() { return running; }, set running(v) { running = v; } };
+    if (reduce) running = false;
+    function f(t) { const dt = Math.min(0.05, (t - last) / 1000 || 0); last = t; if (running && visible && !document.hidden) step(dt); requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+    return st;
+  }
+
+  /* ---------- page chrome: text size, theme, full screen ---------- */
+  function chrome() {
+    const big = document.getElementById("tbig"), th = document.getElementById("ttheme"), fs = document.getElementById("tfs");
+    try { if (localStorage.getItem("nx-big") === "1") document.body.classList.add("big"); const t = localStorage.getItem("nx-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+    big && (big.onclick = () => { const on = document.body.classList.toggle("big"); try { localStorage.setItem("nx-big", on ? "1" : "0"); } catch (e) {} redrawAll(); });
+    th && (th.onclick = () => { const dark = getComputedStyle(root).getPropertyValue("color-scheme").trim() === "dark"; root.dataset.theme = dark ? "light" : "dark"; try { localStorage.setItem("nx-theme", root.dataset.theme); } catch (e) {} redrawAll(); });
+    const lab = document.querySelector(".lab");
+    fs && lab && lab.requestFullscreen ? (fs.onclick = () => document.fullscreenElement ? document.exitFullscreen() : lab.requestFullscreen()) : fs && (fs.hidden = true);
+    document.addEventListener("fullscreenchange", () => setTimeout(redrawAll, 60));
+    readTokens();
+  }
+  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", chrome) : chrome();
+
+  /* ---------- physical constants (SI unless stated) ---------- */
+  const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
+  C.Vt = C.k * C.T / C.q;
+
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+})();
+</script></head>
+<body>
+<div class="top"><div class="wrap">
+<a class="crumb" href="index.html">KKKC6353 Nanoelectronic Devices · Lecture 1 animations</a>
+<div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
+<button id="ttheme" type="button" title="Switch light/dark">Theme</button><button id="tfs" type="button" title="Show the animation full screen">Full screen</button></div></div></div>
+<div class="wrap"><header class="hero">
+<p class="kicker">Animation 8 of 11 · Document 3, Sections 3.3 and 3.4</p>
+<h1>Hot carriers and impact ionisation</h1><p class="lede">Electrons pick up energy in the high-field region at the drain. A few gain enough to knock loose electron–hole pairs or jump into the gate oxide. See why this ruled the 5 V era and fades at 0.7 V.</p></header>
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Electrons crossing the channel, coloured by energy</h3><canvas id="xs"></canvas>
+      <div class="legend"><span><i class="dot" style="background:var(--electron)"></i>&lt; 1 eV</span><span><i class="dot" style="background:var(--gold)"></i>1–1.5 eV</span><span><i class="dot" style="background:var(--rust)"></i>&gt; 1.5 eV (can ionise)</span><span><i class="dot" style="background:var(--hole)"></i>hole → substrate</span><span><i class="dot" style="background:var(--violet)"></i>charge trapped in oxide</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Lateral field along the channel</h3><canvas id="ef"></canvas></div>
+      <div class="fig"><h3>Substrate current against gate voltage</h3><canvas id="isub"></canvas>
+        <div class="legend"><span><i style="background:var(--rust)"></i>I<sub>sub</sub></span><span><i style="background:var(--muted)"></i>I<sub>D</sub></span></div></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>In saturation most of the drain voltage drops across the short pinch-off region at the drain, so the lateral field there peaks at several 10⁵ V/cm. An electron gains energy <i>q</i>ΔV for every volt it falls through without colliding. Most collide every ~10 nm and stay cool; a few <b>lucky electrons</b> run further and get hot.</p>
+<ul><li>Above about <b>1.5 eV</b> (the 1.1 eV gap plus momentum conservation) an electron can create an electron–hole pair by <b>impact ionisation</b>. The hole flows to the body as <b>substrate current</b>.</li>
+<li>Above about <b>3.1 eV</b> (the Si/SiO₂ barrier for electrons) it can be <b>injected into the oxide</b> and trapped, shifting V<sub>T</sub> over the device lifetime.</li></ul>
+<p>The substrate current peaks at roughly <var>V</var><sub>GS</sub> ≈ <var>V</var><sub>DS</sub>/2: at low gate voltage there are few electrons; at high gate voltage V<sub>DS,sat</sub> rises and the peak field falls. Because both effects come from the same hot electrons, I<sub>sub</sub> is the standard monitor for hot-carrier damage.</p>
+<p><b>The modern twist:</b> no electron can gain more energy than <i>q</i>V<sub>DS</sub> from the supply. At 0.7 V there are no 1.5 eV or 3.1 eV electrons. Hot-carrier damage today comes from many moderately energetic carriers breaking interface bonds cumulatively — not shown in this model.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Start with the <b>1990 · 5 V</b> preset. Watch electrons turn gold and red near the drain, and holes drop into the substrate. Count the oxide injections (rare — that is the point: lifetime is years, not seconds).</li>
+<li>Sweep <var>V</var><sub>GS</sub> and find the peak of I<sub>sub</sub>. Compare with <var>V</var><sub>DS</sub>/2.</li>
+<li>Turn on the <b>lightly doped drain (LDD)</b>. The field peak spreads and flattens; read the change in I<sub>sub</sub> and lifetime. This is why LDD was invented.</li>
+<li>Switch to <b>Today · 0.7 V</b>. The peak field is still high (the channel is tiny), yet nothing gets hot. Ask the class why: energy, not field, is the limit.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>The peak field in the 0.7 V device is similar to the 5 V device. Why no impact ionisation?</summary>The field is high but the region is only ~10 nm long and the total potential drop is at most 0.7 V. An electron's energy is bounded by the voltage it has fallen through, so it can never reach 1.5 eV.</details>
+<details><summary>Why does substrate current matter beyond reliability?</summary>Holes flowing through the body's resistance raise the local body potential. Near 0.6 V the source–body junction forward-biases and the parasitic npn bipolar turns on; with avalanche feedback this causes snapback breakdown. In SOI and FinFETs the body floats, so even small hole currents shift the body potential (floating-body effect).</details>
+<details><summary>How did the LDD help, and what did it cost?</summary>A lightly doped region at the drain edge spreads the voltage drop over a longer distance, lowering the peak field. The cost is extra series resistance, which lowers drive current.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Velocity-saturated channel (Animation 7) with a pinch-off region of characteristic length <span class="eq">l ≈ 0.22 · t<sub>ox</sub><sup>1/3</sup> · x<sub>j</sub><sup>1/2</sup> (cm)</span> in which V(x) = V<sub>DS,sat</sub> + lE<sub>c</sub>·sinh((x − x<sub>p</sub>)/l), so the peak field is E<sub>m</sub> = √(E<sub>c</sub>² + ((V<sub>DS</sub> − V<sub>DS,sat</sub>)/l)²). Substrate current uses the classic form</p>
+<span class="eq">I<sub>sub</sub>/I<sub>D</sub> = (A<sub>i</sub>/B<sub>i</sub>)(V<sub>DS</sub> − V<sub>DS,sat</sub>) exp(−B<sub>i</sub>/E<sub>m</sub>) · S(V<sub>DS</sub>)</span>
+<p>with B<sub>i</sub> = 1.7 MV/cm, A<sub>i</sub>/B<sub>i</sub> = 0.3 V⁻¹ and an energy cut-off S = 1/(1 + exp((1.5 − V<sub>DS</sub>)/0.08)). Relative lifetime follows Hu's empirical law τ ∝ (W/I<sub>D</sub>)(I<sub>sub</sub>/I<sub>D</sub>)<sup>−2.9</sup>, referenced to the 1990 preset at 5 V. The particles are a lucky-electron Monte Carlo: energy gained equals potential fallen through since the last collision (mean free path 9.2 nm).</p>
+<p class="caveat">Representative constants; LDD is modelled only as l × 2.5. Bias-temperature instability, now usually the leading wear-out mechanism, is not included.</p></section>
+</main>
+<script>
+/* Shared n-MOSFET cross-section drawing. All geometry in canvas pixels, derived from w and h. */
+const DEV = (() => {
+  // o: {VG, VD, qn(f) -> channel thickness 0..1 along f = 0..1 (source->drain), pinch (0..1 position where channel ends),
+  //     dep(f) -> depletion depth 0..1 under the gate, dDrain (0..1 extra drain depletion), labels}
+  function geom(w, h) {
+    const y0 = Math.round(h * 0.36), x0 = w * 0.05, x1 = w * 0.95;
+    const sE = w * 0.27, dS = w * 0.73;             // source edge, drain edge (channel = sE..dS)
+    const jd = h * 0.2;                              // junction depth
+    return { w, h, y0, x0, x1, sE, dS, jd, tox: Math.max(6, h * 0.025), tg: h * 0.1, L: dS - sE, fx: f => sE + f * (dS - sE) };
+  }
+  function draw(g, w, h, o) {
+    const t = NX.tok, G = geom(w, h), { y0, sE, dS, jd, tox, tg } = G;
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    // body
+    NX.rect(g, G.x0, y0, G.x1 - G.x0, h * 0.9 - y0, t.pbody);
+    // depletion under the gate and around the junctions
+    const dmax = h * 0.3;
+    g.fillStyle = t.depl; g.beginPath(); g.moveTo(sE - jd * 0.5, y0);
+    for (let i = 0; i <= 60; i++) { const f = i / 60; g.lineTo(G.fx(f), y0 + dmax * (o.dep ? o.dep(f) : 0.5)); }
+    g.lineTo(dS + jd * 0.5, y0); g.closePath(); g.fill();
+    const dd = (o.dDrain ?? 0.3) * h * 0.22, ds = (o.dSource ?? 0.25) * h * 0.22;
+    g.beginPath(); g.ellipse(dS + (G.x1 - dS) / 2, y0, (G.x1 - dS) / 2 + dd * .9 + 2, jd + dd, 0, 0, Math.PI); g.fill();
+    g.beginPath(); g.ellipse(G.x0 + (sE - G.x0) / 2, y0, (sE - G.x0) / 2 + ds * .9 + 2, jd + ds, 0, 0, Math.PI); g.fill();
+    // n+ source and drain (rounded wells)
+    g.fillStyle = t.nplus;
+    g.beginPath(); g.ellipse(G.x0 + (sE - G.x0) / 2, y0, (sE - G.x0) / 2 + 2, jd, 0, 0, Math.PI); g.fill();
+    g.beginPath(); g.ellipse(dS + (G.x1 - dS) / 2, y0, (G.x1 - dS) / 2 + 2, jd, 0, 0, Math.PI); g.fill();
+    g.fillRect(G.x0, y0 - 1, G.x1 - G.x0, 1);
+    // oxide and gate
+    NX.rect(g, sE - 6, y0 - tox, dS - sE + 12, tox, t.oxide);
+    NX.rect(g, sE - 6, y0 - tox - tg, dS - sE + 12, tg, t.metal);
+    // inversion channel
+    if (o.qn) {
+      const pin = o.pinch ?? 1, th = Math.max(5, h * 0.03);
+      g.fillStyle = t.electron; g.globalAlpha = .55; g.beginPath(); g.moveTo(sE - 2, y0);
+      for (let i = 0; i <= 80; i++) { const f = pin * i / 80; g.lineTo(G.fx(f), y0 + th * o.qn(f)); }
+      g.lineTo(G.fx(pin), y0); g.closePath(); g.fill(); g.globalAlpha = 1;
+    }
+    // contacts and labels
+    const lab = (txt, x, y, col) => NX.label(g, txt, x, y, { bold: true, size: Math.max(12, h * 0.045), color: col || t.ink });
+    NX.rect(g, G.x0 + 10, y0 - 10, sE - G.x0 - 28, 10, t.metal); NX.rect(g, dS + 18, y0 - 10, G.x1 - dS - 28, 10, t.metal);
+    lab("n⁺ source", G.x0 + (sE - G.x0) / 2, y0 + jd * 0.5); lab("n⁺ drain", dS + (G.x1 - dS) / 2, y0 + jd * 0.5);
+    lab("p-type body", (sE + dS) / 2, h * 0.84, t.muted);
+    NX.label(g, "gate", (sE + dS) / 2, y0 - tox - tg / 2, { color: "#fff", bold: true, size: Math.max(12, h * 0.042) });
+    if (o.vlabels !== false) {
+      const s = Math.max(12, h * 0.042);
+      NX.label(g, `S  0 V`, G.x0 + (sE - G.x0) / 2 - 8, y0 - 22, { size: s, color: t.muted });
+      NX.label(g, `D  ${o.VD.toFixed(2)} V`, dS + (G.x1 - dS) / 2 + 8, y0 - 22, { size: s, color: t.rust, bold: true });
+      NX.label(g, `G  ${o.VG.toFixed(2)} V`, (sE + dS) / 2, y0 - tox - tg - 14, { size: s, color: t.rust, bold: true });
+    }
+    return G;
+  }
+  return { geom, draw };
+})();
+
+(() => {
+  const mu = 300, vs = 1e7, Ec = vs / mu * 1e-7;   // Ec in V/nm
+  const P = { old: { L: 500, tox: 10, xj: 150, VT: 0.7, VD: 5, VG: 2.5 }, now: { L: 30, tox: 1, xj: 10, VT: 0.3, VD: 0.7, VG: 0.7 } };
+  const st = Object.assign({ era: "old", ldd: false }, P.old);
+  const ctl = document.getElementById("ctl"); let sVD, sVG;
+  NX.seg(ctl, { label: "Technology", value: "old", options: [["old", "1990 · 5 V · 0.5 µm"], ["now", "Today · 0.7 V · 30 nm"]], on: v => { Object.assign(st, P[v], { era: v }); sVD.value = st.VD; sVG.value = st.VG; trapped.length = 0; cnt.ii = cnt.inj = 0; update(); } });
+  sVD = NX.slider(ctl, { id: "VD", label: "Drain voltage V<sub>DS</sub>", min: 0.3, max: 6, step: 0.05, value: st.VD, unit: "V", on: v => { st.VD = v; update(); } });
+  sVG = NX.slider(ctl, { id: "VG", label: "Gate voltage V<sub>GS</sub>", min: 0.3, max: 5, step: 0.05, value: st.VG, unit: "V", on: v => { st.VG = v; update(); } });
+  NX.seg(ctl, { label: "Lightly doped drain (LDD)", value: false, options: [[false, "Off"], [true, "On"]], on: v => { st.ldd = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const ef = new NX.Plot(document.getElementById("ef"), { aspect: 1.1, y: [0, 1e6], xlabel: "Position along channel (nm)", ylabel: "Lateral field (V/cm)", tickfmt: v => v === 0 ? "0" : NX.fmt(v, 0) });
+  const ip = new NX.Plot(document.getElementById("isub"), { aspect: 1.1, x: [0.3, 5], y: [1e-12, 1e-2], ylog: true, xlabel: "Gate voltage VGS (V)", ylabel: "Current (A/µm)" });
+  const cox = tox => 3.45e-13 / (tox * 1e-7);   // F/cm^2
+  function model(VG, VD) {
+    const o = Math.max(1e-4, VG - st.VT), Lcm = st.L * 1e-7, EcL = Ec * st.L;
+    const VDs = 2 * o / (1 + Math.sqrt(1 + 2 * o / EcL));
+    const l = 0.22 * Math.cbrt(st.tox * 1e-7) * Math.sqrt(st.xj * 1e-7) * 1e7 * (st.ldd ? 2.5 : 1); // nm
+    const sat = VD > VDs, dV = Math.max(0, VD - VDs);
+    const dL = sat ? Math.min(0.6 * st.L, l * Math.asinh(dV / (l * Ec))) : 0, xp = st.L - dL;
+    const Em = sat ? Math.sqrt(Ec * Ec + (dV / l) ** 2) : Ec * 0.5;           // V/nm
+    const Id = sat ? 1e-4 * cox(st.tox) * vs * (o - VDs) : mu * cox(st.tox) * 1e-4 / Lcm * (o * VD - VD * VD / 2) / (1 + VD / EcL);
+    const S = 1 / (1 + Math.exp((1.5 - VD) / 0.08));
+    const ratio = sat ? 0.3 * dV * Math.exp(-1.7e6 / (Em * 1e7)) * S : 0;
+    const Vd = Math.min(VD, VDs), F = o * Vd - Vd * Vd / 2;
+    const V = x => x <= xp ? o - Math.sqrt(Math.max(0, o * o - 2 * (x / xp) * F)) : VDs + l * Ec * Math.sinh((x - xp) / l);
+    const E = x => x <= xp ? Math.min(Ec, F / (xp * Math.sqrt(Math.max(1e-6, o * o - 2 * (x / xp) * F)))) : Ec * Math.cosh((x - xp) / l);
+    return { o, VDs, l, sat, dL, xp, Em, Id, ratio, Isub: Id * ratio, V, E };
+  }
+  const ref = (() => { const s = Object.assign({}, st); Object.assign(st, P.old, { ldd: false }); const m = model(2.5, 5); Object.assign(st, s); return m; })();
+  let M;
+  function update() {
+    M = model(st.VG, st.VD);
+    const life = M.ratio > 0 ? (ref.Id / M.Id) * Math.pow(ref.ratio / M.ratio, 2.9) : Infinity;
+    M.life = life;
+    status.className = "status " + (st.VD < 1.3 ? "good" : M.ratio > 1e-3 ? "bad" : "");
+    status.textContent = st.VD < 1.3 ? "Energy-limited: no electron can reach 1.5 eV at this drain voltage." : M.ratio > 1e-3 ? "Strong hot-carrier stress: impact ionisation near the drain." : "Moderate hot-carrier activity.";
+    ro.innerHTML = `<dt>V<sub>DS,sat</sub></dt><dd>${M.VDs.toFixed(2)} V</dd><dt>Pinch-off length l</dt><dd>${M.l.toFixed(0)} nm</dd>
+      <dt>Peak field E<sub>m</sub></dt><dd>${NX.fmt(M.Em * 1e7, 1)} V/cm</dd><dt>Max electron energy</dt><dd>${st.VD.toFixed(2)} eV</dd>
+      <dt>I<sub>D</sub></dt><dd>${NX.si(M.Id, "A/µm", 3)}</dd><dt>I<sub>sub</sub>/I<sub>D</sub></dt><dd class="${M.ratio > 1e-3 ? "warn" : ""}">${M.ratio > 0 ? NX.fmt(M.ratio, 3) : "0"}</dd>
+      <dt>Relative lifetime</dt><dd>${!isFinite(life) || life > 1e9 ? "unlimited" : NX.fmt(life, 1) + "×"}</dd>
+      <dt>Impact ionisations / injections</dt><dd>${cnt.ii} / ${cnt.inj}</dd>`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok;
+    ef.setX(0, st.L); ef.setY(0, Math.max(2e5, M.Em * 1e7 * 1.15)); ef.begin().axes();
+    if (M.sat) ef.band(M.xp, st.L, t.rust, 0.1);
+    ef.fn(x => M.E(x) * 1e7, { color: t.rust, width: 2.6 }, 300);
+    ef.hline(Ec * 1e7, { color: t.muted, label: "Ec", align: "left" });
+    if (M.sat) ef.text(M.xp, M.Em * 1e7 * 1.08, "pinch-off region", { color: t.rust, size: 11.5 });
+    ip.begin().axes();
+    ip.fn(v => model(v, st.VD).Id, { color: t.muted, width: 2, dash: [6, 4] });
+    ip.fn(v => model(v, st.VD).Isub, { color: t.rust, width: 2.6 }, 300);
+    ip.vline(st.VD / 2, { color: t.muted, label: "VDS/2", dy: 0 });
+    if (M.Isub > 0) ip.point(st.VG, M.Isub, { color: t.navy });
+  }
+  // lucky-electron Monte Carlo
+  const parts = [], holes = [], trapped = [], cnt = { ii: 0, inj: 0 }; let acc = 0, lastRO = 0;
+  const lam = 9.2;
+  function frame(dt) {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("xs"), 2.5);
+    const pin = M.xp / st.L, o = M.o, VDs = Math.min(st.VD, M.VDs), F = o * VDs - VDs * VDs / 2;
+    const qn = f => f <= pin ? Math.sqrt(Math.max(0, o * o - 2 * (f / pin) * F)) / Math.max(o, 0.5) : 0;
+    const G = DEV.draw(g, w, h, { VG: st.VG, VD: st.VD, qn, pinch: pin, dep: f => 0.45 + 0.2 * f, dDrain: 0.3 * Math.sqrt((0.9 + st.VD) / 0.9) });
+    if (st.ldd) { g.fillStyle = t.nplus; g.globalAlpha = 0.55; g.fillRect(G.dS - G.L * 0.08, G.y0, G.L * 0.08, h * 0.05); g.globalAlpha = 1; NX.label(g, "LDD", G.dS - G.L * 0.04, G.y0 + h * 0.09, { size: 11, color: t.muted }); }
+    const transit = 3.0, nmps = st.L / transit, steps = 4;
+    acc += dt * 18; while (acc > 1) { acc -= 1; parts.push({ x: 0, Vc: 0, en: 0, r: Math.random() }); }
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      for (let s = 0; s < steps; s++) {
+        const dx = nmps * dt / steps * (p.x > M.xp ? 2.5 : 1); p.x += dx;
+        if (p.x >= st.L) break;
+        const Vx = M.V(p.x); p.en = Math.max(0, Vx - p.Vc);
+        if (Math.random() < 1 - Math.exp(-dx / lam)) { p.Vc = Vx - p.en * 0.15; p.en *= 0.15; }
+        if (p.en >= 1.5 && Math.random() < 0.35) { holes.push({ x: p.x, y: 0 }); cnt.ii++; p.Vc += 1.5; p.en -= 1.5; }
+        if (p.en >= 3.1 && p.x > M.xp - 5 && Math.random() < 0.3) { trapped.push(p.x / st.L); cnt.inj++; p.x = st.L; break; }
+      }
+      if (p.x >= st.L) { parts.splice(i, 1); continue; }
+      const f = p.x / st.L, col = p.en >= 1.5 ? t.rust : p.en >= 1 ? t.gold : t.electron;
+      NX.dot(g, G.fx(f), G.y0 + 2 + p.r * Math.max(2, h * 0.03 * Math.max(qn(f), 0.15) - 3), Math.max(2.4, h * 0.01) + (p.en >= 1 ? 1 : 0), col);
+    }
+    for (let i = holes.length - 1; i >= 0; i--) { const hh = holes[i]; hh.y += dt * h * 0.25; if (hh.y > h * 0.5) { holes.splice(i, 1); continue; } NX.dot(g, G.fx(hh.x / st.L) + Math.sin(hh.y * .08) * 4, G.y0 + 8 + hh.y, Math.max(2.6, h * 0.011), t.hole, "+"); }
+    if (trapped.length > 40) trapped.splice(0, trapped.length - 40);
+    trapped.forEach((f, k) => NX.dot(g, G.fx(f) - (k % 5) * 3, G.y0 - G.tox / 2, 3, t.violet));
+    if (holes.length || cnt.ii) NX.label(g, "substrate current ↓", G.dS - G.L * 0.12, h * 0.8, { color: t.hole, size: Math.max(12, h * 0.04), bold: true });
+    lastRO += dt; if (lastRO > 0.5) { lastRO = 0; const dd = ro.querySelectorAll("dd"); dd[dd.length - 1].textContent = cnt.ii + " / " + cnt.inj; }
+  }
+  NX.onRedraw(() => { update(); frame(0); }); update(); frame(0); NX.loop(frame);
+})();
+</script>
+<footer class="nav wrap"><a href="velocity-saturation.html" rel="prev"><small>← Previous</small>Carrier velocity saturation</a><a href="oxide-breakdown.html" rel="next" style="text-align:right"><small>Next →</small>Oxide breakdown (TDDB)</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices. Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
+</body></html>

@@ -1,0 +1,117 @@
+<!--META
+{"num":3,"slug":"dibl","title":"Drain-induced barrier lowering (DIBL)","ref":"Document 3, Section 2.2","blurb":"The drain reaches across a short channel and pulls down the barrier the gate is meant to control. Watch the barrier, the electrons that get over it, and the threshold shift that results."}
+-->
+<div class="lab">
+  <div class="card stage"><div class="figs">
+    <div class="fig"><h3>Electron energy along the channel (conduction-band edge)</h3><canvas id="band"></canvas>
+      <div class="legend"><span><i style="background:var(--muted)"></i>V<sub>DS</sub> = 0.05 V</span><span><i style="background:var(--rust)"></i>V<sub>DS</sub> as set</span><span><i class="dot" style="background:var(--electron)"></i>electron crossing the barrier</span></div></div>
+    <div class="fig"><h3>Transfer characteristic (log scale)</h3><canvas id="iv"></canvas>
+      <div class="legend"><span><i style="background:var(--muted)"></i>V<sub>DS</sub> = 0.05 V</span><span><i style="background:var(--rust)"></i>V<sub>DS</sub> as set</span><span><i class="dot" style="background:var(--navy)"></i>operating point</span></div></div>
+  </div></div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>The left plot is the energy an electron needs to travel from source (left) to drain (right). The hump in the middle is the <b>source–channel barrier</b>. The gate sets its height; current is electrons hopping over it, so the current depends on the barrier height <var>E</var><sub>b</sub> exponentially:</p>
+<span class="eq">I<sub>D</sub> ∝ exp(−E<sub>b</sub> / kT) &nbsp;⇒&nbsp; 60 meV lower barrier ≈ 10× more current at 300 K</span>
+<p>In a long channel the top of the barrier is flat and only the gate can move it. In a short channel the drain's field reaches the barrier top: raise <var>V</var><sub>DS</sub> and the barrier falls. The gate then needs less voltage to turn the device on, so <var>V</var><sub>T</sub> drops with drain voltage — the parallel shift between the two curves on the right.</p>
+<p>The figure of merit is <b>DIBL = −ΔV<sub>T</sub>/ΔV<sub>DS</sub></b> in mV/V. Well-scaled devices sit at 20–60 mV/V; above about 100 mV/V the gate has lost control.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Planar bulk, <var>L</var> = 100 nm, <var>V</var><sub>GS</sub> = 0. Sweep <var>V</var><sub>DS</sub> from 0.05 to 1 V. The barrier top does not move and DIBL is close to zero. Ask: <i>why doesn't the drain matter here?</i></li>
+<li>Reduce <var>L</var> to about 40 nm (≈ 5λ) and sweep again. The barrier now falls by tens of meV; DIBL is around 70 mV/V.</li>
+<li>Go to 25 nm. The barrier top is pulled low <i>and</i> pushed toward the source, and electrons pour over it. Read the off-current.</li>
+<li>Keep <var>L</var> = 25 nm and switch to FinFET, then GAA. The natural length λ shrinks and DIBL recovers — the reason the industry changed the geometry (Document 3, Section 6).</li>
+<li>Ask the class to predict how much the current rises when the barrier drops by 120 meV, then check it against the electrons crossing (≈ 100×).</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does DIBL shift the transfer curve sideways rather than change its slope?</summary>In subthreshold the drain lowers the barrier by roughly the same amount at every gate voltage. The gate therefore needs a fixed amount less voltage to reach the same barrier height: a parallel shift. A change of slope is a different symptom — swing degradation, Animation 5.</details>
+<details><summary>Why does the barrier top move toward the source at high drain bias?</summary>The drain's influence decays over a distance of order λ from the drain end. Raising <var>V</var><sub>DS</sub> pulls the right-hand side of the hump down, so the highest remaining point slides toward the source. Injection over that point is what sets the current.</details>
+<details><summary>A device has DIBL = 150 mV/V and SS = 90 mV/dec. How much larger is I<sub>OFF</sub> at V<sub>DS</sub> = 0.7 V than at 0.05 V?</summary>ΔV<sub>T</sub> = 0.65 V × 150 mV/V ≈ 98 mV. That is 98/90 ≈ 1.1 decades, so about 12× more off-current.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>The surface potential along the channel is the standard quasi-two-dimensional (scale-length) solution of Poisson's equation:</p>
+<span class="eq">ψ(x) = ψ<sub>L</sub> + (V<sub>bi</sub> − ψ<sub>L</sub>) sinh((L−x)/λ)/sinh(L/λ) + (V<sub>bi</sub> + V<sub>DS</sub> − ψ<sub>L</sub>) sinh(x/λ)/sinh(L/λ)</span>
+<p>with <span class="eq">λ = √( (ε<sub>Si</sub>/ε<sub>ox</sub>) t<sub>Si</sub> t<sub>ox</sub> / N )</span> and <var>N</var> = 1, 2, 4 for bulk, FinFET and GAA, as in Document 3, Section 1.1. ψ<sub>L</sub> is the long-channel potential the gate would set. <var>V</var><sub>T</sub> is the gate voltage at which the barrier top reaches its long-channel threshold value. Current uses an interpolation that is exponential below <var>V</var><sub>T</sub> and limited by velocity saturation well above it.</p>
+<p class="caveat">Parameters: EOT 1 nm; body 20 nm (bulk depletion depth), 6 nm (fin), 5 nm (sheet); V<sub>bi</sub> = 1.1 V; long-channel V<sub>T</sub> = 0.30 V. No halo doping, quantum confinement or series resistance. Trends and orders of magnitude are right; absolute values are illustrative.</p></section>
+</main>
+<script>
+/*INCLUDE sce.js*/
+(() => {
+  const st = { arch: "bulk", L: 40, VD: 0.7, VG: 0 };
+  const ctl = document.getElementById("ctl");
+  NX.seg(ctl, { label: "Architecture", value: "bulk", options: [["bulk", "Planar bulk"], ["fin", "FinFET"], ["gaa", "GAA"]], on: v => { st.arch = v; update(); } });
+  NX.slider(ctl, { id: "L", label: "Gate length L", min: 8, max: 100, step: 1, value: st.L, fmt: v => v + " nm", on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "VD", label: "Drain voltage V<sub>DS</sub>", min: 0.05, max: 1, step: 0.01, value: st.VD, unit: "V", on: v => { st.VD = v; update(); } });
+  NX.slider(ctl, { id: "VG", label: "Gate voltage V<sub>GS</sub>", min: -0.2, max: 0.5, step: 0.01, value: st.VG, unit: "V", hint: "Sets the barrier shown on the left.", on: v => { st.VG = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+
+  const band = new NX.Plot(document.getElementById("band"), { aspect: 0.86, y: [-1.1, 0.8], xlabel: "Position from source edge (nm)", ylabel: "Electron energy (eV)" });
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 0.86, x: [-0.2, 0.9], y: [1e-11, 1e-2], ylog: true, xlabel: "Gate voltage VGS (V)", ylabel: "ID (A/µm)" });
+  let C = {};
+  const dev = VD => { const A = SCE.ARCH[st.arch]; return { L: st.L, VD, tSi: A.tSi, eot: 1, N: A.N }; };
+
+  function update() {
+    const dLo = dev(0.05), dHi = dev(st.VD);
+    const lo = SCE.device(dLo), hi = SCE.device(dHi);
+    const bLo = SCE.barrier(dLo, st.VG), bHi = SCE.barrier(dHi, st.VG);
+    const pad = Math.max(8, st.L * 0.25), xs = [];
+    for (let i = 0; i <= 260; i++) xs.push(-pad + (st.L + 2 * pad) * i / 260);
+    const E = (b, VD) => xs.map(x => x <= 0 ? 0 : x >= st.L ? -VD : SCE.P.Vbi - SCE.psi(x, b.psiL, st.L, VD, b.lam));
+    C = { lo, hi, bLo, bHi, pad, xs, eLo: E(bLo, 0.05), eHi: E(bHi, st.VD), longEb: SCE.P.Vbi - bHi.psiL };
+    band.setX(-pad, st.L + pad);
+    const dibl = (lo.VT - hi.VT) / (st.VD - 0.05) * 1000;
+    const L5 = st.L / lo.lam;
+    status.className = "status " + (st.VD - 0.05 < 0.1 ? "" : dibl < 60 ? "good" : dibl < 100 ? "" : "bad");
+    status.textContent = st.VD - 0.05 < 0.1 ? "Raise V_DS to see the barrier drop." :
+      dibl < 60 ? "Good electrostatic control: the drain barely touches the barrier." :
+      dibl < 100 ? "Marginal: the drain is starting to control the barrier." : "Poor control: the drain, not the gate, is setting the barrier.";
+    ro.innerHTML = `<dt>Natural length λ</dt><dd>${lo.lam.toFixed(1)} nm</dd><dt>L / λ</dt><dd class="${L5 < 5 ? "warn" : ""}">${L5.toFixed(1)}</dd>
+      <dt>Barrier at 0.05 V</dt><dd>${(bLo.Eb * 1000).toFixed(0)} meV</dd><dt>Barrier at V<sub>DS</sub></dt><dd>${(bHi.Eb * 1000).toFixed(0)} meV</dd>
+      <dt>V<sub>T</sub> (0.05 V / set)</dt><dd>${lo.VT.toFixed(3)} / ${hi.VT.toFixed(3)} V</dd>
+      <dt>DIBL</dt><dd class="${dibl > 100 ? "warn" : ""}">${st.VD - 0.05 < 0.1 ? "—" : dibl.toFixed(0) + " mV/V"}</dd>
+      <dt>Barrier crossings vs 0.05 V</dt><dd>${NX.fmt(Math.exp(-(bHi.Eb - bLo.Eb) / NX.C.Vt), 1)}×</dd>
+      <dt>I<sub>OFF</sub> (V<sub>GS</sub> = 0)</dt><dd>${NX.si(hi.Id(0), "A/µm", 2)}</dd>`;
+    drawIV();
+  }
+  function drawIV() {
+    const t = NX.tok; iv.begin().axes();
+    iv.fn(C.lo.Id, { color: t.muted, width: 2, dash: [6, 4] });
+    iv.fn(C.hi.Id, { color: t.rust, width: 2.4 });
+    iv.vline(C.lo.VT, { color: t.muted, dash: [2, 3] }); iv.vline(C.hi.VT, { color: t.rust, dash: [2, 3] });
+    const y = 3e-3; iv.text((C.lo.VT + C.hi.VT) / 2, y, "ΔVT = " + ((C.lo.VT - C.hi.VT) * 1000).toFixed(0) + " mV", { align: "center", dy: -12, color: t.ink, size: 12 });
+    iv.point(st.VG, C.hi.Id(st.VG), { color: t.navy });
+  }
+  // electrons hopping over the barrier: rate proportional to exp(-Eb/kT), scaled to be visible
+  const parts = []; let acc = 0;
+  const bath = Array.from({ length: 26 }, () => ({ x: Math.random(), e: -NX.C.Vt * Math.log(1 - Math.random() * 0.995), ph: Math.random() * 6 }));
+  function drawBand(dt) {
+    const t = NX.tok; band.begin().axes();
+    const g = band.g;
+    band.band(-C.pad, 0, t.electron, 0.08); band.band(st.L, st.L + C.pad, t.electron, 0.08);
+    band.text(-C.pad / 2, -0.95, "source", { align: "center", color: t.muted }); band.text(st.L + C.pad / 2, -0.95, "drain", { align: "center", color: t.muted });
+    band.hline(C.longEb, { color: t.green, dash: [3, 4], label: "long-channel barrier", align: "left" });
+    band.line(C.xs, C.eLo, { color: t.muted, width: 2, dash: [6, 4] });
+    band.line(C.xs, C.eHi, { color: t.rust, width: 2.6 });
+    const xb = C.bHi.x, Eb = C.bHi.Eb;
+    if (C.bLo.Eb - Eb > 0.004) {
+      band.clip(g => { NX.arrow(g, band.tx(C.bLo.x), band.ty(C.bLo.Eb), band.tx(C.bLo.x), band.ty(Eb) + 1, t.ink, 1.5, 7); });
+      band.text(C.bLo.x, (C.bLo.Eb + Eb) / 2, " −" + ((C.bLo.Eb - Eb) * 1000).toFixed(0) + " meV", { color: t.ink, size: 12, dx: 6 });
+    }
+    // electrons sitting in the source at thermal energies
+    band.clip(g => bath.forEach(p => { p.ph += dt * 3; const X = band.tx(-C.pad * (0.15 + 0.75 * p.x) + Math.sin(p.ph) * 0.6), Y = band.ty(Math.min(p.e, 0.12) + 0.012); NX.dot(g, X, Y, 3.2, t.electron); }));
+    acc += dt * Math.min(25, 4.4e4 * Math.exp(-Eb / NX.C.Vt));
+    while (acc > 1) { acc -= 1; parts.push({ x: -C.pad * 0.3, E: Eb + 0.01 - NX.C.Vt * Math.log(1 - Math.random() * 0.99), life: 0 }); }
+    const sp = (st.L + 2 * C.pad) / 1.8;
+    band.clip(g => {
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i]; p.x += sp * dt; p.life += dt;
+        if (p.x > st.L + C.pad) { parts.splice(i, 1); continue; }
+        const fade = p.x > st.L ? 1 - (p.x - st.L) / C.pad : 1;
+        g.globalAlpha = Math.max(0, fade); NX.dot(g, band.tx(p.x), band.ty(p.E), 4, t.electron); g.globalAlpha = 1;
+      }
+    });
+  }
+  NX.onRedraw(() => { update(); drawBand(0); });
+  update(); drawBand(0);
+  NX.loop(dt => drawBand(dt));
+})();
+</script>

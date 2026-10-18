@@ -1,0 +1,101 @@
+<!--META
+{"num":1,"slug":"mosfet-basics","title":"MOSFET basics","ref":"Document 2, Section 3","blurb":"Build the inversion channel with the gate, then push current through it with the drain. See why the current rises, then saturates, and where the channel pinches off."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Cross-section of an n-channel MOSFET</h3><canvas id="xs"></canvas>
+      <div class="legend"><span><i style="background:var(--electron)"></i>inversion layer (thickness ∝ electron charge)</span><span><i style="background:var(--depl);height:9px"></i>depletion region</span><span><i class="dot" style="background:var(--electron)"></i>electrons</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Output characteristics I<sub>D</sub>–V<sub>DS</sub></h3><canvas id="out"></canvas></div>
+      <div class="fig"><h3>Transfer characteristic I<sub>D</sub>–V<sub>GS</sub></h3><canvas id="tr"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>The gate makes the channel.</b> Below threshold the gate only pushes holes away, leaving a depletion region of fixed negative charge. Above <var>V</var><sub>T</sub> it pulls a thin layer of electrons to the surface — the <b>inversion layer</b> — joining source to drain. Its charge per unit area is <var>C</var><sub>ox</sub>(<var>V</var><sub>GS</sub> − <var>V</var><sub>T</sub> − <var>V</var>(x)), where <var>V</var>(x) is the channel voltage at that point.</p>
+<p><b>The drain drives the current.</b> At small <var>V</var><sub>DS</sub> the channel is uniform and the device is a resistor controlled by the gate (linear region). As <var>V</var><sub>DS</sub> rises, the channel voltage near the drain rises and the gate–channel voltage there falls, so the layer thins toward the drain. When <var>V</var><sub>DS</sub> = <var>V</var><sub>GS</sub> − <var>V</var><sub>T</sub> the charge at the drain end reaches zero: the channel is <b>pinched off</b> and the current saturates.</p>
+<p>Watch the electrons: the current is the same at every point along the channel, so where the layer is thin the electrons must move faster. That is continuity, and it is why they race through the pinch-off region.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Set <var>V</var><sub>DS</sub> = 0.1 V and raise <var>V</var><sub>GS</sub> from 0. Nothing flows until the inversion layer appears at <var>V</var><sub>T</sub> = 0.5 V; then current grows linearly with <var>V</var><sub>GS</sub>.</li>
+<li>Fix <var>V</var><sub>GS</sub> = 1.5 V and raise <var>V</var><sub>DS</sub>. Watch the layer taper and the operating point move along the curve. Ask the class to predict the <var>V</var><sub>DS</sub> at which it pinches off (1.0 V).</li>
+<li>Keep raising <var>V</var><sub>DS</sub> past 1.0 V. The current stops rising, and the extra voltage appears across the depleted region at the drain.</li>
+<li>Double the overdrive (<var>V</var><sub>GS</sub> 1.0 → 1.5 V). The saturation current rises 4×: the square law. Animation 7 shows why short channels give only 2×.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does the current saturate even though V<sub>DS</sub> keeps rising?</summary>Beyond pinch-off the voltage across the inverted part of the channel stays at <var>V</var><sub>DS,sat</sub> = <var>V</var><sub>GS</sub> − <var>V</var><sub>T</sub>. The extra drain voltage is dropped across the short depleted gap at the drain, which electrons cross quickly in a strong field. The inverted channel, which sets the current, no longer sees it — in a long-channel device. Animation 6 shows what changes when the channel is short.</details>
+<details><summary>Pinch-off means zero electron charge at the drain end. How can current still flow?</summary>"Zero" is the gradual-channel approximation. The charge there is small but not zero, and the electrons move very fast in the high lateral field, so their product — the current — stays the same.</details>
+<details><summary>Below V<sub>T</sub> this model gives I<sub>D</sub> = 0. Is that true?</summary>No. A small current still flows by diffusion over the source barrier, falling about 10× for every 60–100 mV below threshold. In a chip with 10<sup>10</sup> transistors this off-current adds up to watts; Animations 3 and 5 are about it.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Long-channel gradual-channel (square-law) model, with <var>V</var><sub>T</sub> = 0.5 V and <var>k</var> = μ<sub>n</sub>C<sub>ox</sub>W/L = 1 mA/V²:</p>
+<span class="eq">I<sub>D</sub> = k[(V<sub>GS</sub>−V<sub>T</sub>)V<sub>DS</sub> − V<sub>DS</sub>²/2] for V<sub>DS</sub> &lt; V<sub>GS</sub>−V<sub>T</sub>; &nbsp; I<sub>D</sub> = (k/2)(V<sub>GS</sub>−V<sub>T</sub>)² beyond</span>
+<p>The channel voltage profile solves the same current equation at each point: <var>V</var>(x) = <var>V</var><sub>ov</sub> − √(<var>V</var><sub>ov</sub>² − 2(x/L)F), with F = I<sub>D</sub>/k. Electron density along the channel is drawn proportional to <var>V</var><sub>ov</sub> − <var>V</var>(x) and electron speed proportional to I<sub>D</sub>/Q<sub>n</sub>(x).</p>
+<p class="caveat">Left out: subthreshold current, channel-length modulation (Animation 6), velocity saturation (Animation 7) and body effect. The depletion depths are drawn qualitatively.</p></section>
+</main>
+<script>
+/*INCLUDE device.js*/
+(() => {
+  const VT = 0.5, k = 1e-3; const st = { VG: 1.5, VD: 0.5 };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "VG", label: "Gate voltage V<sub>GS</sub>", min: 0, max: 2, step: 0.01, value: st.VG, unit: "V", on: v => { st.VG = v; update(); } });
+  NX.slider(ctl, { id: "VD", label: "Drain voltage V<sub>DS</sub>", min: 0, max: 2, step: 0.01, value: st.VD, unit: "V", on: v => { st.VD = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const btn = document.createElement("div"); btn.className = "btnrow"; btn.innerHTML = '<button class="btn ghost" type="button" id="pp">Pause electrons</button>'; ctl.appendChild(btn);
+
+  const xs = document.getElementById("xs");
+  const out = new NX.Plot(document.getElementById("out"), { aspect: 1.15, x: [0, 2], y: [0, 1.25], xlabel: "Drain voltage VDS (V)", ylabel: "ID (mA)" });
+  const tr = new NX.Plot(document.getElementById("tr"), { aspect: 1.15, x: [0, 2], y: [0, 1.25], xlabel: "Gate voltage VGS (V)", ylabel: "ID (mA)" });
+  const Id = (VG, VD) => { const o = VG - VT; if (o <= 0) return 0; return VD < o ? k * (o * VD - VD * VD / 2) : k * o * o / 2; };
+  let M = {};
+  function update() {
+    const ov = Math.max(0, st.VG - VT), VDe = Math.min(st.VD, ov), F = ov * VDe - VDe * VDe / 2;
+    const Vx = f => ov - Math.sqrt(Math.max(0, ov * ov - 2 * f * F));
+    const qn = f => Math.sqrt(Math.max(0, ov * ov - 2 * f * F)) / 1.5;
+    let Qint = 0; for (let i = 0; i < 50; i++) Qint += qn((i + .5) / 50) / 50;
+    const I = Id(st.VG, st.VD);
+    M = { ov, qn, Vx, I, Qint, region: ov <= 0 ? "cut-off" : st.VD < ov ? "linear (triode)" : "saturation" };
+    status.className = "status " + (ov <= 0 ? "bad" : st.VD < ov ? "" : "good");
+    status.textContent = ov <= 0 ? "Cut-off: no inversion layer yet (V_GS < V_T)." :
+      st.VD < ov ? "Linear region: the channel joins source to drain all the way." : "Saturation: the channel is pinched off at the drain end.";
+    ro.innerHTML = `<dt>Region</dt><dd>${M.region}</dd><dt>V<sub>T</sub></dt><dd>${VT.toFixed(2)} V</dd>
+      <dt>Overdrive</dt><dd>${ov.toFixed(2)} V</dd><dt>V<sub>DS,sat</sub></dt><dd>${ov > 0 ? ov.toFixed(2) + " V" : "—"}</dd>
+      <dt>I<sub>D</sub></dt><dd>${(I * 1e3).toFixed(3)} mA</dd><dt>Charge, drain end</dt><dd>${ov > 0 ? Math.round(qn(1) * 1.5 / ov * 100) + "% of source" : "—"}</dd>`;
+    drawPlots();
+  }
+  function drawPlots() {
+    const t = NX.tok;
+    out.begin().axes();
+    for (let vg = 0.75; vg <= 2.001; vg += 0.25) out.fn(v => Id(vg, v) * 1e3, { color: t.line, width: 1.5 });
+    out.fn(v => k * v * v / 2 * 1e3, { color: t.muted, dash: [5, 4], width: 1.3 });
+    out.text(1.25, 0.95, "V_DS,sat locus", { color: t.muted, size: 11.5 });
+    out.fn(v => Id(st.VG, v) * 1e3, { color: t.rust, width: 2.6 });
+    out.point(st.VD, M.I * 1e3, { color: t.navy });
+    tr.begin().axes();
+    tr.fn(v => Id(v, st.VD) * 1e3, { color: t.rust, width: 2.6 });
+    tr.vline(VT, { label: "V_T", color: t.muted });
+    tr.point(st.VG, M.I * 1e3, { color: t.navy });
+  }
+  // electrons: a population proportional to channel charge, each moving at v ∝ I_D / Q_n(x)
+  const parts = []; let paused = false;
+  document.getElementById("pp").onclick = e => { paused = !paused; e.target.textContent = paused ? "Run electrons" : "Pause electrons"; };
+  function frame(dt) {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(xs, 2.5);
+    const dep = f => M.ov <= 0 ? 0.6 * Math.sqrt(Math.max(0, st.VG) / VT) : Math.min(1, 0.6 * Math.sqrt((0.8 + M.Vx(f)) / 0.8));
+    const G = DEV.draw(g, w, h, { VG: st.VG, VD: st.VD, qn: M.ov > 0 ? M.qn : null, dep, dDrain: 0.3 * Math.sqrt((0.9 + st.VD) / 0.9) });
+    const target = Math.round(70 * M.Qint);
+    while (parts.length < target) { let f; do { f = Math.random(); } while (Math.random() * 1.0001 > M.qn(f) / Math.max(1e-6, M.qn(0))); parts.push({ f, r: Math.random() }); }
+    while (parts.length > target) parts.pop();
+    const th = Math.max(5, h * 0.03);
+    parts.forEach(p => {
+      if (!paused) { const q = Math.max(0.035, M.qn(p.f)); p.f += Math.min(1.5, 360 * M.I / q / 1.5) * dt * 0.5; if (p.f > 1) { p.f -= 1; p.r = Math.random(); } }
+      const X = G.fx(p.f), Y = G.y0 + 1.5 + p.r * Math.max(2, th * M.qn(p.f) - 3);
+      NX.dot(g, X, Y, Math.max(2.2, h * 0.009), t.electron);
+    });
+    if (M.ov > 0 && st.VD >= M.ov) { NX.arrow(g, G.dS - 6, G.y0 + h * 0.13, G.dS - 2, G.y0 + 6, t.rust, 1.6, 7); NX.label(g, "pinch-off", G.dS - 10, G.y0 + h * 0.16, { color: t.rust, size: Math.max(12, h * 0.04), bold: true }); }
+  }
+  NX.onRedraw(() => { update(); frame(0); });
+  update(); frame(0);
+  NX.loop(frame);
+})();
+</script>

@@ -1,0 +1,113 @@
+<!--META
+{"num":7,"slug":"velocity-saturation","title":"Carrier velocity saturation","ref":"Document 3, Section 3.1 · Document 2, Section 2.4","blurb":"Push harder on an electron and, beyond about 10⁴ V/cm, it stops going faster. In a short channel that caps the drive current and breaks the square law."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Electrons in silicon under an applied field</h3><canvas id="bar"></canvas>
+      <div class="legend"><span><i class="dot" style="background:var(--electron)"></i>electron (random thermal motion + drift)</span><span><i style="background:var(--rust)"></i>average drift velocity</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Drift velocity against electric field</h3><canvas id="ve"></canvas>
+        <div class="legend"><span><i style="background:var(--rust)"></i>bulk electrons</span><span><i style="background:var(--blue)"></i>inversion layer (device model)</span><span><i style="background:var(--muted)"></i>v = μE, no saturation</span></div></div>
+      <div class="fig"><h3>Saturation drive current against channel length</h3><canvas id="il"></canvas>
+        <div class="legend"><span><i style="background:var(--muted)"></i>square law (∝ 1/L)</span><span><i style="background:var(--rust)"></i>with velocity saturation</span></div></div>
+      <div class="fig"><h3>Output characteristics at the selected L</h3><canvas id="out"></canvas>
+        <div class="legend"><span><i style="background:var(--muted)"></i>square law</span><span><i style="background:var(--rust)"></i>with velocity saturation</span><span><i class="dot" style="background:var(--navy)"></i>V<sub>DS,sat</sub></span></div></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>Electrons in silicon already move at about 10⁷ cm/s at room temperature, in random directions. A field adds a small <b>drift</b> on top: <var>v</var> = μ<var>E</var>. At low field the drift is tiny compared with the thermal motion — watch the cloud barely creep.</p>
+<p>Raise the field and the electrons gain energy faster than they can lose it to acoustic phonons. Once they are energetic enough to emit <b>optical phonons</b> (≈ 63 meV in Si), every extra bit of energy is shed almost immediately. The drift velocity levels off at <b>v<sub>sat</sub> ≈ 10⁷ cm/s</b> — about the thermal velocity itself.</p>
+<p>A 0.7 V supply across a 20 nm channel is an average field of 3.5 × 10⁵ V/cm, well into saturation. The current is then set by charge × v<sub>sat</sub>, not by mobility × field:</p>
+<span class="eq">I<sub>D,sat</sub> ≈ W C<sub>ox</sub> v<sub>sat</sub> (V<sub>GS</sub> − V<sub>T</sub>) — linear in overdrive, independent of L</span></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Set the field to 10³ V/cm. The electrons jitter but hardly drift; the readout gives a drift velocity two orders below thermal.</li>
+<li>Raise it to 10⁴, then 10⁵ V/cm. The drift catches up with the thermal motion and then stops growing. Compare the bulk and inversion-layer curves: the surface lowers μ but not v<sub>sat</sub>.</li>
+<li>Now the device: move <var>L</var> from 2 µm down to 20 nm and watch the saturation current. Long channels follow 1/<var>L</var>; short ones flatten out.</li>
+<li>At <var>L</var> = 30 nm, double the overdrive. The current roughly doubles instead of quadrupling. Ask what that does to g<sub>m</sub> (it becomes ≈ W·C<sub>ox</sub>·v<sub>sat</sub>, a constant).</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>If current no longer improves with shorter L, why keep scaling L?</summary>Density and capacitance. A shorter gate means a smaller transistor and less gate capacitance to charge, so switching energy and delay still improve even when drive current per width does not. (And in very short channels quasi-ballistic transport lets the source injection velocity exceed v<sub>sat</sub> somewhat — Document 2, Section 4.1.)</details>
+<details><summary>Why does V<sub>DS,sat</sub> fall below V<sub>GS</sub> − V<sub>T</sub> in a short channel?</summary>The carriers at the drain end reach v<sub>sat</sub> before the channel pinches off. The current saturates as soon as the field there reaches the critical field E<sub>c</sub>, which happens at a smaller V<sub>DS</sub> when L is short: V<sub>DS,sat</sub> → E<sub>c</sub>L.</details>
+<details><summary>Holes saturate at a similar velocity but have lower mobility. What does that imply for p-MOS?</summary>Holes need a higher field to reach saturation, so long p-MOS devices are weaker, but in very short channels the n/p gap closes partly, because both are capped near v<sub>sat</sub>. Strain engineering for holes (Document 1) was largely about raising effective mobility and injection velocity.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Bulk electrons (Caughey–Thomas, β = 2): <span class="eq">v = μ₀E / [1 + (μ₀E/v<sub>sat</sub>)²]<sup>1/2</sup>, μ₀ = 1400 cm²/Vs, v<sub>sat</sub> = 1.07×10⁷ cm/s</span></p>
+<p>Device model: v = μE/(1 + E/E<sub>c</sub>) with E<sub>c</sub> = v<sub>sat</sub>/μ, μ = 300 cm²/Vs and v<sub>sat</sub> = 10⁷ cm/s, so v → v<sub>sat</sub> at high field. Integrating along the channel gives</p>
+<span class="eq">V<sub>DS,sat</sub> = 2V<sub>ov</sub> / (1 + √(1 + 2V<sub>ov</sub>/E<sub>c</sub>L)), &nbsp; I<sub>D,sat</sub> = W C<sub>ox</sub> v<sub>sat</sub> (V<sub>ov</sub> − V<sub>DS,sat</sub>)</span><p>Below V<sub>DS,sat</sub>: I<sub>D</sub> = (μC<sub>ox</sub>W/L)(V<sub>ov</sub>V<sub>DS</sub> − V<sub>DS</sub>²/2)/(1 + V<sub>DS</sub>/E<sub>c</sub>L), which joins the saturation value smoothly.</p>
+<p class="caveat">V<sub>T</sub> = 0.3 V, C<sub>ox</sub> = 2.5 µF/cm² (EOT ≈ 1.4 nm), W = 1 µm. The particle animation is schematic: drift is drawn to scale against a fixed thermal speed.</p></section>
+</main>
+<script>
+(() => {
+  const VT = 0.3, mu = 300, vs = 1e7, Cox = 2.5e-6, W = 1e-4, Ec = vs / mu; // cgs; W in cm (1 µm)
+  const st = { lgE: 4, L: 0.05, VG: 1.0 };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "E", label: "Electric field E", min: 2, max: 6, step: 0.02, value: st.lgE, fmt: v => NX.fmt(Math.pow(10, v), 1) + " V/cm", on: v => { st.lgE = v; update(); } });
+  NX.slider(ctl, { id: "L", label: "Channel length L", min: Math.log10(0.01), max: Math.log10(2), step: 0.01, value: Math.log10(st.L), fmt: v => { const L = Math.pow(10, v); return L < 0.1 ? (L * 1000).toFixed(0) + " nm" : L.toFixed(2) + " µm"; }, on: v => { st.L = Math.pow(10, v); update(); } });
+  NX.slider(ctl, { id: "VG", label: "Gate voltage V<sub>GS</sub>", min: 0.5, max: 1.5, step: 0.01, value: st.VG, unit: "V", on: v => { st.VG = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const vBulk = E => 1400 * E / Math.sqrt(1 + (1400 * E / 1.07e7) ** 2);
+  const vDev = E => mu * E / (1 + E / Ec);
+  const ve = new NX.Plot(document.getElementById("ve"), { aspect: 1.1, x: [1e2, 1e6], y: [1e4, 3e7], xlog: true, ylog: true, xlabel: "Electric field (V/cm)", ylabel: "Drift velocity (cm/s)" });
+  const il = new NX.Plot(document.getElementById("il"), { aspect: 1.1, x: [0.01, 2], y: [1e-5, 1e-1], xlog: true, ylog: true, xlabel: "Channel length L (µm)", ylabel: "ID,sat (A/µm)" });
+  const out = new NX.Plot(document.getElementById("out"), { aspect: 1.1, x: [0, 1.2], y: [0, 1], xlabel: "Drain voltage VDS (V)", ylabel: "ID (mA/µm)" });
+  const sat = (VG, Lum) => { const o = VG - VT, EcL = Ec * Lum * 1e-4, Vd = 2 * o / (1 + Math.sqrt(1 + 2 * o / EcL)); return { Vd, I: W * Cox * vs * (o - Vd) }; }; // equals the linear-region formula at Vd (continuous)
+  const Iv = (VG, VD, Lum) => { const o = VG - VT, s = sat(VG, Lum); if (VD >= s.Vd) return s.I; const L = Lum * 1e-4; return mu * Cox * W / L * (o * VD - VD * VD / 2) / (1 + VD / (Ec * L)); };
+  const Isq = (VG, VD, Lum) => { const o = VG - VT, L = Lum * 1e-4, V = Math.min(VD, o); return mu * Cox * W / L * (o * V - V * V / 2); };
+  let M = {};
+  function update() {
+    const E = Math.pow(10, st.lgE), s = sat(st.VG, st.L), o = st.VG - VT;
+    M = { E, vd: vBulk(E), s, I2: Isq(st.VG, 2, st.L) };
+    const r = vBulk(E) / 1.07e7;
+    status.className = "status " + (r > 0.7 ? "bad" : r > 0.3 ? "" : "good");
+    status.textContent = r > 0.7 ? "Saturated: more field barely adds velocity." : r > 0.3 ? "Transition: velocity is bending over." : "Ohmic: velocity is proportional to field (v = μE).";
+    ro.innerHTML = `<dt>Drift velocity (bulk)</dt><dd>${NX.fmt(M.vd, 1)} cm/s</dd><dt>μE would give</dt><dd>${NX.fmt(1400 * E, 1)} cm/s</dd><dt>Drift / thermal velocity</dt><dd>${(M.vd / 1.07e7).toFixed(2)}</dd>
+      <dt>Critical field E<sub>c</sub> (device)</dt><dd>${NX.fmt(Ec, 1)} V/cm</dd><dt>Average field V<sub>DD</sub>/L</dt><dd>${NX.fmt(0.7 / (st.L * 1e-4), 1)} V/cm</dd>
+      <dt>V<sub>DS,sat</sub> (vs. square law)</dt><dd>${s.Vd.toFixed(2)} (${o.toFixed(2)}) V</dd>
+      <dt>I<sub>D,sat</sub> (vs. square law)</dt><dd>${(s.I * 1e3).toFixed(2)} (${(M.I2 * 1e3).toFixed(2)}) mA/µm</dd>`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok;
+    ve.begin().axes();
+    ve.fn(E => 1400 * E, { color: t.muted, dash: [6, 4], width: 1.6 });
+    ve.fn(vDev, { color: t.blue, width: 2 }); ve.fn(vBulk, { color: t.rust, width: 2.6 });
+    ve.hline(1.07e7, { color: t.ink, label: "v_sat ≈ 10⁷ cm/s", align: "left" });
+    ve.point(M.E, M.vd, { color: t.navy });
+    il.begin().axes();
+    il.fn(L => Isq(st.VG, 5, L), { color: t.muted, dash: [6, 4], width: 2 });
+    il.fn(L => sat(st.VG, L).I, { color: t.rust, width: 2.6 });
+    il.hline(W * Cox * vs * (st.VG - VT), { color: t.ink, label: "W·Cox·vsat·(VGS − VT)", align: "right" });
+    il.point(st.L, M.s.I, { color: t.navy });
+    const ymax = Math.max(0.05, Isq(st.VG, 2, st.L) * 1e3 * 1.08, M.s.I * 1e3 * 1.3);
+    out.setY(0, Math.min(ymax, Math.max(M.s.I * 1e3 * 3, 0.1))); out.begin().axes();
+    out.fn(v => Isq(st.VG, v, st.L) * 1e3, { color: t.muted, dash: [6, 4], width: 2 });
+    out.fn(v => Iv(st.VG, v, st.L) * 1e3, { color: t.rust, width: 2.6 });
+    out.point(M.s.Vd, M.s.I * 1e3, { color: t.navy });
+  }
+  // particles: thermal random walk plus drift, drawn to the same velocity scale
+  const parts = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), a: Math.random() * 6.28, tt: Math.random() * 0.2 }));
+  let shift = 0;
+  function frame(dt) {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("bar"), 4.2);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const x0 = w * 0.07, x1 = w * 0.93, y0 = h * 0.2, y1 = h * 0.8;
+    NX.rect(g, x0, y0, x1 - x0, y1 - y0, t.si);
+    // field arrows (field points left, electrons drift right)
+    g.globalAlpha = 0.35; for (let i = 0; i < 6; i++) { const yy = y0 + (i + .5) * (y1 - y0) / 6; NX.arrow(g, x1 - 6, yy, x0 + 6, yy, t.muted, 1, 6); } g.globalAlpha = 1;
+    NX.label(g, "E", x0 - 14, (y0 + y1) / 2, { bold: true, color: t.muted }); NX.label(g, "−", x0 - 14, y0 + 10, { size: 18 }); NX.label(g, "+", x1 + 14, y0 + 10, { size: 18 });
+    const vth = 0.18, frac = M.vd / 1.07e7, vdr = frac * vth;   // fraction of box width per second
+    parts.forEach(p => {
+      p.tt -= dt; if (p.tt <= 0) { p.a = Math.random() * 6.283; p.tt = 0.08 + Math.random() * 0.12; }
+      p.x += (vdr + vth * Math.cos(p.a)) * dt; p.y += vth * 3.2 * Math.sin(p.a) * dt;
+      if (p.x > 1) p.x -= 1; if (p.x < 0) p.x += 1; if (p.y > 1) { p.y = 2 - p.y; p.a = -p.a; } if (p.y < 0) { p.y = -p.y; p.a = -p.a; }
+      NX.dot(g, x0 + p.x * (x1 - x0), y0 + 6 + p.y * (y1 - y0 - 12), Math.max(3, h * 0.022), t.electron);
+    });
+    const len = Math.max(2, frac * (x1 - x0) * 0.5);
+    NX.arrow(g, (x0 + x1) / 2 - len / 2, h * 0.92, (x0 + x1) / 2 + len / 2, h * 0.92, t.rust, 3, 10);
+    NX.label(g, "drift " + NX.fmt(M.vd, 1) + " cm/s", (x0 + x1) / 2, h * 0.1, { color: t.rust, bold: true, size: 13 });
+  }
+  NX.onRedraw(() => { update(); frame(0); }); update(); frame(0); NX.loop(frame);
+})();
+</script>

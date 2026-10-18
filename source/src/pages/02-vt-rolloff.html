@@ -1,0 +1,118 @@
+<!--META
+{"num":2,"slug":"vt-rolloff","title":"Natural length and threshold roll-off","ref":"Document 3, Sections 1.1 and 2.1","blurb":"How far does the drain's field reach into the channel? The natural length λ answers it, and sets how short a gate can be before the threshold voltage starts to fall away.","new":true}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Where the source and drain reach into the channel (at threshold)</h3><canvas id="xs"></canvas>
+      <div class="legend"><span><i style="background:var(--rust);height:9px;opacity:.7"></i>potential raised by source/drain (darker = stronger)</span><span><i style="background:var(--ink)"></i>scale bar = λ</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Threshold voltage against gate length</h3><canvas id="vt"></canvas>
+        <div class="legend"><span><i style="background:var(--muted)"></i>V<sub>DS</sub> = 0.05 V</span><span><i style="background:var(--rust)"></i>V<sub>DS</sub> as set</span><span><i style="background:var(--rust);opacity:.25;height:9px"></i>L &lt; 5λ</span></div></div>
+      <div class="fig"><h3>Sensitivity: V<sub>T</sub> change per 1 nm of gate length</h3><canvas id="sens"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p>The source and drain are heavily doped and sit at a higher potential than the channel. Their influence leaks into the channel, decaying over a characteristic distance — the <b>natural length</b>:</p>
+<span class="eq">λ = √( (ε<sub>Si</sub>/ε<sub>ox</sub>) · t<sub>Si</sub> · t<sub>ox</sub> / N )</span>
+<p>The shading in the cross-section shows that influence. In a long channel the two shaded zones are far apart and the middle of the channel belongs to the gate. Shrink <var>L</var> toward a few λ and the zones meet: the source and drain now help the gate turn the device on, so <var>V</var><sub>T</sub> falls. That fall is <b>threshold roll-off</b>.</p>
+<p>The damage is not that <var>V</var><sub>T</sub> is lower — you could compensate for that. It is that <var>V</var><sub>T</sub> becomes a <b>steep function of L</b> (right-hand plot), so a nanometre of lithographic variation becomes tens of millivolts of threshold spread. The design rule is <b>L ≳ 5λ to 10λ</b>.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Planar bulk, defaults. Move <var>L</var> from 100 nm down to 20 nm and watch the shaded zones merge. Note where <var>L</var> crosses the 5λ line.</li>
+<li>At <var>L</var> = 30 nm read the sensitivity: how much does a 1 nm gate-length error move <var>V</var><sub>T</sub>?</li>
+<li>Pull the two levers one at a time: thinner oxide (EOT), then a thinner body. Each is a square root, so halving either only improves λ by 30%.</li>
+<li>Now change the <i>number of gates</i>: FinFET (N = 2), then GAA (N = 4). This is the lever the industry actually used.</li>
+<li>Ask: what minimum gate length does GAA allow at EOT = 1 nm and a 5 nm sheet? (≈ 10 nm — the saturation the 2022 IRDS roadmap projects.)</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why is changing the geometry (N) a stronger lever than thinning the oxide?</summary>λ ∝ √(t<sub>ox</sub>), and EOT is close to its practical limit (≈ 0.8–1 nm) because of gate tunnelling. Body thickness is limited by mobility loss and variability. N enters the same square root but jumps by 2× and 4× with no thinning of anything.</details>
+<details><summary>Roll-off uses V<sub>DS</sub> = 0.05 V. Why does the high-V<sub>DS</sub> curve roll off earlier?</summary>That is DIBL: the drain at high bias reaches further into the channel and lowers the barrier more. The gap between the two curves is DIBL × ΔV<sub>DS</sub> — Animation 3.</details>
+<details><summary>Textbooks explain roll-off by "charge sharing". Is that wrong?</summary>It gives the right trend and explains why shallow junctions help, but it is a one-dimensional story with no drain-voltage dependence, so it cannot explain DIBL and underestimates roll-off below about 50 nm (Document 3, Section 1.2).</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>The same scale-length model as Animation 3. The surface potential at threshold is</p>
+<span class="eq">ψ(x) = ψ<sub>L</sub> + (V<sub>bi</sub> − ψ<sub>L</sub>)·sinh((L−x)/λ)/sinh(L/λ) + (V<sub>bi</sub> + V<sub>DS</sub> − ψ<sub>L</sub>)·sinh(x/λ)/sinh(L/λ)</span>
+<p>and <var>V</var><sub>T</sub> is the gate voltage at which its minimum reaches the long-channel threshold value. For L ≫ λ the shift falls off as exp(−L/2λ). The shading is (ψ(x) − ψ<sub>L</sub>) normalised to its value at the junctions.</p>
+<p class="caveat">Body factor for bulk: m = 1 + (ε<sub>Si</sub>/t<sub>Si</sub>)/(ε<sub>ox</sub>/EOT); about 1.03 for fully depleted multi-gate bodies. V<sub>bi</sub> = 1.1 V; long-channel V<sub>T</sub> = 0.30 V. No halo doping — real bulk devices used halos to flatten the roll-off curve, at the cost of other problems.</p></section>
+</main>
+<script>
+/*INCLUDE sce.js*/
+(() => {
+  const st = { arch: "bulk", L: 40, VD: 0.7, tSi: 20, eot: 1 };
+  const ctl = document.getElementById("ctl");
+  let sT;
+  NX.seg(ctl, { label: "Architecture (number of gates N)", value: "bulk", options: [["bulk", "Bulk · 1"], ["fin", "FinFET · 2"], ["gaa", "GAA · 4"]], on: v => { st.arch = v; st.tSi = SCE.ARCH[v].tSi; sT.value = st.tSi; update(); } });
+  NX.slider(ctl, { id: "L", label: "Gate length L", min: 5, max: 100, step: 1, value: st.L, fmt: v => v + " nm", on: v => { st.L = v; update(); } });
+  sT = NX.slider(ctl, { id: "tsi", label: "Body thickness t<sub>Si</sub>", min: 2, max: 30, step: 0.5, value: st.tSi, fmt: v => v + " nm", hint: "Depletion depth for bulk; fin or sheet thickness otherwise.", on: v => { st.tSi = v; update(); } });
+  NX.slider(ctl, { id: "eot", label: "Oxide thickness (EOT)", min: 0.5, max: 3, step: 0.1, value: st.eot, fmt: v => v.toFixed(1) + " nm", on: v => { st.eot = v; update(); } });
+  NX.slider(ctl, { id: "VD", label: "Drain voltage V<sub>DS</sub>", min: 0.05, max: 1, step: 0.01, value: st.VD, unit: "V", on: v => { st.VD = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const vt = new NX.Plot(document.getElementById("vt"), { aspect: 1.1, x: [5, 100], y: [-0.3, 0.4], xlabel: "Gate length L (nm)", ylabel: "VT (V)" });
+  const sens = new NX.Plot(document.getElementById("sens"), { aspect: 1.1, x: [5, 100], y: [0.1, 300], ylog: true, xlabel: "Gate length L (nm)", ylabel: "|dVT/dL| (mV per nm)" });
+  const xs = document.getElementById("xs");
+  const dev = (L, VD) => ({ L, VD, tSi: st.tSi, eot: st.eot, N: SCE.ARCH[st.arch].N });
+  const VTof = (L, VD) => SCE.device(dev(L, VD)).VT;
+  let D = {};
+  function update() {
+    const lam = SCE.lambda(st.tSi, st.eot, SCE.ARCH[st.arch].N);
+    const lo = SCE.device(dev(st.L, 0.05)), hi = SCE.device(dev(st.L, st.VD));
+    const sl = (VTof(st.L + 0.5, 0.05) - VTof(st.L - 0.5, 0.05)) * 1000;
+    D = { lam, lo, hi, sl };
+    const r = st.L / lam;
+    status.className = "status " + (r >= 7 ? "good" : r >= 5 ? "" : "bad");
+    status.textContent = r >= 7 ? "Long enough: the gate controls the middle of the channel." : r >= 5 ? "At the design limit (5λ–7λ)." : "Too short: source and drain control the channel.";
+    ro.innerHTML = `<dt>Natural length λ</dt><dd>${lam.toFixed(2)} nm</dd><dt>Minimum L ≈ 5λ</dt><dd>${(5 * lam).toFixed(1)} nm</dd>
+      <dt>L / λ</dt><dd class="${r < 5 ? "warn" : ""}">${r.toFixed(1)}</dd>
+      <dt>V<sub>T</sub> (long channel)</dt><dd>${SCE.P.VTlong.toFixed(3)} V</dd>
+      <dt>V<sub>T</sub> at 0.05 V</dt><dd>${lo.VT.toFixed(3)} V</dd><dt>V<sub>T</sub> at V<sub>DS</sub></dt><dd>${hi.VT.toFixed(3)} V</dd>
+      <dt>Roll-off (0.05 V)</dt><dd>${((lo.VT - SCE.P.VTlong) * 1000).toFixed(0)} mV</dd>
+      <dt>V<sub>T</sub> per nm of L</dt><dd class="${sl > 10 ? "warn" : ""}">${sl.toFixed(sl < 1 ? 2 : 1)} mV/nm</dd>`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok;
+    vt.begin().axes(); vt.band(5, Math.min(100, 5 * D.lam), t.rust, 0.12);
+    vt.hline(SCE.P.VTlong, { color: t.green, dash: [3, 4], label: "long-channel VT", align: "right" });
+    vt.fn(L => VTof(L, 0.05), { color: t.muted, dash: [6, 4], width: 2 }, 60);
+    vt.fn(L => VTof(L, st.VD), { color: t.rust, width: 2.4 }, 60);
+    vt.vline(5 * D.lam, { color: t.rust, label: "5λ", dy: 0 });
+    vt.point(st.L, D.hi.VT, { color: t.navy });
+    sens.begin().axes(); sens.band(5, Math.min(100, 5 * D.lam), t.rust, 0.12);
+    sens.fn(L => Math.abs(VTof(L + 0.5, 0.05) - VTof(L - 0.5, 0.05)) * 1000, { color: t.navy, width: 2.4 }, 50);
+    sens.hline(10, { color: t.muted, label: "10 mV/nm", align: "right" });
+    sens.point(st.L, Math.max(0.1, D.sl), { color: t.rust });
+    drawXS();
+  }
+  function drawXS() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(xs, 3.2);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    // physical scale: channel drawn to scale up to 100 nm across 70% of width
+    const span = w * 0.62, px = span / 100, Lp = Math.max(8, st.L * px), cx = w / 2;
+    const sE = cx - Lp / 2, dS = cx + Lp / 2, y0 = h * 0.38, body = h * 0.42;
+    NX.rect(g, w * 0.04, y0, w * 0.92, body, t.pbody);
+    g.fillStyle = t.nplus; NX.rect(g, w * 0.04, y0, sE - w * 0.04, body * 0.55, t.nplus); NX.rect(g, dS, y0, w * 0.96 - dS, body * 0.55, t.nplus);
+    // perturbation map along the channel, fading with depth
+    const VG = D.lo.VT, b = SCE.barrier(dev(st.L, st.VD), VG), lam = D.lam;
+    const top = SCE.P.Vbi + st.VD - b.psiL, n = 120;
+    for (let i = 0; i < n; i++) {
+      const x = st.L * (i + .5) / n, d = (SCE.psi(x, b.psiL, st.L, st.VD, lam) - b.psiL) / top;
+      const grad = g.createLinearGradient(0, y0, 0, y0 + body * 0.9);
+      grad.addColorStop(0, t.rust); grad.addColorStop(1, "rgba(0,0,0,0)");
+      g.globalAlpha = Math.min(0.85, Math.max(0, d)); g.fillStyle = grad; g.fillRect(sE + Lp * i / n - .3, y0, Lp / n + .6, body * 0.9);
+    }
+    g.globalAlpha = 1;
+    NX.rect(g, sE - 3, y0 - 7, Lp + 6, 7, t.oxide); NX.rect(g, sE - 3, y0 - 7 - h * 0.14, Lp + 6, h * 0.14, t.metal);
+    NX.label(g, "S", w * 0.04 + (sE - w * 0.04) / 2, y0 + body * 0.27, { bold: true, size: 15 }); NX.label(g, "D", dS + (w * 0.96 - dS) / 2, y0 + body * 0.27, { bold: true, size: 15 });
+    NX.label(g, "L = " + st.L + " nm", cx, y0 - h * 0.32, { bold: true, size: 14, color: t.ink });
+    // lambda scale bar
+    const lp = lam * px, bx = w * 0.06, by = h * 0.93;
+    g.strokeStyle = t.ink; g.lineWidth = 3; g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + lp, by); g.stroke();
+    NX.label(g, "λ = " + lam.toFixed(1) + " nm   (5λ = " + (5 * lam).toFixed(0) + " nm)", bx + lp + 10, by, { align: "left", size: 13 });
+    // 5-lambda marker relative to channel
+    const fl = 5 * lam * px; g.setLineDash([4, 4]); g.strokeStyle = t.rust; g.lineWidth = 1.5; g.beginPath(); g.moveTo(cx - fl / 2, y0 - h * 0.22); g.lineTo(cx + fl / 2, y0 - h * 0.22); g.stroke(); g.setLineDash([]);
+    NX.label(g, "5λ", cx + fl / 2 + 14, y0 - h * 0.22, { color: t.rust, size: 12, bold: true });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>
