@@ -2,13 +2,13 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lecture 1 animations · KKKC6353 Nanoelectronic Devices</title>
-<meta name="description" content="Eleven interactive animations for KKKC6353 Lecture 1: MOSFET basics and short-channel effects. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="description" content="11 interactive animations for KKKC6353 Lecture 1: cMOS technology, device physics and short-channel effects. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta name="author" content="Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
 <link rel="canonical" href="https://faizverse.github.io/nanoelectronic-devices/L1/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KKKC6353 Nanoelectronic Devices · Universiti Kebangsaan Malaysia">
 <meta property="og:title" content="Lecture 1 animations · KKKC6353 Nanoelectronic Devices">
-<meta property="og:description" content="Eleven interactive animations for KKKC6353 Lecture 1: MOSFET basics and short-channel effects. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta property="og:description" content="11 interactive animations for KKKC6353 Lecture 1: cMOS technology, device physics and short-channel effects. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta property="og:url" content="https://faizverse.github.io/nanoelectronic-devices/L1/">
 <meta property="og:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
 <meta property="og:image:secure_url" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
@@ -18,7 +18,7 @@
 <meta property="og:image:alt" content="KKKC6353 Nanoelectronic Devices: Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Lecture 1 animations · KKKC6353 Nanoelectronic Devices">
-<meta name="twitter:description" content="Eleven interactive animations for KKKC6353 Lecture 1: MOSFET basics and short-channel effects. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="twitter:description" content="11 interactive animations for KKKC6353 Lecture 1: cMOS technology, device physics and short-channel effects. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta name="twitter:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
 <style>:root{
@@ -223,7 +223,7 @@ const NX = (() => {
       g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
       g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
       const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
-      xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      if (!o.noxt) xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
       g.textAlign = "right"; g.textBaseline = "middle";
       yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
       g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";
@@ -303,50 +303,50 @@ const NX = (() => {
 <div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
 <button id="ttheme" type="button" title="Switch light/dark">Theme</button></div></div></div>
 <style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:1rem 0 2rem}
-.tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
-.tile:hover{border-color:var(--rust);transform:translateY(-2px)}
-.tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
-.tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
-.tile .b{color:var(--muted);font-size:.92rem;flex:1}
-.tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
-.howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
-.byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
-.banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
- background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
-.banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
-.banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
-.banner h1{color:#fff;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:.3rem 0 .6rem}
-.banner .sub{color:#d6e2f0;margin:0 0 1.1rem;font-size:1.05rem}
-.banner .who{border-top:3px solid #d6683e;padding-top:.8rem;display:inline-block}
-.banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
-.artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}</style><div class="wrap"><header class="hero"><p class="kicker">KKKC6353 Nanoelectronic Devices</p>
-<h1>Lecture 1 — interactive animations</h1><p class="byline">Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p>
-<p class="lede">Eleven interactive models that go with the Lecture 1 notes: how a MOSFET works, how it fails as it shrinks, and why the industry changed the device. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p></header>
-<div class="tiles"><a class="card tile" href="mosfet-basics.html">
-<span class="num">01</span><span class="t">MOSFET basics</span>
-<span class="b">Build the inversion channel with the gate, then push current through it with the drain. See why the current rises, then saturates, and where the channel pinches off.</span><span class="pills"><span class="pill">Document 2, Section 3</span></span></a><a class="card tile" href="vt-rolloff.html">
-<span class="num">02</span><span class="t">Natural length and threshold roll-off</span>
-<span class="b">How far does the drain's field reach into the channel? The natural length λ answers it, and sets how short a gate can be before the threshold voltage starts to fall away.</span><span class="pills"><span class="pill">Document 3, Sections 1.1 and 2.1</span><span class="pill new">New</span></span></a><a class="card tile" href="dibl.html">
-<span class="num">03</span><span class="t">Drain-induced barrier lowering (DIBL)</span>
-<span class="b">The drain reaches across a short channel and pulls down the barrier the gate is meant to control. Watch the barrier, the electrons that get over it, and the threshold shift that results.</span><span class="pills"><span class="pill">Document 3, Section 2.2</span></span></a><a class="card tile" href="punchthrough.html">
-<span class="num">04</span><span class="t">Punchthrough</span>
-<span class="b">Raise the drain voltage until the source and drain depletion regions meet below the surface. The barrier vanishes where the gate cannot reach, and current flows through the bulk.</span><span class="pills"><span class="pill">Document 3, Section 2.3</span></span></a><a class="card tile" href="subthreshold-swing.html">
-<span class="num">05</span><span class="t">Subthreshold swing degradation</span>
-<span class="b">How many millivolts of gate voltage does it take to change the current tenfold? In a short channel the drain competes with the gate for control of the channel, and the answer gets worse.</span><span class="pills"><span class="pill">Document 3, Section 2.4</span><span class="pill new">New</span></span></a><a class="card tile" href="channel-length-modulation.html">
-<span class="num">06</span><span class="t">Channel-length modulation</span>
-<span class="b">Past pinch-off, extra drain voltage widens the depleted gap at the drain and shortens the channel. The current keeps creeping up, and the transistor's analogue gain falls.</span><span class="pills"><span class="pill">Document 3, Section 2.5</span></span></a><a class="card tile" href="velocity-saturation.html">
-<span class="num">07</span><span class="t">Carrier velocity saturation</span>
-<span class="b">Push harder on an electron and, beyond about 10⁴ V/cm, it stops going faster. In a short channel that caps the drive current and breaks the square law.</span><span class="pills"><span class="pill">Document 3, Section 3.1 · Document 2, Section 2.4</span></span></a><a class="card tile" href="hot-carriers.html">
-<span class="num">08</span><span class="t">Hot carriers and impact ionisation</span>
-<span class="b">Electrons pick up energy in the high-field region at the drain. A few gain enough to knock loose electron–hole pairs or jump into the gate oxide. See why this ruled the 5 V era and fades at 0.7 V.</span><span class="pills"><span class="pill">Document 3, Sections 3.3 and 3.4</span></span></a><a class="card tile" href="oxide-breakdown.html">
-<span class="num">09</span><span class="t">Oxide breakdown (TDDB)</span>
-<span class="b">Under stress, defects appear at random in the gate dielectric. When a chain of them links gate to channel, the oxide breaks down. Run it once, then run it hundreds of times to see why breakdown is statistical and why thin oxides are fragile.</span><span class="pills"><span class="pill">Document 3, Section 3.4</span></span></a><a class="card tile" href="gidl.html">
-<span class="num">10</span><span class="t">Gate-induced drain leakage (GIDL)</span>
-<span class="b">Turn the gate hard off with the drain high, and the field across the gate–drain overlap bends the bands so steeply that electrons tunnel straight from the valence band into the conduction band. Off-current then rises as the gate goes more negative.</span><span class="pills"><span class="pill">Document 3, Section 4</span><span class="pill new">New</span></span></a><a class="card tile" href="variability.html">
-<span class="num">11</span><span class="t">Variability: random dopants</span>
-<span class="b">Fabricate a thousand nominally identical transistors. In a small channel there are only a handful of dopant atoms, their number and positions are random, and so is every device's threshold voltage.</span><span class="pills"><span class="pill">Document 3, Section 5</span><span class="pill new">New</span></span></a></div>
-<section class="card howto"><h2>Using these in class</h2>
-<ul><li>Use <b>A+</b> for larger text when projecting, and <b>Full screen</b> to show just the animation.</li>
-<li>Every page works offline: save it (File → Save Page As) and it runs without a network connection.</li>
-<li>The models are deliberately simple and each page says what is left out. They reproduce trends and orders of magnitude, not a specific process.</li></ul></section></div>
+    .tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
+    .tile:hover{border-color:var(--rust);transform:translateY(-2px)}
+    .tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
+    .tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
+    .tile .b{color:var(--muted);font-size:.92rem;flex:1}
+    .tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
+    .howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
+    .byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
+    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
+     background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
+    .banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
+    .banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
+    .banner h1{color:#fff;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:.3rem 0 .6rem}
+    .banner .sub{color:#d6e2f0;margin:0 0 1.1rem;font-size:1.05rem}
+    .banner .who{border-top:3px solid #d6683e;padding-top:.8rem;display:inline-block}
+    .banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
+    .artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}</style><div class="wrap"><header class="hero"><p class="kicker">KKKC6353 Nanoelectronic Devices</p>
+    <h1>Lecture 1 — interactive animations</h1><p class="byline">Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p>
+    <p class="lede">Eleven interactive models that go with the Lecture 1 notes: how a MOSFET works, how it fails as it shrinks, and why the industry changed the device. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p></header>
+    <div class="tiles"><a class="card tile" href="mosfet-basics.html">
+    <span class="num">01</span><span class="t">MOSFET basics</span>
+    <span class="b">Build the inversion channel with the gate, then push current through it with the drain. See why the current rises, then saturates, and where the channel pinches off.</span><span class="pills"><span class="pill">Document 2, Section 3</span></span></a><a class="card tile" href="vt-rolloff.html">
+    <span class="num">02</span><span class="t">Natural length and threshold roll-off</span>
+    <span class="b">How far does the drain's field reach into the channel? The natural length λ answers it, and sets how short a gate can be before the threshold voltage starts to fall away.</span><span class="pills"><span class="pill">Document 3, Sections 1.1 and 2.1</span><span class="pill new">New</span></span></a><a class="card tile" href="dibl.html">
+    <span class="num">03</span><span class="t">Drain-induced barrier lowering (DIBL)</span>
+    <span class="b">The drain reaches across a short channel and pulls down the barrier the gate is meant to control. Watch the barrier, the electrons that get over it, and the threshold shift that results.</span><span class="pills"><span class="pill">Document 3, Section 2.2</span></span></a><a class="card tile" href="punchthrough.html">
+    <span class="num">04</span><span class="t">Punchthrough</span>
+    <span class="b">Raise the drain voltage until the source and drain depletion regions meet below the surface. The barrier vanishes where the gate cannot reach, and current flows through the bulk.</span><span class="pills"><span class="pill">Document 3, Section 2.3</span></span></a><a class="card tile" href="subthreshold-swing.html">
+    <span class="num">05</span><span class="t">Subthreshold swing degradation</span>
+    <span class="b">How many millivolts of gate voltage does it take to change the current tenfold? In a short channel the drain competes with the gate for control of the channel, and the answer gets worse.</span><span class="pills"><span class="pill">Document 3, Section 2.4</span><span class="pill new">New</span></span></a><a class="card tile" href="channel-length-modulation.html">
+    <span class="num">06</span><span class="t">Channel-length modulation</span>
+    <span class="b">Past pinch-off, extra drain voltage widens the depleted gap at the drain and shortens the channel. The current keeps creeping up, and the transistor's analogue gain falls.</span><span class="pills"><span class="pill">Document 3, Section 2.5</span></span></a><a class="card tile" href="velocity-saturation.html">
+    <span class="num">07</span><span class="t">Carrier velocity saturation</span>
+    <span class="b">Push harder on an electron and, beyond about 10⁴ V/cm, it stops going faster. In a short channel that caps the drive current and breaks the square law.</span><span class="pills"><span class="pill">Document 3, Section 3.1 · Document 2, Section 2.4</span></span></a><a class="card tile" href="hot-carriers.html">
+    <span class="num">08</span><span class="t">Hot carriers and impact ionisation</span>
+    <span class="b">Electrons pick up energy in the high-field region at the drain. A few gain enough to knock loose electron–hole pairs or jump into the gate oxide. See why this ruled the 5 V era and fades at 0.7 V.</span><span class="pills"><span class="pill">Document 3, Sections 3.3 and 3.4</span></span></a><a class="card tile" href="oxide-breakdown.html">
+    <span class="num">09</span><span class="t">Oxide breakdown (TDDB)</span>
+    <span class="b">Under stress, defects appear at random in the gate dielectric. When a chain of them links gate to channel, the oxide breaks down. Run it once, then run it hundreds of times to see why breakdown is statistical and why thin oxides are fragile.</span><span class="pills"><span class="pill">Document 3, Section 3.4</span></span></a><a class="card tile" href="gidl.html">
+    <span class="num">10</span><span class="t">Gate-induced drain leakage (GIDL)</span>
+    <span class="b">Turn the gate hard off with the drain high, and the field across the gate–drain overlap bends the bands so steeply that electrons tunnel straight from the valence band into the conduction band. Off-current then rises as the gate goes more negative.</span><span class="pills"><span class="pill">Document 3, Section 4</span><span class="pill new">New</span></span></a><a class="card tile" href="variability.html">
+    <span class="num">11</span><span class="t">Variability: random dopants</span>
+    <span class="b">Fabricate a thousand nominally identical transistors. In a small channel there are only a handful of dopant atoms, their number and positions are random, and so is every device's threshold voltage.</span><span class="pills"><span class="pill">Document 3, Section 5</span><span class="pill new">New</span></span></a></div>
+    <section class="card howto"><h2>Using these in class</h2>
+    <ul><li>Use <b>A+</b> for larger text when projecting, and <b>Full screen</b> to show just the animation.</li>
+    <li>Every page works offline: save it (File → Save Page As) and it runs without a network connection.</li>
+    <li>The models are deliberately simple and each page says what is left out. They reproduce trends and orders of magnitude, not a specific process.</li></ul></section></div>
 </body></html>

@@ -223,7 +223,7 @@ const NX = (() => {
       g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
       g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
       const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
-      xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      if (!o.noxt) xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
       g.textAlign = "right"; g.textBaseline = "middle";
       yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
       g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";
@@ -303,8 +303,8 @@ const NX = (() => {
 <div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
 <button id="ttheme" type="button" title="Switch light/dark">Theme</button><button id="tfs" type="button" title="Show the animation full screen">Full screen</button></div></div></div>
 <div class="wrap"><header class="hero">
-<p class="kicker">Animation 3 of 11 · Document 3, Section 2.2</p>
-<h1>Drain-induced barrier lowering (DIBL)</h1><p class="lede">The drain reaches across a short channel and pulls down the barrier the gate is meant to control. Watch the barrier, the electrons that get over it, and the threshold shift that results.</p></header>
+    <p class="kicker">Animation 3 of 11 · Document 3, Section 2.2</p>
+    <h1>Drain-induced barrier lowering (DIBL)</h1><p class="lede">The drain reaches across a short channel and pulls down the barrier the gate is meant to control. Watch the barrier, the electrons that get over it, and the threshold shift that results.</p></header>
 <div class="lab">
   <div class="card stage"><div class="figs">
     <div class="fig"><h3>Electron energy along the channel (conduction-band edge)</h3><canvas id="band"></canvas>

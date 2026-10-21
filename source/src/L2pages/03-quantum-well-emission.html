@@ -1,0 +1,129 @@
+<!--META
+{"num":3,"slug":"quantum-well-emission","title":"Quantum-well emission","ref":"Document 3, Section 6.1","blurb":"A quantum-well laser emits at the band gap plus the confinement energies of the electron and the hole. Change the well width and the barrier composition and watch both levels move and the emission wavelength shift."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Band diagram of a GaAs quantum well between Al<sub>x</sub>Ga<sub>1−x</sub>As barriers</h3><canvas id="band"></canvas>
+      <div class="legend"><span><i style="background:var(--blue)"></i>conduction band and electron state</span><span><i style="background:var(--hole)"></i>valence band and heavy-hole state</span><span><i style="background:var(--rust)"></i>emitted photon</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Emission wavelength against well width</h3><canvas id="wl"></canvas></div>
+      <div class="fig"><h3>Where the energy goes</h3><canvas id="bud"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>A type I well traps both carriers.</b> GaAs has a smaller band gap than AlGaAs, so in a thin GaAs layer the conduction band dips down and the valence band bumps up: a well for electrons and a well for holes in the same place. About 65% of the band-gap difference appears in the conduction band and 35% in the valence band.</p>
+<p><b>Both carriers are confined.</b> Each sits in its lowest level, above (or, for the hole, below) its band edge. When an electron and a hole recombine, the photon carries</p>
+<span class="eq">E<sub>photon</sub> = E<sub>g</sub>(GaAs) + E<sub>1e</sub> + E<sub>1hh</sub></span>
+<p>so the narrower the well, the higher the photon energy and the shorter the wavelength. The heavy hole is ten times heavier than the electron, so its confinement energy is much smaller: most of the shift comes from the electron. Deeper barriers (more aluminium) confine more strongly and push the levels further from the band edges.</p>
+<p>GaAs wells emit in the near-infrared, between about 760 and 870 nm: these are the lasers of optical mice, short-reach fibre links and many laser printers. The same idea with InGaN wells in GaN gives the blue LED.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Start at 10 nm, x = 0.3. Read the emission wavelength (about 848 nm) against bulk GaAs (871 nm). How much of the shift is the electron's?</li>
+<li>Predict, then set, 5 nm. The wavelength shortens to about 816 nm. Why does halving the width not double the shift?</li>
+<li>At 3 nm, lower x to 0.1. The levels approach the barrier tops and the shift stops growing: a shallow well cannot hold its electron tightly.</li>
+<li>Find the width that gives 800 nm with x = 0.3. A laser designer tunes the colour this way without changing the material.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does the photon energy exceed the GaAs band gap?</summary>The electron cannot sit at the bottom of the conduction band, nor the hole at the top of the valence band: both have zero-point confinement energies. The photon carries the band gap plus both of them.</details>
+<details><summary>Why is the hole's confinement energy so small?</summary>Confinement energy scales as 1/m*. The heavy hole (0.5 m<sub>0</sub>) is about 7.5 times heavier than the electron (0.067 m<sub>0</sub>), so for the same width its energy is several times smaller.</details>
+<details><summary>Why does the shift saturate in very narrow wells?</summary>The levels cannot rise above the barrier tops. As the well narrows, more of each wavefunction spreads into the barriers and the electron and hole are no longer well confined; eventually the "well" barely binds them.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Finite square wells for the electron (<var>m</var>* = 0.067 m<sub>0</sub>) and the heavy hole (0.50 m<sub>0</sub>), with barrier heights ΔE<sub>c</sub> = 0.65ΔE<sub>g</sub> and ΔE<sub>v</sub> = 0.35ΔE<sub>g</sub>, where</p>
+<span class="eq">E<sub>g</sub>(Al<sub>x</sub>Ga<sub>1−x</sub>As) = 1.424 + 1.247x eV &nbsp; (x &lt; 0.45, 300 K)</span>
+<p>Levels are found from the even-parity matching condition, as in Animation 1.</p>
+<p class="caveat">Left out: the exciton binding energy (about 8 meV, which lowers the photon energy slightly), mass changes at the interfaces, strain, and the light-hole subband. The model reproduces measured GaAs/AlGaAs emission to within about 10 nm.</p></section>
+</main>
+<script>
+/*INCLUDE qm.js*/
+(() => {
+  const st = { L: 10, x: 0.3 };
+  const me = 0.067, mh = 0.50, Eg = 1.424;
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "L", label: "Well width", min: 2, max: 20, step: 0.1, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "x", label: "Aluminium fraction x in barriers", min: 0.1, max: 0.45, step: 0.01, value: st.x, dp: 2, on: v => { st.x = v; update(); } });
+  const sw = document.createElement("div"); sw.className = "status"; ctl.appendChild(sw);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const wlp = new NX.Plot(document.getElementById("wl"), { aspect: 1.25, x: [2, 20], y: [740, 880], xlabel: "Well width (nm)", ylabel: "Emission wavelength (nm)" });
+  const bud = new NX.Plot(document.getElementById("bud"), { aspect: 1.25, x: [0, 3], y: [1.38, 1.75], xlabel: "axis starts at 1.38 eV", ylabel: "Energy (eV)", nt: 4, noxt: true });
+  const calc = (L, x) => {
+    const dEg = 1.247 * x, Vc = 0.65 * dEg, Vv = 0.35 * dEg;
+    const e = QM.finiteWell(L, Vc, me)[0], hh = QM.finiteWell(L, Vv, mh)[0];
+    const E = Eg + e.E + hh.E; return { Vc, Vv, e, hh, E, wl: QM.h_c / E };
+  };
+  let M;
+  function update() {
+    M = calc(st.L, st.x);
+    ro.innerHTML = `<dt>Barrier gap</dt><dd>${(Eg + 1.247 * st.x).toFixed(3)} eV</dd>
+      <dt>ΔE<sub>c</sub> / ΔE<sub>v</sub></dt><dd>${(M.Vc * 1e3).toFixed(0)} / ${(M.Vv * 1e3).toFixed(0)} meV</dd>
+      <dt>Electron level E<sub>1e</sub></dt><dd>${(M.e.E * 1e3).toFixed(1)} meV</dd>
+      <dt>Heavy-hole level E<sub>1hh</sub></dt><dd>${(M.hh.E * 1e3).toFixed(1)} meV</dd>
+      <dt>Photon energy</dt><dd>${M.E.toFixed(3)} eV</dd>
+      <dt>Wavelength</dt><dd>${M.wl.toFixed(0)} nm</dd>
+      <dt>Shift from bulk GaAs</dt><dd>${(QM.h_c / Eg - M.wl).toFixed(0)} nm shorter</dd>`;
+    sw.innerHTML = `<span style="display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;background:${QM.wlColor(M.wl)}"></span>${QM.band(M.wl)}: ${M.wl < 780 ? "just visible as deep red" : "invisible to the eye"}`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("band"), 1.9);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const span = Math.max(30, st.L * 3), xL = -span / 2, xR = span / 2, a = st.L / 2;
+    // broken energy axis: zoom on the conduction band (top) and valence band (bottom), compress the gap
+    const pl = 60, pr = 150, pt = 12, pb = 30, H = h - pt - pb;
+    const cLo = Eg - 0.04, cHi = Eg + Math.max(0.30, M.Vc + 0.06), vLo = -Math.max(0.17, M.Vv + 0.05), vHi = 0.04;
+    const X = x => pl + (x - xL) / (xR - xL) * (w - pl - pr);
+    const Y = E => E >= cLo ? pt + (cHi - E) / (cHi - cLo) * 0.44 * H : E <= vHi ? pt + 0.56 * H + (vHi - E) / (vHi - vLo) * 0.44 * H : pt + 0.44 * H + (cLo - E) / (cLo - vHi) * 0.12 * H;
+    const Ec = x => Math.abs(x) <= a ? Eg : Eg + M.Vc, Ev = x => Math.abs(x) <= a ? 0 : -M.Vv;
+    // gap shading
+    g.fillStyle = t.chip; g.fillRect(X(xL), Y(Eg + M.Vc), X(-a) - X(xL), Y(-M.Vv) - Y(Eg + M.Vc)); g.fillRect(X(a), Y(Eg + M.Vc), X(xR) - X(a), Y(-M.Vv) - Y(Eg + M.Vc));
+    g.fillStyle = "rgba(233,160,59,.13)"; g.fillRect(X(-a), Y(Eg), X(a) - X(-a), Y(0) - Y(Eg));
+    const prof = (f, col) => { g.strokeStyle = col; g.lineWidth = 2.4; g.beginPath(); [[xL], [-a], [-a + 1e-9], [a - 1e-9], [a], [xR]].forEach(([x], i) => { const yy = Y(f(x === -a ? -a - 1e-6 : x === a ? a + 1e-6 : x)); i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }); g.stroke(); };
+    prof(Ec, t.electron); prof(Ev, t.hole);
+    // axis break marks
+    g.strokeStyle = t.muted; g.lineWidth = 1; [0.47, 0.53].forEach(f => { g.beginPath(); g.moveTo(pl - 14, pt + f * H - 4); g.lineTo(pl - 4, pt + f * H + 4); g.stroke(); });
+    NX.label(g, "≈ gap not to scale", pl + 4, pt + 0.5 * H, { size: 10, color: t.muted, align: "left" });
+    // states
+    const drawState = (s, L, base, sign, col) => {
+      const yb = Y(base); g.strokeStyle = col; g.setLineDash([4, 3]); g.lineWidth = 1; g.beginPath(); g.moveTo(X(xL), yb); g.lineTo(X(xR), yb); g.stroke(); g.setLineDash([]);
+      const amp = 0.10 * H * Math.sqrt(L / 2);
+      g.beginPath(); for (let i = 0; i <= 300; i++) { const x = xL + (xR - xL) * i / 300, p = QM.psiFinite(s, L, x); const yy = yb - sign * amp * p * p * 1.0; i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }
+      g.lineTo(X(xR), yb); g.lineTo(X(xL), yb); g.closePath(); g.globalAlpha = .25; g.fillStyle = col; g.fill(); g.globalAlpha = 1;
+    };
+    drawState(M.e, st.L, Eg + M.e.E, 1, t.electron);
+    drawState(M.hh, st.L, -M.hh.E, -1, t.hole);
+    // photon arrow and wave
+    const xm = X(0); NX.arrow(g, xm, Y(Eg + M.e.E) + 3, xm, Y(-M.hh.E) - 3, t.rust, 2.4, 10);
+    g.strokeStyle = QM.wlColor(Math.min(M.wl, 740)); g.lineWidth = 2.2; g.beginPath();
+    for (let i = 0; i <= 120; i++) { const xx = xm + 12 + i * 1.0, yy = (Y(Eg / 2)) + 7 * Math.sin(i / 120 * Math.PI * 7); i ? g.lineTo(xx, yy) : g.moveTo(xx, yy); }
+    g.stroke(); NX.arrow(g, xm + 120, Y(Eg / 2), xm + 134, Y(Eg / 2), g.strokeStyle, 2.2, 8);
+    NX.label(g, `${M.wl.toFixed(0)} nm`, xm + 78, Y(Eg / 2) - 22, { size: 13, bold: true, color: t.rust });
+    NX.dot(g, xm, Y(Eg + M.e.E) - 4, 6, t.electron, "-"); NX.dot(g, xm, Y(-M.hh.E) + 4, 6, t.hole, "+");
+    // labels
+    const lx = X(xR) + 8;
+    NX.label(g, "E_c", lx, Y(Eg + M.Vc), { align: "left", size: 12, color: t.electron });
+    NX.label(g, `E_1e = ${(M.e.E * 1e3).toFixed(0)} meV`, lx, Y(Eg + M.e.E) + 12, { align: "left", size: 11.5, color: t.electron });
+    NX.label(g, "E_v", lx, Y(-M.Vv), { align: "left", size: 12, color: t.hole });
+    NX.label(g, `E_1hh = ${(M.hh.E * 1e3).toFixed(0)} meV`, lx, Y(-M.hh.E) - 12, { align: "left", size: 11.5, color: t.hole });
+    NX.label(g, "AlGaAs", (X(xL) + X(-a)) / 2, Y(Eg / 2), { size: 12.5, color: t.muted }); NX.label(g, "AlGaAs", (X(a) + X(xR)) / 2, Y(Eg / 2), { size: 12.5, color: t.muted });
+    NX.label(g, "GaAs", X(0), h - pb + 14, { size: 12, color: t.ink, bold: true });
+    NX.label(g, `${st.L.toFixed(1)} nm`, X(0), h - pb - 8, { size: 11, color: t.muted });
+    // plots
+    const Ls = []; for (let L = 2; L <= 20.001; L += 0.25) Ls.push(L);
+    wlp.begin().axes();
+    wlp.hline(QM.h_c / Eg, { label: "bulk GaAs 871 nm", color: t.muted });
+    [[0.15, t.line], [0.3, t.blue], [0.45, t.line]].forEach(([x, c]) => wlp.line(Ls, Ls.map(L => calc(L, x).wl), { color: c, width: x === 0.3 ? 2 : 1.2, dash: x === 0.3 ? [] : [4, 3] }));
+    wlp.line(Ls, Ls.map(L => calc(L, st.x).wl), { color: t.rust, width: 2.6 });
+    wlp.point(st.L, M.wl, { color: t.navy });
+    wlp.text(19.5, 752, "blue: x = 0.3; grey: 0.15, 0.45", { align: "right", size: 11, color: t.muted });
+    bud.setX(0, 3); bud.setY(1.38, Math.max(1.55, M.E + 0.04)); bud.o.tickfmt = null;
+    bud.begin().axes();
+    const parts = [[Eg, t.line, "GaAs gap"], [M.e.E, t.electron, "electron"], [M.hh.E, t.hole, "hole"]];
+    let y0 = 0; bud.clip(g2 => { parts.forEach(([v, c]) => { g2.fillStyle = c; g2.fillRect(bud.tx(1.1), bud.ty(y0 + v), bud.tx(1.9) - bud.tx(1.1), bud.ty(y0) - bud.ty(y0 + v)); y0 += v; }); });
+    bud.text(2.0, (1.38 + Eg) / 2, `gap ${Eg.toFixed(3)} eV`, { size: 11.5 });
+    bud.text(2.0, Eg + M.e.E / 2, `+ ${(M.e.E * 1e3).toFixed(0)} meV (e)`, { size: 11.5, color: t.electron });
+    bud.text(2.0, Eg + M.e.E + M.hh.E / 2 + 0.03, `+ ${(M.hh.E * 1e3).toFixed(0)} meV (hh)`, { size: 11.5, color: t.hole });
+    bud.text(0.1, M.E + 0.03, `photon ${M.E.toFixed(3)} eV`, { size: 12, bold: true, color: t.rust, base: "bottom" });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>

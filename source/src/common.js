@@ -105,7 +105,7 @@ const NX = (() => {
       g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
       g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
       const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
-      xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      if (!o.noxt) xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
       g.textAlign = "right"; g.textBaseline = "middle";
       yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
       g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";

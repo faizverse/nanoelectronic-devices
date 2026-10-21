@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quantum-well emission · KKKC6353 Lecture 2</title>
+<meta name="description" content="A quantum-well laser emits at the band gap plus the confinement energies of the electron and the hole. Change the well width and the barrier composition and watch both levels move and the emission wavelength shift. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="author" content="Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
+<link rel="canonical" href="https://faizverse.github.io/nanoelectronic-devices/L2/quantum-well-emission.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KKKC6353 Nanoelectronic Devices · Universiti Kebangsaan Malaysia">
+<meta property="og:title" content="Quantum-well emission · KKKC6353 Lecture 2">
+<meta property="og:description" content="A quantum-well laser emits at the band gap plus the confinement energies of the electron and the hole. Change the well width and the barrier composition and watch both levels move and the emission wavelength shift. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta property="og:url" content="https://faizverse.github.io/nanoelectronic-devices/L2/quantum-well-emission.html">
+<meta property="og:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<meta property="og:image:secure_url" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KKKC6353 Nanoelectronic Devices: Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Quantum-well emission · KKKC6353 Lecture 2">
+<meta name="twitter:description" content="A quantum-well laser emits at the band gap plus the confinement energies of the electron and the hole. Change the well width and the barrier composition and watch both levels move and the emission wavelength shift. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="twitter:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
+<style>:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2430; --muted:#5b6876; --line:#d8dee6; --grid:#e7ebf0;
+  --navy:#1f3a5f; --blue:#2e75b6; --rust:#b4451f; --green:#2f8a5b; --gold:#c08a12; --violet:#7a4fb5;
+  --electron:#2e75b6; --hole:#c8402a; --oxide:#e9d9a6; --si:#dfe7ef; --nplus:#b9d3ee; --pbody:#f2dcd2;
+  --metal:#7d8794; --depl:#f6efe0; --chip:#eef3f9; --focus:#2e75b6;
+  --radius:10px; --shadow:0 1px 2px rgba(20,30,45,.06),0 4px 14px rgba(20,30,45,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body.big{font-size:19px}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.top{background:#1f3a5f;color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:center;justify-content:space-between;padding:.6rem 16px}
+.top a{color:#fff;text-decoration:none;opacity:.9}
+.top a:hover{opacity:1;text-decoration:underline}
+.crumb{font-size:.85rem;letter-spacing:.02em;opacity:.92}
+.tools{display:flex;gap:.4rem}
+.tools button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:.25rem .6rem;font:inherit;font-size:.8rem;cursor:pointer}
+.tools button:hover{background:rgba(255,255,255,.22)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.hero{padding:1.4rem 0 .6rem}
+.kicker{color:var(--rust);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;margin:0 0 .25rem}
+h1{font-size:clamp(1.5rem,3.2vw,2.1rem);line-height:1.2;margin:0 0 .4rem;color:var(--navy);text-wrap:balance}
+.lede{color:var(--muted);max-width:70ch;margin:0}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;margin:1rem 0}
+.lab:fullscreen{background:var(--bg);padding:16px;align-content:center}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.stage{padding:10px;display:grid;gap:10px;min-width:0}
+.stage canvas{width:100%;display:block;border-radius:6px}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:10px}
+.fig{min-width:0}
+.fig h3{font-size:.82rem;font-weight:600;color:var(--muted);margin:.1rem .2rem .3rem;letter-spacing:.02em}
+.controls{padding:14px 14px 10px;display:flex;flex-direction:column;gap:12px;align-self:start}
+.controls h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0}
+.ctl label{display:flex;justify-content:space-between;gap:.5rem;font-size:.92rem;margin-bottom:2px}
+.ctl label b{font-weight:600}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--rust);font-weight:600;white-space:nowrap}
+.ctl input[type=range]{width:100%;accent-color:var(--rust);margin:2px 0}
+.ctl .hint{font-size:.78rem;color:var(--muted);margin-top:1px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{flex:1 1 auto;font:inherit;font-size:.84rem;padding:.35rem .5rem;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--panel)}
+.btn{font:inherit;font-size:.88rem;padding:.42rem .7rem;border-radius:6px;border:1px solid var(--rust);background:var(--rust);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--rust)}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px}
+.readout{display:grid;grid-template-columns:1fr auto;gap:4px 8px;font-size:.84rem;line-height:1.35;border-top:1px solid var(--line);padding-top:10px}
+.readout dt{color:var(--muted)}
+.readout dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.readout dd.warn{color:var(--rust)}
+.status{font-size:.86rem;padding:.45rem .6rem;border-radius:6px;background:var(--chip);border-left:3px solid var(--blue)}
+.status.bad{border-left-color:var(--rust)}
+.status.good{border-left-color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted);padding:0 .2rem}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+main.notes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin:0 0 1rem}
+@media (max-width:860px){main.notes{grid-template-columns:minmax(0,1fr)}}
+.notes section{padding:16px 18px}
+.notes section.wide{grid-column:1/-1}
+.notes h2{font-size:1.08rem;color:var(--navy);margin:0 0 .5rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+.notes p,.notes li{max-width:75ch}
+.notes ol,.notes ul{padding-left:1.25rem;margin:.4rem 0}
+.notes li{margin:.25rem 0}
+.eq{display:block;text-align:center;margin:.6rem 0;font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.12em;overflow-x:auto}
+var{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-style:italic}
+details{border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem;margin:.45rem 0;background:var(--bg)}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:.35rem}
+.pill{display:inline-block;font-size:.75rem;padding:.05rem .45rem;border-radius:99px;background:var(--chip);color:var(--muted);border:1px solid var(--line)}
+.caveat{font-size:.9rem;color:var(--muted)}
+footer.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1rem 0 2rem;border-top:1px solid var(--line);margin-top:.5rem}
+footer.nav a{text-decoration:none;font-weight:600}
+footer.nav small{display:block;color:var(--muted);font-weight:400}
+.foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<script>/* Shared helpers for the KKKC6353 animations: theme tokens, controls, plots, animation loop. */
+const NX = (() => {
+  const root = document.documentElement;
+  let tok = {};
+  function readTokens() {
+    const cs = getComputedStyle(root);
+    ["bg","panel","ink","muted","line","grid","navy","blue","rust","green","gold","violet","electron","hole",
+     "oxide","si","nplus","pbody","metal","depl","chip"].forEach(k => tok[k] = cs.getPropertyValue("--" + k).trim());
+    return tok;
+  }
+  readTokens();
+  const redrawers = new Set();
+  function onRedraw(fn) { redrawers.add(fn); }
+  function redrawAll() { readTokens(); redrawers.forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+  let rT; addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(redrawAll, 80); });
+
+  /* ---------- number formatting ---------- */
+  function fmt(v, d = 2) {
+    if (!isFinite(v)) return "—";
+    const a = Math.abs(v);
+    if (a !== 0 && (a < 1e-2 || a >= 1e4)) {
+      const e = Math.floor(Math.log10(a)), m = v / Math.pow(10, e);
+      return m.toFixed(1) + "×10" + sup(e);
+    }
+    return v.toFixed(d);
+  }
+  function sup(n) { const s = "⁰¹²³⁴⁵⁶⁷⁸⁹"; return String(n).replace("-", "⁻").replace(/\d/g, c => s[c]); }
+  function si(v, unit, d = 3) {
+    if (!isFinite(v) || v === 0) return (v === 0 ? "0 " : "— ") + unit;
+    if (Math.abs(v) < 1e-15) return "< 1 f" + unit;
+    const p = ["f","p","n","µ","m","","k","M","G"]; let e = Math.floor(Math.log10(Math.abs(v)) / 3);
+    e = Math.max(-5, Math.min(3, e));
+    const m = v / Math.pow(1000, e);
+    return (+m.toPrecision(d)) + " " + p[e + 5] + unit;
+  }
+
+  /* ---------- controls ---------- */
+  function slider(host, o) {
+    const id = "s_" + o.id;
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label for="${id}"><b>${o.label}</b><output id="${id}_o"></output></label>
+      <input type="range" id="${id}" min="${o.min}" max="${o.max}" step="${o.step}" value="${o.value}">
+      ${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    host.appendChild(w);
+    const inp = w.querySelector("input"), out = w.querySelector("output");
+    const show = () => { out.textContent = (o.fmt ? o.fmt(+inp.value) : (+inp.value).toFixed(o.dp ?? 2) + (o.unit ? " " + o.unit : "")); };
+    inp.addEventListener("input", () => { show(); o.on && o.on(+inp.value); });
+    show();
+    return { get value() { return +inp.value; }, set value(v) { inp.value = v; show(); }, input: inp, el: w };
+  }
+  function seg(host, o) {
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label><b>${o.label}</b></label><div class="seg" role="group" aria-label="${o.label}"></div>${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    const g = w.querySelector(".seg"); let val = o.value;
+    const btns = o.options.map(([v, t]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+      b.setAttribute("aria-pressed", v === val); b.onclick = () => { set(v); o.on && o.on(v); };
+      g.appendChild(b); return [v, b];
+    });
+    function set(v) { val = v; btns.forEach(([k, b]) => b.setAttribute("aria-pressed", k === v)); }
+    host.appendChild(w);
+    return { get value() { return val; }, set value(v) { set(v); }, el: w };
+  }
+
+  /* ---------- canvas with DPR handling ---------- */
+  function fitCanvas(cv, aspect) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const w = Math.max(200, cv.clientWidth || cv.parentElement.clientWidth);
+    const h = Math.round(w / aspect);
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.height = h + "px";
+    }
+    const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { g, w, h };
+  }
+
+  /* ---------- 2-D plot ---------- */
+  function niceTicks(a, b, n = 5) {
+    const span = b - a, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const r = step0 / mag, step = (r < 1.5 ? 1 : r < 3.5 ? 2 : r < 7.5 ? 5 : 10) * mag;
+    const t = []; for (let v = Math.ceil(a / step - 1e-9) * step; v <= b + step * 1e-6; v += step) t.push(+v.toFixed(12));
+    return t;
+  }
+  class Plot {
+    constructor(cv, o) { this.cv = cv; this.o = Object.assign({ aspect: 1.45, m: [14, 16, 44, 58] }, o); }
+    setX(a, b) { this.o.x = [a, b]; } setY(a, b) { this.o.y = [a, b]; }
+    begin() {
+      const { g, w, h } = fitCanvas(this.cv, this.o.aspect); this.g = g; this.w = w; this.h = h;
+      const [mt, mr, mb, ml] = this.o.m; this.L = ml; this.R = w - mr; this.T = mt; this.B = h - mb;
+      g.clearRect(0, 0, w, h); g.fillStyle = tok.panel; g.fillRect(0, 0, w, h);
+      return this;
+    }
+    tx(v) { const [a, b] = this.o.x; const f = this.o.xlog ? (Math.log10(v) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.L + f * (this.R - this.L); }
+    ty(v) { const [a, b] = this.o.y; const f = this.o.ylog ? (Math.log10(Math.max(v, 1e-300)) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.B - f * (this.B - this.T); }
+    axes() {
+      const g = this.g, o = this.o; g.save();
+      g.font = "12px system-ui,sans-serif"; g.lineWidth = 1;
+      const ticks = (lo, hi, log) => log ? (() => { const t = []; for (let e = Math.ceil(Math.log10(lo) - 1e-9); e <= Math.floor(Math.log10(hi) + 1e-9); e++) t.push(Math.pow(10, e)); return t; })() : niceTicks(lo, hi, o.nt || 5);
+      const xt = ticks(o.x[0], o.x[1], o.xlog), yt0 = ticks(o.y[0], o.y[1], o.ylog);
+      const yt = o.ylog && yt0.length > 8 ? yt0.filter((v, i) => i % 2 === (yt0.length % 2 ? 0 : 1)) : yt0;
+      g.strokeStyle = tok.grid;
+      xt.forEach(v => { const X = this.tx(v); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); });
+      yt.forEach(v => { const Y = this.ty(v); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); });
+      g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
+      g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
+      const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
+      if (!o.noxt) xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      g.textAlign = "right"; g.textBaseline = "middle";
+      yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
+      g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";
+      if (o.xlabel) { g.textAlign = "center"; g.textBaseline = "bottom"; g.fillText(o.xlabel, (this.L + this.R) / 2, this.h - 4); }
+      if (o.ylabel) { g.save(); g.translate(13, (this.T + this.B) / 2); g.rotate(-Math.PI / 2); g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(o.ylabel, 0, 0); g.restore(); }
+      g.restore(); return this;
+    }
+    clip(fn) { const g = this.g; g.save(); g.beginPath(); g.rect(this.L, this.T, this.R - this.L, this.B - this.T); g.clip(); fn(g); g.restore(); return this; }
+    line(xs, ys, s = {}) {
+      return this.clip(g => {
+        g.strokeStyle = s.color || tok.ink; g.lineWidth = s.width || 2; g.setLineDash(s.dash || []); g.lineJoin = "round";
+        g.beginPath(); let pen = false;
+        for (let i = 0; i < xs.length; i++) {
+          const y = ys[i]; if (!isFinite(y) || (this.o.ylog && y <= 0)) { pen = false; continue; }
+          const X = this.tx(xs[i]), Y = Math.max(-1e4, Math.min(1e4, this.ty(y)));
+          pen ? g.lineTo(X, Y) : g.moveTo(X, Y); pen = true;
+        }
+        g.stroke();
+      });
+    }
+    fn(f, s = {}, n = 240) {
+      const [a, b] = this.o.x, xs = [], ys = [];
+      for (let i = 0; i <= n; i++) { const x = this.o.xlog ? a * Math.pow(b / a, i / n) : a + (b - a) * i / n; xs.push(x); ys.push(f(x)); }
+      return this.line(xs, ys, s);
+    }
+    point(x, y, s = {}) { return this.clip(g => { g.fillStyle = s.color || tok.rust; g.strokeStyle = tok.panel; g.lineWidth = 2; g.beginPath(); g.arc(this.tx(x), this.ty(y), s.r || 5, 0, 7); g.fill(); g.stroke(); }); }
+    vline(x, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const X = this.tx(x); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "left"; g.textBaseline = "top"; g.fillText(s.label, X + (s.align === "right" ? -4 : 4), this.T + 4 + (s.dy || 0)); } }); }
+    hline(y, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const Y = this.ty(y); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "right"; g.textBaseline = "bottom"; g.fillText(s.label, s.align === "left" ? this.L + 4 : this.R - 4, Y - 3); } }); }
+    band(x0, x1, color, alpha = .12) { return this.clip(g => { g.globalAlpha = alpha; g.fillStyle = color; g.fillRect(this.tx(x0), this.T, this.tx(x1) - this.tx(x0), this.B - this.T); }); }
+    text(x, y, t, s = {}) { const g = this.g; g.save(); g.font = (s.bold ? "600 " : "") + (s.size || 12) + "px system-ui,sans-serif"; g.fillStyle = s.color || tok.ink; g.textAlign = s.align || "left"; g.textBaseline = s.base || "middle"; g.fillText(t, this.tx(x) + (s.dx || 0), this.ty(y) + (s.dy || 0)); g.restore(); return this; }
+  }
+
+  /* ---------- drawing utilities for device pictures ---------- */
+  function rect(g, x, y, w, h, fill, stroke) { g.fillStyle = fill; g.fillRect(x, y, w, h); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1; g.strokeRect(x + .5, y + .5, w - 1, h - 1); } }
+  function label(g, t, x, y, o = {}) { g.save(); g.font = (o.bold ? "600 " : "") + (o.size || 13) + "px system-ui,sans-serif"; g.fillStyle = o.color || tok.ink; g.textAlign = o.align || "center"; g.textBaseline = o.base || "middle"; g.fillText(t, x, y); g.restore(); }
+  function arrow(g, x0, y0, x1, y1, color, w = 2, head = 8) {
+    g.save(); g.strokeStyle = color; g.fillStyle = color; g.lineWidth = w; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+    const a = Math.atan2(y1 - y0, x1 - x0); g.beginPath(); g.moveTo(x1, y1);
+    g.lineTo(x1 - head * Math.cos(a - .4), y1 - head * Math.sin(a - .4)); g.lineTo(x1 - head * Math.cos(a + .4), y1 - head * Math.sin(a + .4)); g.closePath(); g.fill(); g.restore();
+  }
+  function dot(g, x, y, r, fill, sign) { g.fillStyle = fill; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); if (sign && r >= 4) { g.strokeStyle = "#fff"; g.lineWidth = 1.3; g.beginPath(); g.moveTo(x - r * .55, y); g.lineTo(x + r * .55, y); if (sign === "+") { g.moveTo(x, y - r * .55); g.lineTo(x, y + r * .55); } g.stroke(); } }
+
+  /* ---------- animation loop that pauses off-screen / when paused ---------- */
+  function loop(step) {
+    let last = 0, running = true, visible = true;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const st = { get running() { return running; }, set running(v) { running = v; } };
+    if (reduce) running = false;
+    function f(t) { const dt = Math.min(0.05, (t - last) / 1000 || 0); last = t; if (running && visible && !document.hidden) step(dt); requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+    return st;
+  }
+
+  /* ---------- page chrome: text size, theme, full screen ---------- */
+  function chrome() {
+    const big = document.getElementById("tbig"), th = document.getElementById("ttheme"), fs = document.getElementById("tfs");
+    try { if (localStorage.getItem("nx-big") === "1") document.body.classList.add("big"); const t = localStorage.getItem("nx-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+    big && (big.onclick = () => { const on = document.body.classList.toggle("big"); try { localStorage.setItem("nx-big", on ? "1" : "0"); } catch (e) {} redrawAll(); });
+    th && (th.onclick = () => { const dark = getComputedStyle(root).getPropertyValue("color-scheme").trim() === "dark"; root.dataset.theme = dark ? "light" : "dark"; try { localStorage.setItem("nx-theme", root.dataset.theme); } catch (e) {} redrawAll(); });
+    const lab = document.querySelector(".lab");
+    fs && lab && lab.requestFullscreen ? (fs.onclick = () => document.fullscreenElement ? document.exitFullscreen() : lab.requestFullscreen()) : fs && (fs.hidden = true);
+    document.addEventListener("fullscreenchange", () => setTimeout(redrawAll, 60));
+    readTokens();
+  }
+  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", chrome) : chrome();
+
+  /* ---------- physical constants (SI unless stated) ---------- */
+  const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
+  C.Vt = C.k * C.T / C.q;
+
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+})();
+</script></head>
+<body>
+<div class="top"><div class="wrap">
+<a class="crumb" href="index.html">KKKC6353 Nanoelectronic Devices · Lecture 2 animations</a>
+<div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
+<button id="ttheme" type="button" title="Switch light/dark">Theme</button><button id="tfs" type="button" title="Show the animation full screen">Full screen</button></div></div></div>
+<div class="wrap"><header class="hero">
+    <p class="kicker">Animation 3 of 7 · Document 3, Section 6.1</p>
+    <h1>Quantum-well emission</h1><p class="lede">A quantum-well laser emits at the band gap plus the confinement energies of the electron and the hole. Change the well width and the barrier composition and watch both levels move and the emission wavelength shift.</p></header>
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Band diagram of a GaAs quantum well between Al<sub>x</sub>Ga<sub>1−x</sub>As barriers</h3><canvas id="band"></canvas>
+      <div class="legend"><span><i style="background:var(--blue)"></i>conduction band and electron state</span><span><i style="background:var(--hole)"></i>valence band and heavy-hole state</span><span><i style="background:var(--rust)"></i>emitted photon</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Emission wavelength against well width</h3><canvas id="wl"></canvas></div>
+      <div class="fig"><h3>Where the energy goes</h3><canvas id="bud"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>A type I well traps both carriers.</b> GaAs has a smaller band gap than AlGaAs, so in a thin GaAs layer the conduction band dips down and the valence band bumps up: a well for electrons and a well for holes in the same place. About 65% of the band-gap difference appears in the conduction band and 35% in the valence band.</p>
+<p><b>Both carriers are confined.</b> Each sits in its lowest level, above (or, for the hole, below) its band edge. When an electron and a hole recombine, the photon carries</p>
+<span class="eq">E<sub>photon</sub> = E<sub>g</sub>(GaAs) + E<sub>1e</sub> + E<sub>1hh</sub></span>
+<p>so the narrower the well, the higher the photon energy and the shorter the wavelength. The heavy hole is ten times heavier than the electron, so its confinement energy is much smaller: most of the shift comes from the electron. Deeper barriers (more aluminium) confine more strongly and push the levels further from the band edges.</p>
+<p>GaAs wells emit in the near-infrared, between about 760 and 870 nm: these are the lasers of optical mice, short-reach fibre links and many laser printers. The same idea with InGaN wells in GaN gives the blue LED.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Start at 10 nm, x = 0.3. Read the emission wavelength (about 848 nm) against bulk GaAs (871 nm). How much of the shift is the electron's?</li>
+<li>Predict, then set, 5 nm. The wavelength shortens to about 816 nm. Why does halving the width not double the shift?</li>
+<li>At 3 nm, lower x to 0.1. The levels approach the barrier tops and the shift stops growing: a shallow well cannot hold its electron tightly.</li>
+<li>Find the width that gives 800 nm with x = 0.3. A laser designer tunes the colour this way without changing the material.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does the photon energy exceed the GaAs band gap?</summary>The electron cannot sit at the bottom of the conduction band, nor the hole at the top of the valence band: both have zero-point confinement energies. The photon carries the band gap plus both of them.</details>
+<details><summary>Why is the hole's confinement energy so small?</summary>Confinement energy scales as 1/m*. The heavy hole (0.5 m<sub>0</sub>) is about 7.5 times heavier than the electron (0.067 m<sub>0</sub>), so for the same width its energy is several times smaller.</details>
+<details><summary>Why does the shift saturate in very narrow wells?</summary>The levels cannot rise above the barrier tops. As the well narrows, more of each wavefunction spreads into the barriers and the electron and hole are no longer well confined; eventually the "well" barely binds them.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Finite square wells for the electron (<var>m</var>* = 0.067 m<sub>0</sub>) and the heavy hole (0.50 m<sub>0</sub>), with barrier heights ΔE<sub>c</sub> = 0.65ΔE<sub>g</sub> and ΔE<sub>v</sub> = 0.35ΔE<sub>g</sub>, where</p>
+<span class="eq">E<sub>g</sub>(Al<sub>x</sub>Ga<sub>1−x</sub>As) = 1.424 + 1.247x eV &nbsp; (x &lt; 0.45, 300 K)</span>
+<p>Levels are found from the even-parity matching condition, as in Animation 1.</p>
+<p class="caveat">Left out: the exciton binding energy (about 8 meV, which lowers the photon energy slightly), mass changes at the interfaces, strain, and the light-hole subband. The model reproduces measured GaAs/AlGaAs emission to within about 10 nm.</p></section>
+</main>
+<script>
+/* Quantum-mechanics helpers for the Lecture 2 animations (all energies in eV, lengths in nm). */
+const QM = (() => {
+  const HB2_2M0 = 0.0380998;            // ħ²/2m0 in eV·nm²
+  const h_c = 1239.84;                  // hc in eV·nm
+  const kT300 = 0.025852;
+
+  // ground and excited levels of an infinite well of width L (nm), effective mass m (in m0)
+  const Einf = (n, L, m) => HB2_2M0 * Math.PI * Math.PI * n * n / (m * L * L);
+
+  // bound states of a symmetric finite square well (same mass inside and out), by bisection on
+  // the even/odd matching conditions.  Returns [{E, parity, k, kap}], E measured from the well bottom.
+  function finiteWell(L, V0, m) {
+    const out = [], a = L / 2;
+    const k = E => Math.sqrt(m * E / HB2_2M0), kap = E => Math.sqrt(m * (V0 - E) / HB2_2M0);
+    const fe = E => k(E) * Math.tan(k(E) * a) - kap(E);          // even
+    const fo = E => -k(E) / Math.tan(k(E) * a) - kap(E);         // odd
+    // search between successive poles of tan / cot
+    const u0 = a * Math.sqrt(m * V0 / HB2_2M0), nmax = Math.floor(2 * u0 / Math.PI) + 1;
+    for (let n = 0; n < nmax; n++) {
+      const parity = n % 2 === 0 ? "even" : "odd", f = parity === "even" ? fe : fo;
+      // k·a lies in (nπ/2, (n+1)π/2)
+      const kaLo = n * Math.PI / 2 + 1e-9, kaHi = Math.min((n + 1) * Math.PI / 2 - 1e-9, u0 - 1e-12);
+      if (kaHi <= kaLo) break;
+      const E = ka => HB2_2M0 * (ka / a) * (ka / a) / m;
+      let lo = E(kaLo), hi = E(kaHi), flo = f(lo), fhi = f(hi);
+      if (!(flo * fhi <= 0)) continue;
+      for (let i = 0; i < 80; i++) { const mid = (lo + hi) / 2, fm = f(mid); if (fm * flo <= 0) { hi = mid; fhi = fm; } else { lo = mid; flo = fm; } }
+      const Es = (lo + hi) / 2; out.push({ E: Es, parity, k: k(Es), kap: kap(Es) });
+    }
+    return out;
+  }
+  // normalised wavefunction of a finite-well state at position x (nm, centred on the well)
+  function psiFinite(st, L, x) {
+    const a = L / 2, { k, kap, parity } = st;
+    const inside = parity === "even" ? Math.cos(k * x) : Math.sin(k * x);
+    if (Math.abs(x) <= a) return inside / norm(st, L);
+    const edge = parity === "even" ? Math.cos(k * a) : Math.sin(k * a) * Math.sign(x);
+    return edge * Math.exp(-kap * (Math.abs(x) - a)) / norm(st, L);
+  }
+  function norm(st, L) {
+    if (st._n) return st._n;
+    const a = L / 2, { k, kap, parity } = st;
+    const inside = parity === "even" ? a + Math.sin(2 * k * a) / (2 * k) : a - Math.sin(2 * k * a) / (2 * k);
+    const edge = parity === "even" ? Math.cos(k * a) : Math.sin(k * a);
+    const outside = 2 * edge * edge / (2 * kap);
+    return (st._n = Math.sqrt(inside + outside));
+  }
+
+  // eigenstates of an arbitrary 1-D potential V[i] on a uniform grid dx (nm), effective mass m:
+  // Sturm-sequence bisection for eigenvalues below Emax, inverse iteration for vectors.
+  function solve1D(V, dx, m, Emax, nmax = 8) {
+    const N = V.length, t = HB2_2M0 / (m * dx * dx);
+    const d = V.map(v => v + 2 * t), e = -t;
+    const count = x => { let c = 0, q = d[0] - x; if (q < 0) c++; for (let i = 1; i < N; i++) { q = d[i] - x - e * e / (q === 0 ? 1e-300 : q); if (q < 0) c++; } return c; };
+    const Vmin = Math.min(...V), nb = Math.min(nmax, count(Emax)), res = [];
+    for (let j = 0; j < nb; j++) {
+      let lo = Vmin, hi = Emax;
+      for (let it = 0; it < 60; it++) { const mid = (lo + hi) / 2; if (count(mid) > j) hi = mid; else lo = mid; }
+      const E = (lo + hi) / 2 + 1e-12;
+      let v = new Float64Array(N).fill(1);
+      for (let rep = 0; rep < 3; rep++) {            // solve (H - E) y = v with the Thomas algorithm
+        const c = new Float64Array(N), y = new Float64Array(N); let b = d[0] - E;
+        c[0] = e / b; y[0] = v[0] / b;
+        for (let i = 1; i < N; i++) { b = d[i] - E - e * c[i - 1]; c[i] = e / b; y[i] = (v[i] - e * y[i - 1]) / b; }
+        for (let i = N - 2; i >= 0; i--) y[i] -= c[i] * y[i + 1];
+        let s = 0; for (let i = 0; i < N; i++) s += y[i] * y[i]; s = Math.sqrt(s * dx);
+        for (let i = 0; i < N; i++) v[i] = y[i] / s;
+      }
+      let mx = 0, im = 0; for (let i = 0; i < N; i++) if (Math.abs(v[i]) > mx) { mx = Math.abs(v[i]); im = i; }
+      if (v[im] < 0) for (let i = 0; i < N; i++) v[i] = -v[i];
+      res.push({ E, psi: v });
+    }
+    return res;
+  }
+
+  // approximate sRGB colour of a wavelength in nm; infrared and ultraviolet shown dimmed
+  function wlColor(wl, alpha = 1) {
+    const w = Math.max(380, Math.min(780, wl)); let r, g, b;
+    if (w < 440) { r = -(w - 440) / 60; g = 0; b = 1; } else if (w < 490) { r = 0; g = (w - 440) / 50; b = 1; }
+    else if (w < 510) { r = 0; g = 1; b = -(w - 510) / 20; } else if (w < 580) { r = (w - 510) / 70; g = 1; b = 0; }
+    else if (w < 645) { r = 1; g = -(w - 645) / 65; b = 0; } else { r = 1; g = 0; b = 0; }
+    let f = w < 420 ? 0.3 + 0.7 * (w - 380) / 40 : w > 700 ? 0.3 + 0.7 * (780 - w) / 80 : 1;
+    if (wl > 780) f = 0.28; if (wl < 380) f = 0.3;
+    const c = v => Math.round(255 * Math.pow(Math.max(0, v * f), 0.8));
+    return `rgba(${c(r)},${c(g)},${c(b)},${alpha})`;
+  }
+  const band = wl => wl < 380 ? "ultraviolet" : wl < 450 ? "violet" : wl < 490 ? "blue" : wl < 520 ? "cyan" : wl < 565 ? "green" : wl < 590 ? "yellow" : wl < 625 ? "orange" : wl <= 750 ? "red" : wl < 1400 ? "near-infrared" : wl < 3000 ? "short-wave infrared" : "mid-infrared";
+
+  return { HB2_2M0, h_c, kT300, Einf, finiteWell, psiFinite, solve1D, wlColor, band };
+})();
+
+(() => {
+  const st = { L: 10, x: 0.3 };
+  const me = 0.067, mh = 0.50, Eg = 1.424;
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "L", label: "Well width", min: 2, max: 20, step: 0.1, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "x", label: "Aluminium fraction x in barriers", min: 0.1, max: 0.45, step: 0.01, value: st.x, dp: 2, on: v => { st.x = v; update(); } });
+  const sw = document.createElement("div"); sw.className = "status"; ctl.appendChild(sw);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const wlp = new NX.Plot(document.getElementById("wl"), { aspect: 1.25, x: [2, 20], y: [740, 880], xlabel: "Well width (nm)", ylabel: "Emission wavelength (nm)" });
+  const bud = new NX.Plot(document.getElementById("bud"), { aspect: 1.25, x: [0, 3], y: [1.38, 1.75], xlabel: "axis starts at 1.38 eV", ylabel: "Energy (eV)", nt: 4, noxt: true });
+  const calc = (L, x) => {
+    const dEg = 1.247 * x, Vc = 0.65 * dEg, Vv = 0.35 * dEg;
+    const e = QM.finiteWell(L, Vc, me)[0], hh = QM.finiteWell(L, Vv, mh)[0];
+    const E = Eg + e.E + hh.E; return { Vc, Vv, e, hh, E, wl: QM.h_c / E };
+  };
+  let M;
+  function update() {
+    M = calc(st.L, st.x);
+    ro.innerHTML = `<dt>Barrier gap</dt><dd>${(Eg + 1.247 * st.x).toFixed(3)} eV</dd>
+      <dt>ΔE<sub>c</sub> / ΔE<sub>v</sub></dt><dd>${(M.Vc * 1e3).toFixed(0)} / ${(M.Vv * 1e3).toFixed(0)} meV</dd>
+      <dt>Electron level E<sub>1e</sub></dt><dd>${(M.e.E * 1e3).toFixed(1)} meV</dd>
+      <dt>Heavy-hole level E<sub>1hh</sub></dt><dd>${(M.hh.E * 1e3).toFixed(1)} meV</dd>
+      <dt>Photon energy</dt><dd>${M.E.toFixed(3)} eV</dd>
+      <dt>Wavelength</dt><dd>${M.wl.toFixed(0)} nm</dd>
+      <dt>Shift from bulk GaAs</dt><dd>${(QM.h_c / Eg - M.wl).toFixed(0)} nm shorter</dd>`;
+    sw.innerHTML = `<span style="display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;background:${QM.wlColor(M.wl)}"></span>${QM.band(M.wl)}: ${M.wl < 780 ? "just visible as deep red" : "invisible to the eye"}`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("band"), 1.9);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const span = Math.max(30, st.L * 3), xL = -span / 2, xR = span / 2, a = st.L / 2;
+    // broken energy axis: zoom on the conduction band (top) and valence band (bottom), compress the gap
+    const pl = 60, pr = 150, pt = 12, pb = 30, H = h - pt - pb;
+    const cLo = Eg - 0.04, cHi = Eg + Math.max(0.30, M.Vc + 0.06), vLo = -Math.max(0.17, M.Vv + 0.05), vHi = 0.04;
+    const X = x => pl + (x - xL) / (xR - xL) * (w - pl - pr);
+    const Y = E => E >= cLo ? pt + (cHi - E) / (cHi - cLo) * 0.44 * H : E <= vHi ? pt + 0.56 * H + (vHi - E) / (vHi - vLo) * 0.44 * H : pt + 0.44 * H + (cLo - E) / (cLo - vHi) * 0.12 * H;
+    const Ec = x => Math.abs(x) <= a ? Eg : Eg + M.Vc, Ev = x => Math.abs(x) <= a ? 0 : -M.Vv;
+    // gap shading
+    g.fillStyle = t.chip; g.fillRect(X(xL), Y(Eg + M.Vc), X(-a) - X(xL), Y(-M.Vv) - Y(Eg + M.Vc)); g.fillRect(X(a), Y(Eg + M.Vc), X(xR) - X(a), Y(-M.Vv) - Y(Eg + M.Vc));
+    g.fillStyle = "rgba(233,160,59,.13)"; g.fillRect(X(-a), Y(Eg), X(a) - X(-a), Y(0) - Y(Eg));
+    const prof = (f, col) => { g.strokeStyle = col; g.lineWidth = 2.4; g.beginPath(); [[xL], [-a], [-a + 1e-9], [a - 1e-9], [a], [xR]].forEach(([x], i) => { const yy = Y(f(x === -a ? -a - 1e-6 : x === a ? a + 1e-6 : x)); i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }); g.stroke(); };
+    prof(Ec, t.electron); prof(Ev, t.hole);
+    // axis break marks
+    g.strokeStyle = t.muted; g.lineWidth = 1; [0.47, 0.53].forEach(f => { g.beginPath(); g.moveTo(pl - 14, pt + f * H - 4); g.lineTo(pl - 4, pt + f * H + 4); g.stroke(); });
+    NX.label(g, "≈ gap not to scale", pl + 4, pt + 0.5 * H, { size: 10, color: t.muted, align: "left" });
+    // states
+    const drawState = (s, L, base, sign, col) => {
+      const yb = Y(base); g.strokeStyle = col; g.setLineDash([4, 3]); g.lineWidth = 1; g.beginPath(); g.moveTo(X(xL), yb); g.lineTo(X(xR), yb); g.stroke(); g.setLineDash([]);
+      const amp = 0.10 * H * Math.sqrt(L / 2);
+      g.beginPath(); for (let i = 0; i <= 300; i++) { const x = xL + (xR - xL) * i / 300, p = QM.psiFinite(s, L, x); const yy = yb - sign * amp * p * p * 1.0; i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }
+      g.lineTo(X(xR), yb); g.lineTo(X(xL), yb); g.closePath(); g.globalAlpha = .25; g.fillStyle = col; g.fill(); g.globalAlpha = 1;
+    };
+    drawState(M.e, st.L, Eg + M.e.E, 1, t.electron);
+    drawState(M.hh, st.L, -M.hh.E, -1, t.hole);
+    // photon arrow and wave
+    const xm = X(0); NX.arrow(g, xm, Y(Eg + M.e.E) + 3, xm, Y(-M.hh.E) - 3, t.rust, 2.4, 10);
+    g.strokeStyle = QM.wlColor(Math.min(M.wl, 740)); g.lineWidth = 2.2; g.beginPath();
+    for (let i = 0; i <= 120; i++) { const xx = xm + 12 + i * 1.0, yy = (Y(Eg / 2)) + 7 * Math.sin(i / 120 * Math.PI * 7); i ? g.lineTo(xx, yy) : g.moveTo(xx, yy); }
+    g.stroke(); NX.arrow(g, xm + 120, Y(Eg / 2), xm + 134, Y(Eg / 2), g.strokeStyle, 2.2, 8);
+    NX.label(g, `${M.wl.toFixed(0)} nm`, xm + 78, Y(Eg / 2) - 22, { size: 13, bold: true, color: t.rust });
+    NX.dot(g, xm, Y(Eg + M.e.E) - 4, 6, t.electron, "-"); NX.dot(g, xm, Y(-M.hh.E) + 4, 6, t.hole, "+");
+    // labels
+    const lx = X(xR) + 8;
+    NX.label(g, "E_c", lx, Y(Eg + M.Vc), { align: "left", size: 12, color: t.electron });
+    NX.label(g, `E_1e = ${(M.e.E * 1e3).toFixed(0)} meV`, lx, Y(Eg + M.e.E) + 12, { align: "left", size: 11.5, color: t.electron });
+    NX.label(g, "E_v", lx, Y(-M.Vv), { align: "left", size: 12, color: t.hole });
+    NX.label(g, `E_1hh = ${(M.hh.E * 1e3).toFixed(0)} meV`, lx, Y(-M.hh.E) - 12, { align: "left", size: 11.5, color: t.hole });
+    NX.label(g, "AlGaAs", (X(xL) + X(-a)) / 2, Y(Eg / 2), { size: 12.5, color: t.muted }); NX.label(g, "AlGaAs", (X(a) + X(xR)) / 2, Y(Eg / 2), { size: 12.5, color: t.muted });
+    NX.label(g, "GaAs", X(0), h - pb + 14, { size: 12, color: t.ink, bold: true });
+    NX.label(g, `${st.L.toFixed(1)} nm`, X(0), h - pb - 8, { size: 11, color: t.muted });
+    // plots
+    const Ls = []; for (let L = 2; L <= 20.001; L += 0.25) Ls.push(L);
+    wlp.begin().axes();
+    wlp.hline(QM.h_c / Eg, { label: "bulk GaAs 871 nm", color: t.muted });
+    [[0.15, t.line], [0.3, t.blue], [0.45, t.line]].forEach(([x, c]) => wlp.line(Ls, Ls.map(L => calc(L, x).wl), { color: c, width: x === 0.3 ? 2 : 1.2, dash: x === 0.3 ? [] : [4, 3] }));
+    wlp.line(Ls, Ls.map(L => calc(L, st.x).wl), { color: t.rust, width: 2.6 });
+    wlp.point(st.L, M.wl, { color: t.navy });
+    wlp.text(19.5, 752, "blue: x = 0.3; grey: 0.15, 0.45", { align: "right", size: 11, color: t.muted });
+    bud.setX(0, 3); bud.setY(1.38, Math.max(1.55, M.E + 0.04)); bud.o.tickfmt = null;
+    bud.begin().axes();
+    const parts = [[Eg, t.line, "GaAs gap"], [M.e.E, t.electron, "electron"], [M.hh.E, t.hole, "hole"]];
+    let y0 = 0; bud.clip(g2 => { parts.forEach(([v, c]) => { g2.fillStyle = c; g2.fillRect(bud.tx(1.1), bud.ty(y0 + v), bud.tx(1.9) - bud.tx(1.1), bud.ty(y0) - bud.ty(y0 + v)); y0 += v; }); });
+    bud.text(2.0, (1.38 + Eg) / 2, `gap ${Eg.toFixed(3)} eV`, { size: 11.5 });
+    bud.text(2.0, Eg + M.e.E / 2, `+ ${(M.e.E * 1e3).toFixed(0)} meV (e)`, { size: 11.5, color: t.electron });
+    bud.text(2.0, Eg + M.e.E + M.hh.E / 2 + 0.03, `+ ${(M.hh.E * 1e3).toFixed(0)} meV (hh)`, { size: 11.5, color: t.hole });
+    bud.text(0.1, M.E + 0.03, `photon ${M.E.toFixed(3)} eV`, { size: 12, bold: true, color: t.rust, base: "bottom" });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>
+<footer class="nav wrap"><a href="density-of-states.html" rel="prev"><small>← Previous</small>Density of states, 3D to 0D</a><a href="quantum-cascade-laser.html" rel="next" style="text-align:right"><small>Next →</small>Quantum cascade laser</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
+</body></html>

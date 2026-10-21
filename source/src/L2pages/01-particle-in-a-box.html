@@ -1,0 +1,131 @@
+<!--META
+{"num":1,"slug":"particle-in-a-box","title":"Particle in a box","ref":"Document 1, Sections 4–6","blurb":"Trap an electron in a well and only certain energies are allowed. Change the width, the walls and the effective mass and watch the levels and wavefunctions respond — infinite walls against the finite walls of a real heterostructure."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Energy levels and wavefunctions in the well</h3><canvas id="well"></canvas>
+      <div class="legend"><span><i style="background:var(--ink)"></i>potential energy V(x)</span><span><i style="background:var(--muted)"></i>allowed energies</span><span><i style="background:var(--rust)"></i>ψ or |ψ|², drawn on its level</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>Level energies against well width</h3><canvas id="ew"></canvas></div>
+      <div class="fig"><h3>Probability of finding the electron outside the well</h3><canvas id="pout"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Only standing waves fit.</b> An electron trapped between two walls must be a standing wave, so only certain wavelengths, and therefore certain energies, are allowed. With infinitely high walls the wave must vanish at the walls and exactly <var>n</var> half-wavelengths fit:</p>
+<span class="eq">E<sub>n</sub> = ħ²π²n² / (2m*L²) &nbsp;·&nbsp; n = 1, 2, 3, …</span>
+<p>Halving the width raises every level fourfold; a lighter effective mass raises them too. The lowest level is never zero: confining the electron gives it a minimum kinetic energy, the <b>zero-point energy</b>.</p>
+<p><b>Real walls are finite.</b> In a GaAs well between AlGaAs barriers the walls are only about 0.24 eV high. The wavefunction leaks into the barriers, decaying as e<sup>−κ|x|</sup>, so the electron behaves as if the box were wider and every level sits lower than the infinite-well estimate. Only a limited number of states are bound; above the barrier top the electron is free.</p>
+<p>The readouts compare the level spacing with <var>k</var><sub>B</sub><var>T</var> = 25.9 meV: quantisation shows up at room temperature only when the spacing is several times larger.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Infinite walls, GaAs, <var>L</var> = 10 nm. Read <var>E</var><sub>1</sub> (56 meV) and <var>E</var><sub>2</sub> (225 meV). Ask the class to predict <var>E</var><sub>1</sub> at 5 nm before you move the slider (four times larger: 225 meV).</li>
+<li>Switch to finite walls, 0.24 eV. <var>E</var><sub>1</sub> drops to 32 meV and only three states remain bound. Why is the infinite well so far off?</li>
+<li>Show |ψ|² and narrow the well to 3 nm. Watch the "outside" probability on the right climb: most of the electron is now in the barrier.</li>
+<li>Change the mass from GaAs to silicon's heavy valley (0.92 m<sub>0</sub>). How narrow must the well be before <var>E</var><sub>2</sub> − <var>E</var><sub>1</sub> exceeds 3<var>k</var><sub>B</sub><var>T</var>?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why is n = 0 not allowed?</summary>With <var>n</var> = 0 the infinite-well wavefunction is sin(0) = 0 everywhere: there is no electron. The boundary conditions exclude it; the uncertainty principle explains why the lowest allowed energy must be above zero.</details>
+<details><summary>|ψ|² at the centre of the n = 1 state is about 2/L. Is that the probability of finding the electron there?</summary>No. |ψ|² is a probability density, with units of 1/length. The probability of finding the electron in a small interval Δx is |ψ|²Δx; at an exact point it is zero.</details>
+<details><summary>Why do all finite-well levels sit below the infinite-well levels?</summary>The wavefunction leaks into the barriers, so it fits a longer wavelength than the well width alone allows. A longer wavelength means a smaller momentum and a lower kinetic energy.</details>
+<details><summary>A 10 nm well has E<sub>2</sub> − E<sub>1</sub> = 92 meV with finite walls. What light does the 1→2 transition absorb?</summary>λ = 1240/92 nm ≈ 13.5 µm, in the mid-infrared. This intersubband transition is the basis of quantum-well infrared detectors and quantum cascade lasers (Document 3).</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Infinite well: <var>E</var><sub>n</sub> = ħ²π²n²/(2m*L²), ψ<sub>n</sub> = √(2/L) sin(nπx/L). Finite well: the even and odd matching conditions</p>
+<span class="eq">k tan(kL/2) = κ &nbsp;(even), &nbsp; −k cot(kL/2) = κ &nbsp;(odd), &nbsp; k = √(2m*E)/ħ, κ = √(2m*(V<sub>0</sub>−E))/ħ</span>
+<p>are solved by bisection, and the exact normalised wavefunctions are drawn. The "outside" probability is ∫|ψ|² over the barriers.</p>
+<p class="caveat">Left out: the change of effective mass at the interface (the BenDaniel–Duke condition), band non-parabolicity, and strain. With the same mass inside and out the GaAs levels are slightly low; the trend and orders of magnitude are right.</p></section>
+</main>
+<script>
+/*INCLUDE qm.js*/
+(() => {
+  const st = { walls: "finite", L: 10, V0: 0.24, m: 0.067, show: "psi" };
+  const ctl = document.getElementById("ctl");
+  NX.seg(ctl, { label: "Walls", value: st.walls, options: [["infinite", "Infinite"], ["finite", "Finite (real)"]], on: v => { st.walls = v; vS.el.style.opacity = v === "finite" ? 1 : .45; update(); } });
+  NX.slider(ctl, { id: "L", label: "Well width L", min: 1, max: 30, step: 0.1, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
+  const vS = NX.slider(ctl, { id: "V0", label: "Barrier height V<sub>0</sub>", min: 0.02, max: 1.0, step: 0.01, value: st.V0, unit: "eV", hint: "GaAs/Al<sub>0.3</sub>Ga<sub>0.7</sub>As: 0.24 eV", on: v => { st.V0 = v; update(); } });
+  NX.seg(ctl, { label: "Effective mass", value: st.m, options: [[0.023, "InAs 0.023"], [0.067, "GaAs 0.067"], [0.19, "Si 0.19"], [0.92, "Si 0.92"], [1, "free 1"]], on: v => { st.m = v; update(); } });
+  NX.seg(ctl, { label: "Draw", value: st.show, options: [["psi", "ψ"], ["prob", "|ψ|²"]], on: v => { st.show = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+
+  const COL = ["#2f6fb5", "#d1495b", "#2a9d8f", "#e9a03b", "#7b4fa0", "#3c8d2f", "#8c564b", "#17becf"];
+  const ew = new NX.Plot(document.getElementById("ew"), { aspect: 1.25, x: [1, 30], y: [1, 3000], ylog: true, xlabel: "Well width L (nm)", ylabel: "Energy (meV)" });
+  const po = new NX.Plot(document.getElementById("pout"), { aspect: 1.25, x: [1, 30], y: [0, 100], xlabel: "Well width L (nm)", ylabel: "Outside the well, ground state (%)" });
+  const outside = (s, L) => { let p = 0, dx = 0.01; for (let x = L / 2; x < L / 2 + 40 / s.kap + 0.1; x += dx) p += 2 * QM.psiFinite(s, L, x) ** 2 * dx; return Math.min(1, p); };
+  let S = [];
+  function levels(L) {
+    if (st.walls === "infinite") { const r = []; for (let n = 1; n <= 8; n++) r.push({ E: QM.Einf(n, L, st.m), n }); return r; }
+    return QM.finiteWell(L, st.V0, st.m).map((s, i) => Object.assign(s, { n: i + 1 }));
+  }
+  function update() {
+    S = levels(st.L);
+    const E1 = S[0] ? S[0].E : NaN, E2 = S[1] ? S[1].E : NaN, dE = E2 - E1;
+    const fin = st.walls === "finite";
+    ro.innerHTML = `<dt>E<sub>1</sub> (ground state)</dt><dd>${(E1 * 1e3).toFixed(1)} meV</dd>
+      <dt>E<sub>2</sub></dt><dd>${isFinite(E2) ? (E2 * 1e3).toFixed(1) + " meV" : "not bound"}</dd>
+      <dt>E<sub>2</sub> − E<sub>1</sub></dt><dd>${isFinite(dE) ? (dE * 1e3).toFixed(1) + " meV = " + (dE / QM.kT300).toFixed(1) + " k<sub>B</sub>T" : "—"}</dd>
+      <dt>1→2 photon</dt><dd>${isFinite(dE) ? (QM.h_c / dE / 1000).toFixed(2) + " µm" : "—"}</dd>
+      <dt>Infinite-well E<sub>1</sub></dt><dd>${(QM.Einf(1, st.L, st.m) * 1e3).toFixed(1)} meV</dd>
+      <dt>Bound states</dt><dd>${fin ? S.length : "∞"}</dd>
+      <dt>Decay length 1/κ (n=1)</dt><dd>${fin && S[0] ? (1 / S[0].kap).toFixed(2) + " nm" : "0 (no leakage)"}</dd>`;
+    status.className = "status " + (isFinite(dE) && dE > 3 * QM.kT300 ? "good" : "bad");
+    status.textContent = !isFinite(dE) ? "Only one bound state: the well is too narrow or too shallow to hold a second." :
+      dE > 3 * QM.kT300 ? "Level spacing > 3 k_BT: quantisation is clear at room temperature." :
+      "Level spacing < 3 k_BT: at 300 K electrons spread over many levels and the well behaves almost classically.";
+    drawWell(); drawPlots();
+  }
+  function drawWell() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("well"), 1.9);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const fin = st.walls === "finite", span = Math.max(st.L * 2.6, st.L + 12), xL = -span / 2, xR = span / 2;
+    const Etop = fin ? st.V0 * 1.25 : Math.max(1.15 * (S[Math.min(3, S.length - 1)].E), 0.02);
+    const pl = 56, pr = 110, pt = 16, pb = 34;
+    const X = x => pl + (x - xL) / (xR - xL) * (w - pl - pr), Y = E => h - pb - E / Etop * (h - pt - pb);
+    // barriers
+    g.fillStyle = t.si; const a = st.L / 2;
+    g.fillRect(X(xL), pt, X(-a) - X(xL), Y(0) - pt + (h - pb - Y(0))); g.fillRect(X(a), pt, X(xR) - X(a), h - pb - pt);
+    if (fin) { g.fillStyle = t.panel; g.fillRect(X(xL), pt, X(xR) - X(xL), Y(st.V0) - pt); }
+    g.strokeStyle = t.ink; g.lineWidth = 2.2; g.beginPath();
+    if (fin) { g.moveTo(X(xL), Y(st.V0)); g.lineTo(X(-a), Y(st.V0)); g.lineTo(X(-a), Y(0)); g.lineTo(X(a), Y(0)); g.lineTo(X(a), Y(st.V0)); g.lineTo(X(xR), Y(st.V0)); }
+    else { g.moveTo(X(-a), pt); g.lineTo(X(-a), Y(0)); g.lineTo(X(a), Y(0)); g.lineTo(X(a), pt); }
+    g.stroke();
+    const nshow = fin ? S.length : S.filter(s => s.E < Etop).length;
+    const sp = nshow > 1 ? (S[1].E - S[0].E) : S[0].E;
+    for (let j = 0; j < nshow; j++) {
+      const s = S[j], col = COL[j % COL.length], Ey = Y(s.E);
+      g.strokeStyle = t.muted; g.setLineDash([4, 4]); g.lineWidth = 1; g.beginPath(); g.moveTo(X(xL), Ey); g.lineTo(X(xR), Ey); g.stroke(); g.setLineDash([]);
+      const amp = 0.42 * Math.min(sp, Etop * 0.25) / Etop * (h - pt - pb);
+      const f = x => { let p; if (fin) p = QM.psiFinite(s, st.L, x); else p = Math.abs(x) <= a ? Math.sqrt(2 / st.L) * Math.sin(s.n * Math.PI * (x + a) / st.L) : 0; return st.show === "psi" ? p * Math.sqrt(st.L / 2) : p * p * st.L / 2; };
+      g.beginPath(); for (let i = 0; i <= 300; i++) { const x = xL + (xR - xL) * i / 300; const yy = Ey - amp * f(x); i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }
+      g.lineTo(X(xR), Ey); g.lineTo(X(xL), Ey); g.closePath(); g.globalAlpha = .18; g.fillStyle = col; g.fill(); g.globalAlpha = 1;
+      g.beginPath(); for (let i = 0; i <= 300; i++) { const x = xL + (xR - xL) * i / 300; const yy = Ey - amp * f(x); i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }
+      g.strokeStyle = col; g.lineWidth = 2; g.stroke();
+      NX.label(g, `n=${j + 1}  ${(s.E * 1e3).toFixed(0)} meV`, X(xR) + 6, Ey, { align: "left", size: 12, color: col, bold: true });
+    }
+    if (fin) NX.label(g, `barrier ${(st.V0 * 1e3).toFixed(0)} meV`, X(xR) + 6, Y(st.V0) - 22, { align: "left", size: 11.5, color: t.muted });
+    // axes
+    g.fillStyle = t.muted; g.font = "12px system-ui"; g.textAlign = "center"; g.textBaseline = "top";
+    for (const x of [-a, 0, a]) g.fillText(x === 0 ? "0" : (x > 0 ? "+" : "−") + Math.abs(x).toFixed(1) + " nm", X(x), h - pb + 6);
+    g.save(); g.translate(14, (pt + h - pb) / 2); g.rotate(-Math.PI / 2); g.textAlign = "center"; g.fillStyle = t.ink; g.fillText("Energy above the well bottom", 0, 0); g.restore();
+    g.strokeStyle = t.ink; g.lineWidth = 1; g.beginPath(); g.moveTo(X(-a), h - pb + 22); g.lineTo(X(a), h - pb + 22); g.stroke();
+  }
+  function drawPlots() {
+    const t = NX.tok, Ls = []; for (let L = 1; L <= 30.001; L += 0.25) Ls.push(L);
+    ew.begin().axes();
+    ew.hline(QM.kT300 * 1e3, { label: "k_BT = 25.9 meV", color: t.muted });
+    if (st.walls === "finite") ew.hline(st.V0 * 1e3, { label: "barrier", color: t.ink, dash: [2, 3] });
+    for (let n = 1; n <= 3; n++) {
+      ew.line(Ls, Ls.map(L => QM.Einf(n, L, st.m) * 1e3), { color: COL[n - 1], width: 1.2, dash: [5, 4] });
+      if (st.walls === "finite") ew.line(Ls, Ls.map(L => { const s = QM.finiteWell(L, st.V0, st.m)[n - 1]; return s ? s.E * 1e3 : NaN; }), { color: COL[n - 1], width: 2.4 });
+    }
+    ew.text(2, 2200, st.walls === "finite" ? "solid: finite well · dashed: infinite" : "infinite well, n = 1, 2, 3", { size: 11.5, color: t.muted });
+    S.slice(0, 3).forEach((s, j) => ew.point(st.L, s.E * 1e3, { color: COL[j], r: 4.5 }));
+    po.begin().axes();
+    if (st.walls === "finite") {
+      po.line(Ls, Ls.map(L => { const s = QM.finiteWell(L, st.V0, st.m)[0]; return s ? 100 * outside(s, L) : NaN; }), { color: t.rust, width: 2.4 });
+      po.point(st.L, 100 * outside(S[0], st.L), { color: t.navy });
+    } else po.text(15.5, 50, "Infinite walls: never outside", { align: "center", color: t.muted });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>

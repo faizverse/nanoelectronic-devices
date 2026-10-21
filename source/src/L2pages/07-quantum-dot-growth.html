@@ -1,0 +1,156 @@
+<!--META
+{"num":7,"slug":"quantum-dot-growth","title":"Growing quantum dots","ref":"Document 3, Sections 3–4","blurb":"Two ways nature builds quantum dots for us: a strained film that breaks up into islands, and nanocrystals that nucleate and grow in a hot flask. Deposit, inject, watch and quench."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3 id="t0">Growth</h3><canvas id="pic"></canvas></div>
+    <div class="figs">
+      <div class="fig"><h3 id="t1"></h3><canvas id="pa"></canvas></div>
+      <div class="fig"><h3 id="t2"></h3><canvas id="pb"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Self-assembled (Stranski–Krastanov) dots.</b> Deposit InAs on GaAs, atom layer by atom layer. InAs's natural lattice is 7% larger, so the film grows compressed to fit the substrate. Strain energy builds with each layer. At a critical thickness — about <b>1.7 monolayers</b> for InAs on GaAs — it becomes cheaper for further material to gather into islands whose tops can relax. The islands, a few nanometres tall, are quantum dots; the thin film left underneath is the <b>wetting layer</b>. A smaller mismatch postpones the transition: Ge on Si (4%) needs about 3 monolayers.</p>
+<p><b>Colloidal (hot-injection) dots.</b> Inject precursors into a hot solvent and the dissolved "monomer" is suddenly far above its solubility. Once it passes a threshold, nuclei form in a burst, consuming monomer so fast that the concentration falls back below the threshold within moments: no new nuclei form after that, so all the dots are born together (LaMer). They then grow. While monomer is plentiful, small dots grow faster than large ones and the sizes <b>focus</b>. When monomer runs low, small dots dissolve to feed large ones (<b>Ostwald ripening</b>) and the sizes spread again — so growth is stopped by cooling, or quenching, at the right moment.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Self-assembled, InAs/GaAs. Slowly raise the coverage. Ask the class to call out when islands appear (1.7 ML). What happens to the wetting layer after that?</li>
+<li>Switch to Ge/Si and repeat. Why does the transition come later?</li>
+<li>Colloidal. Press Inject and watch the concentration plot: a sharp burst of nucleation, then growth only. Watch the spread readout fall, then rise. Quench when it is smallest.</li>
+<li>Inject again with more precursor. Do you get more dots or bigger dots? Then raise the growth temperature: what changes?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Is Stranski–Krastanov growth top-down or bottom-up?</summary>Bottom-up. Nothing is patterned or removed; the atoms arrange themselves into islands because that lowers the strain energy.</details>
+<details><summary>Why must nucleation be short for uniform colloidal dots?</summary>Dots that nucleate later have less time to grow and end up smaller. A single short burst gives every dot the same start, and the growth stage can then narrow the distribution further.</details>
+<details><summary>Why do small dots dissolve during Ostwald ripening?</summary>Atoms on a strongly curved surface are less tightly bound, so a small dot's equilibrium solubility is higher (the Gibbs–Thomson effect). When the monomer concentration falls below that, small dots lose atoms to the solution while larger ones still gain them.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p><b>SK:</b> the wetting layer grows to a critical thickness h<sub>c</sub> ≈ 12.2/ε ML (ε, the mismatch in per cent; this gives 1.7 ML for InAs/GaAs, 2.9 ML for Ge/Si); further material goes into islands with a fixed aspect ratio. <b>Colloidal:</b> nucleation rate J ∝ exp(−B/ln²S) for supersaturation S; diffusion-limited growth with the Gibbs–Thomson correction,</p>
+<span class="eq">dr/dt = G (S − e<sup>α/r</sup>) / r, &nbsp; with S falling as monomer is consumed</span>
+<p>Colours use the CdSe sizing curve of Animation 5.</p>
+<p class="caveat">Both models are qualitative. Island density, size and shape depend on temperature and growth rate in ways not modelled, and the colloidal time scale is illustrative: real syntheses take seconds to tens of minutes.</p></section>
+</main>
+<script>
+/*INCLUDE qm.js*/
+(() => {
+  const SYS = { "InAs/GaAs": { eps: 7.2, film: "#e9a03b", sub: "#9aaabd", isl: "#d1495b" }, "In₀.₅Ga₀.₅As/GaAs": { eps: 3.6, film: "#e8c05a", sub: "#9aaabd", isl: "#c98a3a" }, "Ge/Si": { eps: 4.2, film: "#7fb3a0", sub: "#b9c4d6", isl: "#2a9d8f" } };
+  const st = { mode: "sk", sys: "InAs/GaAs", cov: 1.0, C0: 5, T: 280 };
+  const ctl = document.getElementById("ctl");
+  const skBox = document.createElement("div"), coBox = document.createElement("div");
+  NX.seg(ctl, { label: "Method", value: st.mode, options: [["sk", "Self-assembled (SK)"], ["col", "Colloidal"]], on: v => { st.mode = v; layout(); } });
+  ctl.appendChild(skBox); ctl.appendChild(coBox);
+  NX.seg(skBox, { label: "Materials", value: st.sys, options: Object.keys(SYS).map(k => [k, k]), on: v => { st.sys = v; draw(); } });
+  const sCov = NX.slider(skBox, { id: "cov", label: "Material deposited", min: 0, max: 4, step: 0.02, value: st.cov, unit: "ML", dp: 2, on: v => { st.cov = v; draw(); } });
+  NX.slider(coBox, { id: "C0", label: "Precursor amount", min: 4.5, max: 7, step: 0.1, value: st.C0, dp: 1, hint: "initial supersaturation S₀ at injection", on: v => { st.C0 = v; } });
+  NX.slider(coBox, { id: "T", label: "Growth temperature", min: 240, max: 320, step: 1, value: st.T, unit: "°C", dp: 0, on: v => { st.T = v; } });
+  const bb = document.createElement("div"); bb.className = "btnrow"; bb.innerHTML = '<button class="btn" type="button" id="inj">Inject</button><button class="btn ghost" type="button" id="qn">Quench</button>'; coBox.appendChild(bb);
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const pa = new NX.Plot(document.getElementById("pa"), { aspect: 1.25, x: [0, 4], y: [0, 4], xlabel: "", ylabel: "" });
+  const pb = new NX.Plot(document.getElementById("pb"), { aspect: 1.25, x: [0, 4], y: [0, 4], xlabel: "", ylabel: "" });
+  const T0 = document.getElementById("t0"), T1 = document.getElementById("t1"), T2 = document.getElementById("t2");
+  function layout() {
+    skBox.hidden = st.mode !== "sk"; coBox.hidden = st.mode !== "col";
+    if (st.mode === "sk") {
+      T0.textContent = "Side view of the growing surface (one ball = one atomic site)"; T1.textContent = "Where the deposited material goes"; T2.textContent = "Critical thickness against lattice mismatch";
+      pa.o.x = [0, 4]; pa.o.y = [0, 4]; pa.o.xlabel = "Deposited (ML)"; pa.o.ylabel = "Thickness (ML equivalent)"; pa.o.ylog = false;
+      pb.o.x = [1, 8]; pb.o.y = [0, 8]; pb.o.xlabel = "Lattice mismatch (%)"; pb.o.ylabel = "Critical thickness (ML)";
+    } else {
+      T0.textContent = "Nanocrystals in the flask (size and colour to scale with each other)"; T1.textContent = "Monomer supersaturation S against time"; T2.textContent = "Size distribution";
+      pa.o.x = [0, 30]; pa.o.y = [0, 8.5]; pa.o.xlabel = "Time (min, illustrative)"; pa.o.ylabel = "Supersaturation S";
+      pb.o.x = [1, 9]; pb.o.y = [0, 1.1]; pb.o.xlabel = "Diameter (nm)"; pb.o.ylabel = "Fraction (normalised)";
+      if (!sim.parts.length && sim.t === 0) inject();
+    }
+    draw();
+  }
+  /* ---------------- SK ---------------- */
+  function skState() { const s = SYS[st.sys], hc = 12.2 / s.eps, wl = Math.min(st.cov, hc), isl = Math.max(0, st.cov - hc); return { s, hc, wl, isl }; }
+  function drawSK() {
+    const t = NX.tok, { s, hc, wl, isl } = skState();
+    const { g, w, h } = NX.fitCanvas(document.getElementById("pic"), 2.6);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const cols = 64, r = w / cols / 2, base = h - 12;
+    for (let row = 0; row < 4; row++) for (let i = 0; i < cols; i++) NX.dot(g, (i + 0.5) * 2 * r, base - row * 1.75 * r, r * 0.86, s.sub);
+    const y0 = base - 4 * 1.75 * r;
+    const full = Math.floor(wl), frac = wl - full;
+    for (let row = 0; row < Math.ceil(wl); row++) for (let i = 0; i < cols; i++) {
+      const on = row < full || ((i * 37) % 100) / 100 < frac; if (on) NX.dot(g, (i + 0.5) * 2 * r, y0 - row * 1.75 * r, r * 0.86, s.film);
+    }
+    if (isl > 0) {
+      const nI = s.eps > 5 ? 3 : 2, total = isl * cols, per = total / nI;            // atoms (columns × layers) per island
+      const k = Math.max(1, Math.round(Math.sqrt(per / 0.9)));                   // pyramid with base 2k, height ~k
+      for (let q = 0; q < nI; q++) {
+        const cx = Math.round(cols * (q + 0.5) / nI) + (q % 2 ? 2 : -1), top = y0 - Math.ceil(wl) * 1.75 * r;
+        let left = per;
+        for (let lev = 0; lev < 2 * k && left > 0; lev++) { const half = Math.max(1, k - Math.floor(lev / 2)); for (let i = cx - half; i < cx + half && left > 0; i++) { if (i < 0 || i >= cols) continue; NX.dot(g, (i + 0.5) * 2 * r + (lev % 2) * r * 0.5, top - lev * 1.75 * r, r * 0.86, s.isl); left--; } }
+      }
+    }
+    NX.label(g, "substrate", 36, base - 1.2 * r, { size: 11, color: t.ink });
+    if (wl > 0) NX.label(g, "wetting layer", w - 58, y0 - 4 * r, { size: 11, color: t.ink });
+    if (isl > 0) NX.label(g, "islands = quantum dots", w / 2, 14, { size: 12, color: s.isl, bold: true });
+    status.className = "status " + (isl > 0 ? "good" : "");
+    status.textContent = isl > 0 ? `Past the critical thickness (${hc.toFixed(1)} ML): new material gathers into strained islands.` : `Below the critical thickness (${hc.toFixed(1)} ML): the film grows flat, strained to fit the substrate.`;
+    ro.innerHTML = `<dt>Lattice mismatch</dt><dd>${s.eps.toFixed(1)} %</dd><dt>Critical thickness</dt><dd>${hc.toFixed(2)} ML</dd>
+      <dt>Wetting layer</dt><dd>${wl.toFixed(2)} ML (${(wl * 0.30).toFixed(2)} nm)</dd><dt>In islands</dt><dd>${isl.toFixed(2)} ML equivalent</dd>
+      <dt>Typical InAs dot</dt><dd>≈ 20 nm wide, 5 nm tall</dd><dt>Typical density</dt><dd>10⁹–10¹¹ cm⁻²</dd>`;
+    pa.begin().axes();
+    pa.fn(c => Math.min(c, hc), { color: t.gold, width: 2.4 }); pa.fn(c => Math.max(0, c - hc), { color: t.rust, width: 2.4 });
+    pa.vline(hc, { label: "h_c", color: t.muted }); pa.point(st.cov, wl, { color: t.gold }); pa.point(st.cov, isl, { color: t.rust });
+    pa.text(0.15, 3.7, "gold: wetting layer · rust: islands", { size: 11, color: t.muted });
+    pb.begin().axes(); pb.fn(e => 12.2 / e, { color: t.blue, width: 2.2 });
+    Object.entries(SYS).forEach(([k, v]) => { pb.point(v.eps, 12.2 / v.eps, { color: k === st.sys ? t.rust : t.muted, r: k === st.sys ? 6 : 4 }); pb.text(v.eps, 12.2 / v.eps, k, { dx: 8, dy: -10, size: 11, color: t.ink }); });
+  }
+  /* ---------------- colloidal ---------------- */
+  const sim = { t: 0, S: 1, parts: [], hist: [], quenched: false, running: false };
+  const alpha = 0.55, r0 = 0.55; const sim2 = null;
+  function inject() { sim.t = 0; sim.S = st.C0; sim.parts = []; sim.hist = [[0, sim.S]]; sim.quenched = false; sim.running = true; sim.nuc = 0; sim.beta = 0.0012; sim.minSpread = 1; sim.J = 0; }
+  document.getElementById("inj").onclick = inject;
+  document.getElementById("qn").onclick = () => { sim.quenched = true; sim.running = false; };
+  function stepSim(dtReal) {
+    if (!sim.running) return;
+    const G = 0.4 * Math.exp((st.T - 280) / 28);
+    let rem = dtReal * 1.2;                                 // simulated minutes per real second
+    while (rem > 0) {
+      const dt = Math.min(rem, 0.01); rem -= dt;
+      const lnS = Math.log(Math.max(1.0001, sim.S));
+      const J = sim.S > 1 ? 3e7 * Math.exp(-30 / (lnS * lnS)) : 0; sim.J = J;
+      let newN = J * dt; while (newN > 0 && sim.parts.length < 1500) { if (newN >= 1 || Math.random() < newN) sim.parts.push({ r: r0 * (1 + 0.1 * Math.random()), x: Math.random(), y: Math.random() }); newN -= 1; }
+      let vol = 0;
+      sim.parts.forEach(p => { p.r += G * (sim.S - Math.exp(alpha / p.r)) / p.r * dt; vol += p.r ** 3; });
+      sim.parts = sim.parts.filter(p => p.r > 0.35);
+      sim.S = Math.max(0.2, st.C0 - sim.beta * vol);
+      sim.t += dt;
+    }
+    if (sim.hist.length === 0 || sim.t - sim.hist[sim.hist.length - 1][0] > 0.1) sim.hist.push([sim.t, sim.S]);
+    if (sim.t >= 30) sim.running = false;
+  }
+  const lamY = d => { const D = l => 1.6122e-9 * l ** 4 - 2.6575e-6 * l ** 3 + 1.6242e-3 * l ** 2 - 0.4277 * l + 41.57; if (d < D(400)) return 400; if (d > D(660)) return 680; let lo = 400, hi = 660; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; D(m) < d ? lo = m : hi = m; } return (lo + hi) / 2 + 20; };
+  function drawCol() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("pic"), 2.6);
+    g.fillStyle = "#0b1020"; g.fillRect(0, 0, w, h);
+    const P = sim.parts, n = P.length, show = P.slice(0, 260), sc = Math.min(w, h) / 70;
+    show.forEach(p => { const x = p.x * (w - 24) + 12, y = 26 + p.y * (h - 40); g.fillStyle = QM.wlColor(lamY(2 * p.r)); g.beginPath(); g.arc(x, y, Math.max(1.2, p.r * sc), 0, 7); g.fill(); });
+    const ds = P.map(p => 2 * p.r), mean = n ? ds.reduce((a, b) => a + b, 0) / n : NaN, sd = n ? Math.sqrt(ds.reduce((a, b) => a + (b - mean) ** 2, 0) / n) : NaN;
+    NX.label(g, sim.running ? `growing · t = ${sim.t.toFixed(1)} min` : sim.quenched ? `quenched at ${sim.t.toFixed(1)} min` : n ? "finished" : "press Inject", w / 2, 14, { color: "#e6ebf1", size: 12.5, bold: true });
+    const stage = !n ? "" : sim.J > 5 ? "Nucleation burst: new dots are forming." : (sd / mean < (sim.minSpread || 1) + 0.002 ? "Growth with size focusing: the spread is narrowing." : "Ripening: monomer is scarce, small dots dissolve and the spread grows.");
+    if (n && sim.J <= 5 && sim.running) sim.minSpread = Math.min(sim.minSpread || 1, sd / mean);
+    status.className = "status " + (sim.J > 5 ? "" : sd / mean <= (sim.minSpread || 1) + 0.002 ? "good" : "bad");
+    status.textContent = sim.quenched ? `Quenched: growth stopped with a ${(100 * sd / mean).toFixed(1)} % size spread.` : (stage || "Press Inject to start a synthesis.");
+    ro.innerHTML = `<dt>Supersaturation S</dt><dd>${sim.S.toFixed(2)}</dd><dt>Dots formed (simulated)</dt><dd>${n}</dd>
+      <dt>Mean diameter</dt><dd>${isFinite(mean) ? mean.toFixed(2) + " nm" : "—"}</dd><dt>Size spread σ/d</dt><dd>${isFinite(sd) ? (100 * sd / mean).toFixed(1) + " %" : "—"}</dd>
+      <dt>Emission (CdSe)</dt><dd>${isFinite(mean) ? lamY(mean).toFixed(0) + " nm" : "—"}</dd>`;
+    pa.begin().axes();
+    pa.hline(4.1, { label: "nucleation threshold", color: t.rust }); pa.hline(1, { label: "solubility", color: t.muted });
+    if (sim.hist.length > 1) pa.line(sim.hist.map(q => q[0]), sim.hist.map(q => q[1]), { color: t.ink, width: 2.2 });
+    pb.begin().axes();
+    if (n) {
+      const bins = new Array(64).fill(0); ds.forEach(d => { const b = Math.floor((d - 1) / 0.125); if (b >= 0 && b < 64) bins[b]++; });
+      const mx = Math.max(...bins);
+      pb.clip(g2 => bins.forEach((c, b) => { if (!c) return; const d = 1 + b * 0.125; g2.fillStyle = QM.wlColor(lamY(d + 0.06)); g2.fillRect(pb.tx(d), pb.ty(c / mx), pb.tx(d + 0.125) - pb.tx(d) - 0.5, pb.ty(0) - pb.ty(c / mx)); }));
+    }
+  }
+  function draw() { st.mode === "sk" ? drawSK() : drawCol(); }
+  NX.onRedraw(draw); layout();
+  NX.loop(dt => { if (st.mode === "col") { stepSim(dt); drawCol(); } });
+})();
+</script>
