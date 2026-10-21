@@ -1,0 +1,117 @@
+<!--META
+{"num":5,"slug":"quantum-dot-colour","title":"Quantum-dot colour","ref":"Document 2, Section 6","blurb":"The same material glows a different colour depending only on the size of the crystal. Grow the dot, change the material, and compare the Brus equation's prediction with what is actually measured."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>The nanocrystal under ultraviolet light</h3><canvas id="dot"></canvas></div>
+      <div class="fig"><h3>Lowest exciton energy against diameter</h3><canvas id="ed"></canvas></div>
+    </div>
+    <div class="fig"><h3>Emission spectrum (the shaded strip is the visible range)</h3><canvas id="sp"></canvas></div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Size sets the colour.</b> When a dot absorbs light it makes an electron and a hole. In a crystal smaller than the natural size of their bound pair (the exciton Bohr radius), both are squeezed by the walls and gain confinement energy that grows as 1/R². Their Coulomb attraction pulls the energy down, but only as 1/R. The <b>Brus equation</b> adds the two to the bulk band gap:</p>
+<span class="eq">E(R) = E<sub>g</sub> + (ħ²π²/2R²)(1/m<sub>e</sub>* + 1/m<sub>h</sub>*) − 1.8e²/(4πε<sub>0</sub>ε<sub>r</sub>R)</span>
+<p>Small dots therefore glow blue and large dots red — <em>within one material</em>. The material's band gap is the floor: no dot can emit below it. CdSe covers the visible; PbS dots of the same size glow in the infrared.</p>
+<p><b>The Brus equation overshoots.</b> For dots a few nanometres across, the effective-mass picture breaks down: the bands are not parabolic so far from their edges and the walls are not infinitely high. The solid curve is the measured "sizing curve" used in laboratories; the dashed curve is Brus. They agree for large dots and part company below about 5 nm.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>CdSe, measured curve. Slide from 2 nm to 7 nm and call out the colours. Which size gives the green of a display (530 nm)?</li>
+<li>Switch to the Brus equation. At 3 nm it predicts violet-ultraviolet; the measured dot is green. How large is the error in eV?</li>
+<li>Change to PbS at the same 3 nm. The light is now infrared. Why, if the size is the same?</li>
+<li>Raise the size spread from 3% to 10%. The emission line broadens: why display makers care about uniform dots.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does the confinement term win over the Coulomb term in small dots?</summary>Confinement grows as 1/R² and Coulomb attraction as 1/R. Halving the radius quadruples the first but only doubles the second, so in small enough dots confinement dominates and the energy rises.</details>
+<details><summary>Why are PbS dots in strong confinement even at 8 nm?</summary>PbS has a very light electron and hole and a large dielectric constant, so its exciton Bohr radius is about 18–20 nm. Any dot smaller than that is strongly confined.</details>
+<details><summary>Why is the emission slightly redder than the absorption peak?</summary>The emitting state relaxes slightly after absorption (the Stokes shift, a few tens of meV), so emission sits just below the first absorption peak.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Brus (1984) with the parameters below; "measured" curves are empirical sizing curves: CdSe and CdTe from Yu et al., <em>Chem. Mater.</em> 15, 2854 (2003); PbS from Moreels et al., <em>ACS Nano</em> 3, 3023 (2009). Emission is drawn 30 meV below the first exciton, with a width set by the size spread through dE/dd.</p>
+<p>CdSe: E<sub>g</sub> 1.74 eV, m<sub>e</sub>* 0.13, m<sub>h</sub>* 0.45, ε<sub>r</sub> 10.6. CdTe: 1.50, 0.10, 0.40, 10.2. InP: 1.34, 0.077, 0.60, 12.5. PbS: 0.41, 0.085, 0.085, 17.2.</p>
+<p class="caveat">Left out: fine structure, surface and ligand effects, and non-parabolic bands (which is why Brus overshoots). InP has no simple published sizing curve, so only Brus is shown for it. Colours on screen are approximate.</p></section>
+</main>
+<script>
+/*INCLUDE qm.js*/
+(() => {
+  const MAT = {
+    CdSe: { Eg: 1.74, me: 0.13, mh: 0.45, er: 10.6, d: [1.8, 8],
+            meas: d => { // invert Yu 2003: D(λ) polynomial, valid 1.8–8 nm
+              const D = l => 1.6122e-9 * l ** 4 - 2.6575e-6 * l ** 3 + 1.6242e-3 * l ** 2 - 0.4277 * l + 41.57;
+              let lo = 400, hi = 660; if (d < D(lo) || d > D(hi)) return NaN; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; D(m) < d ? lo = m : hi = m; } return QM.h_c / ((lo + hi) / 2); } },
+    CdTe: { Eg: 1.50, me: 0.10, mh: 0.40, er: 10.2, d: [2.5, 8],
+            meas: d => { const D = l => 9.8127e-7 * l ** 3 - 1.7147e-3 * l ** 2 + 1.0064 * l - 194.84;
+              let lo = 500, hi = 760; if (d < D(lo) || d > D(hi)) return NaN; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; D(m) < d ? lo = m : hi = m; } return QM.h_c / ((lo + hi) / 2); } },
+    InP: { Eg: 1.34, me: 0.077, mh: 0.60, er: 12.5, d: [2, 8], meas: null },
+    PbS: { Eg: 0.41, me: 0.085, mh: 0.085, er: 17.2, d: [2, 10], meas: d => 0.41 + 1 / (0.0252 * d * d + 0.283 * d) },
+  };
+  const st = { mat: "CdSe", d: 3.0, model: "meas", spread: 0.05 };
+  const ctl = document.getElementById("ctl");
+  NX.seg(ctl, { label: "Material", value: st.mat, options: Object.keys(MAT).map(k => [k, k]), on: v => { st.mat = v; if (!MAT[v].meas) { st.model = "brus"; mS.value = "brus"; } update(); } });
+  NX.slider(ctl, { id: "d", label: "Dot diameter", min: 1.8, max: 10, step: 0.05, value: st.d, unit: "nm", dp: 2, on: v => { st.d = v; update(); } });
+  const mS = NX.seg(ctl, { label: "Energy from", value: st.model, options: [["meas", "Measured curve"], ["brus", "Brus equation"]], on: v => { st.model = v; update(); } });
+  NX.slider(ctl, { id: "sp", label: "Size spread (1σ)", min: 0.02, max: 0.15, step: 0.005, value: st.spread, fmt: v => (v * 100).toFixed(1) + " %", on: v => { st.spread = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const ed = new NX.Plot(document.getElementById("ed"), { aspect: 1.15, x: [1.5, 10], y: [0.3, 3.6], xlabel: "Diameter (nm)", ylabel: "Exciton energy (eV)" });
+  const sp = new NX.Plot(document.getElementById("sp"), { aspect: 3.2, x: [350, 2200], y: [0, 1.15], xlabel: "Wavelength (nm)", ylabel: "", m: [10, 16, 40, 30] });
+  const parts = (mt, d) => { const R = d / 2, conf = QM.HB2_2M0 * Math.PI * Math.PI / (R * R) * (1 / mt.me + 1 / mt.mh), coul = 1.8 * 1.44 / (mt.er * R); return { conf, coul, brus: mt.Eg + conf - coul }; };
+  const energy = (mt, d, model) => model === "meas" && mt.meas ? mt.meas(d) : parts(mt, d).brus;
+  let M;
+  function update() {
+    const mt = MAT[st.mat], P = parts(mt, st.d), meas = mt.meas ? mt.meas(st.d) : NaN;
+    let E = st.model === "meas" && mt.meas ? meas : P.brus, outOfRange = false;
+    if (!isFinite(E)) { E = P.brus; outOfRange = true; }
+    const Eem = E - 0.03, wl = QM.h_c / Eem;
+    const dEdd = (energy(mt, st.d + 0.05, st.model) - energy(mt, st.d - 0.05, st.model)) / 0.1;
+    const sigE = Math.abs(isFinite(dEdd) ? dEdd : (parts(mt, st.d + .05).brus - parts(mt, st.d - .05).brus) / .1) * st.spread * st.d;
+    const mu = 1 / (1 / mt.me + 1 / mt.mh), aB = mt.er / mu * 0.0529;
+    M = { mt, P, E, Eem, wl, sigE, aB, meas, outOfRange };
+    status.className = "status " + (outOfRange ? "bad" : "");
+    status.innerHTML = outOfRange ? "This size is outside the measured curve; showing the Brus estimate." :
+      `<span style="display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;background:${QM.wlColor(wl)}"></span>Emits ${QM.band(wl)} light at about ${wl.toFixed(0)} nm.`;
+    ro.innerHTML = `<dt>Bulk band gap</dt><dd>${mt.Eg.toFixed(2)} eV</dd>
+      <dt>+ Confinement</dt><dd>${P.conf.toFixed(3)} eV</dd>
+      <dt>− Coulomb</dt><dd>${P.coul.toFixed(3)} eV</dd>
+      <dt>Brus total</dt><dd>${P.brus.toFixed(3)} eV</dd>
+      <dt>Measured</dt><dd>${isFinite(meas) ? meas.toFixed(3) + " eV" : "—"}</dd>
+      <dt>Emission peak</dt><dd>${wl.toFixed(0)} nm</dd>
+      <dt>Linewidth (FWHM)</dt><dd>${(2.355 * M.sigE * 1e3).toFixed(0)} meV</dd>
+      <dt>Bohr radius a<sub>B</sub></dt><dd>${aB.toFixed(1)} nm</dd><dt>Regime</dt><dd>${st.d / 2 < aB ? "strong" : "weak"} confinement</dd>`;
+    draw();
+  }
+  function draw() {
+    const t = NX.tok, mt = M.mt;
+    // nanocrystal picture
+    { const { g, w, h } = NX.fitCanvas(document.getElementById("dot"), 1.15);
+      g.fillStyle = "#0b1020"; g.fillRect(0, 0, w, h);
+      const R = Math.min(w, h) * 0.38 * st.d / 10, cx = w / 2, cy = h / 2, col = QM.wlColor(M.wl, 1);
+      const glow = g.createRadialGradient(cx, cy, R * 0.5, cx, cy, R * 3.2);
+      glow.addColorStop(0, QM.wlColor(M.wl, M.wl > 780 ? 0.25 : 0.85)); glow.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = glow; g.beginPath(); g.arc(cx, cy, R * 3.2, 0, 7); g.fill();
+      const a = Math.max(2.2, R / (st.d / 0.6));          // atom spacing ~0.3 nm drawn
+      g.save(); g.beginPath(); g.arc(cx, cy, R, 0, 7); g.clip();
+      for (let y = -R; y <= R; y += a * 0.87) for (let x = -R; x <= R; x += a) { const xx = x + ((Math.round(y / (a * .87)) & 1) ? a / 2 : 0); if (xx * xx + y * y < R * R) { g.fillStyle = (Math.round(xx / a + y / a) & 1) ? "rgba(255,255,255,.85)" : col; g.beginPath(); g.arc(cx + xx, cy + y, a * 0.36, 0, 7); g.fill(); } }
+      g.restore();
+      g.strokeStyle = "rgba(255,255,255,.35)"; g.lineWidth = 1;
+      for (let k = 0; k < 28; k++) { const th = k / 28 * 2 * Math.PI; g.beginPath(); g.moveTo(cx + R * Math.cos(th), cy + R * Math.sin(th)); g.lineTo(cx + (R + 9) * Math.cos(th + 0.1), cy + (R + 9) * Math.sin(th + 0.1)); g.stroke(); }
+      NX.label(g, `${st.mat}, ${st.d.toFixed(1)} nm`, w / 2, 16, { color: "#e6ebf1", size: 13, bold: true });
+      NX.label(g, M.wl > 780 ? "infrared: invisible to the eye" : `${M.wl.toFixed(0)} nm`, w / 2, h - 14, { color: "#c9d3de", size: 12 });
+      NX.label(g, "short lines: surface ligands", w / 2, h - 30, { color: "#7d8794", size: 10.5 });
+    }
+    ed.begin().axes();
+    ed.hline(mt.Eg, { label: "bulk gap", color: t.muted });
+    ed.fn(d => d < mt.d[0] - 0.3 ? NaN : parts(mt, d).brus, { color: t.ink, width: 1.6, dash: [6, 4] });
+    if (mt.meas) ed.fn(d => mt.meas(d), { color: t.rust, width: 2.6 });
+    ed.point(st.d, M.E, { color: t.navy });
+    ed.text(9.8, 3.45, mt.meas ? "solid: measured · dashed: Brus" : "dashed: Brus (no measured curve)", { align: "right", size: 11, color: t.muted });
+    sp.begin().axes();
+    sp.clip(g => { for (let l = 380; l < 780; l += 2) { g.fillStyle = QM.wlColor(l, 0.28); g.fillRect(sp.tx(l), sp.T, sp.tx(l + 2) - sp.tx(l) + 0.5, sp.B - sp.T); } });
+    const spec = l => { const E = QM.h_c / l; return Math.exp(-0.5 * ((E - M.Eem) / Math.max(0.004, M.sigE)) ** 2); };
+    sp.clip(g => { g.fillStyle = QM.wlColor(M.wl, .55); g.beginPath(); g.moveTo(sp.tx(350), sp.ty(0)); for (let l = 350; l <= 2200; l += 2) g.lineTo(sp.tx(l), sp.ty(spec(l))); g.lineTo(sp.tx(2200), sp.ty(0)); g.closePath(); g.fill(); });
+    sp.fn(spec, { color: t.ink, width: 1.6 }, 600);
+    sp.vline(QM.h_c / mt.Eg, { label: "bulk-gap limit", color: t.muted });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>

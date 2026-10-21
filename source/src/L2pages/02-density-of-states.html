@@ -1,0 +1,132 @@
+<!--META
+{"num":2,"slug":"density-of-states","title":"Density of states, 3D to 0D","ref":"Document 2, Section 2","blurb":"Confine electrons in one, two or three directions and watch the density of states change shape — from a smooth curve to steps, spikes and finally sharp atom-like lines — and see where the electrons actually sit."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Density of states g(E) and where the electrons are, g(E)·f(E)</h3><canvas id="dos"></canvas>
+      <div class="legend"><span><i style="background:var(--blue)"></i>available states g(E)</span><span><i style="background:var(--rust);height:9px"></i>occupied states (electrons)</span><span><i style="background:var(--muted)"></i>bulk, for comparison</span></div></div>
+    <div class="figs">
+      <div class="fig"><h3>The structure</h3><canvas id="pic"></canvas></div>
+      <div class="fig"><h3>Energy spread of the electrons</h3><canvas id="spread"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Counting states.</b> The density of states g(E) is the number of electron states per unit energy. In bulk material the electron is free in three directions and g(E) rises as √E from the band edge.</p>
+<p><b>Each confined direction reshapes it.</b> Confine the electron in one direction (a quantum well) and each confined level becomes the bottom of a 2-D subband with a <em>constant</em> density of states: g(E) becomes a staircase. Confine in two directions (a wire) and each subband gives a 1/√(E−E<sub>n</sub>) spike. Confine in all three (a dot) and only discrete levels remain, like an atom.</p>
+<p><b>Why it matters.</b> The electrons fill these states according to the Boltzmann factor e<sup>−E/k<sub>B</sub>T</sup>. The rust area shows where they actually are. The more directions are confined, the narrower the energy range the electrons occupy — which is why quantum-well lasers need less current than bulk lasers, and why quantum-dot lasers hardly change with temperature. Real dots differ in size, so their sharp lines blur; the size-spread slider shows that.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Start with Bulk. Note the energy spread of the electrons (about 1.8 k<sub>B</sub>T wide). Ask: what happens to it as we confine?</li>
+<li>Switch to Well, 10 nm. The first step sits 56 meV above the band edge, and the electrons pile up just above it. Compare the spread.</li>
+<li>Wire, then Dot. Watch the spikes and lines appear and the occupied region shrink. At what size does almost every electron sit in the lowest level?</li>
+<li>Dot, size spread 10%. The lines broaden to tens of meV — the "inhomogeneous broadening" of a real quantum-dot laser. Now cool to 77 K: which structure changes most?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why is the 2-D density of states constant within a subband?</summary>In two free dimensions the number of states inside a circle of radius k grows as k², and E ∝ k², so the number grows linearly with E. Its derivative — the density of states — is constant: m*/πħ² per unit area, including spin.</details>
+<details><summary>Is a quantum dot 1-D?</summary>No. A dot is zero-dimensional: confined in all three directions, with no direction of free motion. The dimension counts the free directions — well 2-D, wire 1-D, dot 0-D.</details>
+<details><summary>Why do the wire spikes not become infinite in a real wire?</summary>Scattering, disorder and finite length broaden every state, which rounds off the 1/√(E − E<sub>n</sub>) divergence. The model adds a small broadening for the same reason.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>GaAs-like electrons with effective mass <var>m</var>*, confined by infinite walls of width <var>L</var> in each confined direction, so the subband edges are sums of ħ²π²n²/(2m*L²). Per subband:</p>
+<span class="eq">g<sub>3D</sub> ∝ √E, &nbsp; g<sub>2D</sub> = m*/πħ² for E &gt; E<sub>n</sub>, &nbsp; g<sub>1D</sub> ∝ 1/√(E − E<sub>n</sub>), &nbsp; g<sub>0D</sub> = 2Σ δ(E − E<sub>n</sub>)</span>
+<p>Occupation is non-degenerate (Boltzmann), as for injected carriers in a laser at low density. The spread readout is the full width at half maximum of g(E)·f(E). Curves are normalised to the same peak height so their shapes can be compared.</p>
+<p class="caveat">Left out: finite barriers (Animation 1 shows their effect), valence bands, many-body effects and degenerate filling at high density.</p></section>
+</main>
+<script>
+/*INCLUDE qm.js*/
+(() => {
+  const st = { dim: 2, L: 10, T: 300, m: 0.067, sig: 0.05 };
+  const ctl = document.getElementById("ctl");
+  NX.seg(ctl, { label: "Structure", value: st.dim, options: [[3, "Bulk (3D)"], [2, "Well (2D)"], [1, "Wire (1D)"], [0, "Dot (0D)"]], on: v => { st.dim = v; update(); } });
+  const sL = NX.slider(ctl, { id: "L", label: "Confinement size L", min: 3, max: 30, step: 0.5, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "T", label: "Temperature", min: 4, max: 400, step: 1, value: st.T, unit: "K", dp: 0, on: v => { st.T = v; update(); } });
+  const sS = NX.slider(ctl, { id: "sig", label: "Dot size spread", min: 0, max: 0.15, step: 0.005, value: st.sig, fmt: v => (v * 100).toFixed(1) + " %", hint: "real self-assembled dots: 5–10 %", on: v => { st.sig = v; update(); } });
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+
+  const NE = 1200; let Emax = 0.45, dE, Es;
+  const setGrid = em => { Emax = em; dE = Emax / NE; Es = Array.from({ length: NE }, (_, i) => (i + 0.5) * dE); };
+  const span = dim => { const kT = QM.kT300 * st.T / 300; const e1 = dim === 3 ? 0 : (3 - dim) * QM.Einf(1, st.L, st.m); return Math.max(0.2, 1.7 * e1 + 12 * kT); };
+  const spreadPlot = new NX.Plot(document.getElementById("spread"), { aspect: 1.3, x: [-0.5, 3.5], y: [0, 120], xlabel: "Occupied energy range, same L and T", ylabel: "FWHM (meV)", nt: 4, noxt: true });
+  const dos = new NX.Plot(document.getElementById("dos"), { aspect: 2.1, x: [0, Emax * 1e3], y: [0, 1.12], xlabel: "Energy above the bulk band edge (meV)", ylabel: "normalised" });
+  function edges(dim, L) {
+    const E0 = QM.Einf(1, L, st.m), out = [], cap = span(dim) * 1.2;
+    const nC = 3 - dim;                                         // confined directions
+    if (nC === 0) return [{ E: 0, deg: 1 }];
+    const lim = 7, seen = {};
+    const rec = (k, acc) => { if (k === nC) { const E = E0 * acc.reduce((s, n) => s + n * n, 0); const key = E.toFixed(9); seen[key] = (seen[key] || 0) + 1; return; } for (let n = 1; n <= lim; n++) rec(k + 1, acc.concat(n)); };
+    rec(0, []);
+    Object.keys(seen).map(Number).sort((a, b) => a - b).forEach(E => { if (E < cap) out.push({ E, deg: seen[E.toFixed(9)] }); });
+    return out;
+  }
+  function gOf(dim, L, sigFrac, brd = 0.0015) {
+    const ed = edges(dim, L);
+    return Es.map(E => {
+      if (dim === 3) return Math.sqrt(E);
+      let s = 0;
+      for (const { E: En, deg } of ed) {
+        if (dim === 2) s += deg * (E > En ? 1 : 0);
+        else if (dim === 1) { const x = E - En; s += deg * (x > 0 ? 1 / Math.sqrt(x + brd) : 0); }
+        else { const sg = Math.max(0.0015, 2 * sigFrac * En); s += deg * Math.exp(-0.5 * ((E - En) / sg) ** 2) / sg; }
+      }
+      return s;
+    });
+  }
+  function occ(g, T) { const kT = QM.kT300 * T / 300; return g.map((v, i) => v * Math.exp(-Es[i] / kT)); }
+  function fwhm(n) {
+    const mx = Math.max(...n); let lo = -1, hi = -1;
+    for (let i = 0; i < n.length; i++) if (n[i] >= mx / 2) { if (lo < 0) lo = i; hi = i; }
+    return (hi - lo + 1) * dE;
+  }
+  function update() {
+    sL.el.style.opacity = st.dim === 3 ? .45 : 1; sS.el.style.opacity = st.dim === 0 ? 1 : .45;
+    const t = NX.tok;
+    const sp = [3, 2, 1, 0].map(d => { setGrid(span(d)); return fwhm(occ(gOf(d, st.L, st.sig), st.T)) * 1e3; });
+    setGrid(span(st.dim)); dos.setX(0, Emax * 1e3);
+    const g = gOf(st.dim, st.L, st.sig), n = occ(g, st.T), gb = Es.map(E => Math.sqrt(E));
+    const nz = a => { const m = Math.max(...a); return a.map(v => v / m); };
+    dos.begin().axes();
+    dos.line(Es.map(e => e * 1e3), nz(gb), { color: t.muted, width: 1.2, dash: [5, 4] });
+    const gn = nz(g), nn = nz(n);
+    dos.clip(g2 => { g2.globalAlpha = .35; g2.fillStyle = t.rust; g2.beginPath(); g2.moveTo(dos.tx(0), dos.ty(0)); Es.forEach((e, i) => g2.lineTo(dos.tx(e * 1e3), dos.ty(nn[i]))); g2.lineTo(dos.tx(Emax * 1e3), dos.ty(0)); g2.closePath(); g2.fill(); });
+    dos.line(Es.map(e => e * 1e3), nn, { color: t.rust, width: 1.6 });
+    dos.line(Es.map(e => e * 1e3), gn, { color: t.blue, width: 2.4 });
+    const ed = st.dim < 3 ? edges(st.dim, st.L) : [];
+    ed.slice(0, 6).forEach((e, i) => { if (e.E < Emax) dos.vline(e.E * 1e3, { color: t.muted, width: 0.8, dash: [2, 4], label: i < 3 ? `E${i + 1}` : "", dy: 12 * i }); });
+    spreadPlot.setY(0, Math.max(10, Math.ceil(Math.max(...sp) / 10) * 10 + 10));
+    spreadPlot.begin().axes();
+    sp.forEach((v, i) => spreadPlot.clip(g2 => { const x0 = spreadPlot.tx(i - 0.3), x1 = spreadPlot.tx(i + 0.3); g2.fillStyle = (3 - i) === st.dim ? t.rust : t.line; g2.fillRect(x0, spreadPlot.ty(v), x1 - x0, spreadPlot.ty(0) - spreadPlot.ty(v)); }));
+    sp.forEach((v, i) => spreadPlot.text(i, v, v.toFixed(0), { align: "center", dy: -9, size: 11.5, color: t.ink }));
+    ["3D", "2D", "1D", "0D"].forEach((s, i) => spreadPlot.text(i, 0, s, { align: "center", dy: 12, size: 12, color: t.muted, bold: (3 - i) === st.dim }));
+    const kT = QM.kT300 * st.T / 300, frac1 = (() => { if (st.dim === 3) return NaN; const e1 = ed[0].E, e2 = ed.length > 1 ? ed[1].E : 1e9; let a = 0, b = 0; n.forEach((v, i) => { b += v; if (Es[i] < (e1 + e2) / 2) a += v; }); return a / b; })();
+    ro.innerHTML = `<dt>Free directions</dt><dd>${st.dim}</dd>
+      <dt>Lowest level E<sub>1</sub></dt><dd>${st.dim === 3 ? "0 (band edge)" : (ed[0].E * 1e3).toFixed(1) + " meV"}</dd>
+      <dt>Next level E<sub>2</sub></dt><dd>${st.dim === 3 || ed.length < 2 ? "—" : (ed[1].E * 1e3).toFixed(1) + " meV"}</dd>
+      <dt>k<sub>B</sub>T</dt><dd>${(kT * 1e3).toFixed(1)} meV</dd>
+      <dt>Electrons in lowest level</dt><dd>${isFinite(frac1) ? (100 * frac1).toFixed(0) + " %" : "—"}</dd>
+      <dt>Energy spread (FWHM)</dt><dd>${sp[3 - st.dim].toFixed(1)} meV</dd>`;
+    drawPic();
+  }
+  function drawPic() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("pic"), 1.3);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2 + 10, s = Math.min(w, h) * 0.36;
+    const box = (x, y, z, dx, dy, dz, fill) => {               // isometric box: x right, y depth, z up
+      const P = (a, b, c) => [cx + (a - b) * 0.87 * s, cy + (a + b) * 0.5 * s - c * s];
+      const f = (pts, col) => { g.beginPath(); pts.forEach((p, i) => { const q = P(...p); i ? g.lineTo(...q) : g.moveTo(...q); }); g.closePath(); g.fillStyle = col; g.fill(); g.strokeStyle = t.ink; g.lineWidth = 0.8; g.stroke(); };
+      f([[x, y, z + dz], [x + dx, y, z + dz], [x + dx, y + dy, z + dz], [x, y + dy, z + dz]], fill[0]);
+      f([[x, y + dy, z], [x + dx, y + dy, z], [x + dx, y + dy, z + dz], [x, y + dy, z + dz]], fill[1]);
+      f([[x + dx, y, z], [x + dx, y + dy, z], [x + dx, y + dy, z + dz], [x + dx, y, z + dz]], fill[2]);
+    };
+    const B = [t.si, t.chip, t.line], W = ["#f3c7a8", "#e9a36f", "#d98446"];
+    const thin = Math.max(0.07, Math.min(0.25, st.L / 60));
+    box(-0.6, -0.6, -0.6, 1.2, 1.2, 1.2, B);
+    if (st.dim === 3) box(-0.6, -0.6, -0.6, 1.2, 1.2, 1.2, W);
+    if (st.dim === 2) box(-0.6, -0.6, -thin / 2, 1.2, 1.2, thin, W);
+    if (st.dim === 1) box(-0.6, -thin / 2, -thin / 2, 1.2, thin, thin, W);
+    if (st.dim === 0) box(-thin / 2, -thin / 2, -thin / 2, thin, thin, thin, W);
+    NX.label(g, ["dot: confined in x, y and z", "wire: free along one direction", "well: free in the plane", "bulk: free in all directions"][st.dim], w / 2, 16, { size: 12.5, color: t.ink, bold: true });
+    if (st.dim < 3) NX.label(g, `L = ${st.L.toFixed(1)} nm`, w / 2, h - 12, { size: 12, color: t.muted });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>

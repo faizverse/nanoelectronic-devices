@@ -223,7 +223,7 @@ const NX = (() => {
       g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
       g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
       const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
-      xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      if (!o.noxt) xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
       g.textAlign = "right"; g.textBaseline = "middle";
       yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
       g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";
@@ -303,27 +303,27 @@ const NX = (() => {
 <div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
 <button id="ttheme" type="button" title="Switch light/dark">Theme</button></div></div></div>
 <style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:1rem 0 2rem}
-.tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
-.tile:hover{border-color:var(--rust);transform:translateY(-2px)}
-.tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
-.tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
-.tile .b{color:var(--muted);font-size:.92rem;flex:1}
-.tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
-.howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
-.byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
-.banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
- background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
-.banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
-.banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
-.banner h1{color:#fff;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:.3rem 0 .6rem}
-.banner .sub{color:#d6e2f0;margin:0 0 1.1rem;font-size:1.05rem}
-.banner .who{border-top:3px solid #d6683e;padding-top:.8rem;display:inline-block}
-.banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
-.artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}</style><div class="wrap">
+    .tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
+    .tile:hover{border-color:var(--rust);transform:translateY(-2px)}
+    .tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
+    .tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
+    .tile .b{color:var(--muted);font-size:.92rem;flex:1}
+    .tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
+    .howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
+    .byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
+    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
+     background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
+    .banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
+    .banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
+    .banner h1{color:#fff;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:.3rem 0 .6rem}
+    .banner .sub{color:#d6e2f0;margin:0 0 1.1rem;font-size:1.05rem}
+    .banner .who{border-top:3px solid #d6683e;padding-top:.8rem;display:inline-block}
+    .banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
+    .artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}</style><div class="wrap">
 <section class="banner" aria-label="KKKC6353 Nanoelectronic Devices"><div class="in"><p class="k">KKKC6353</p><h1>Nanoelectronic Devices</h1>
 <p class="sub">Interactive animations and course materials</p>
 <div class="who"><b>Dr Muhammad Faiz Bukhori</b><span>Universiti Kebangsaan Malaysia · 2026</span></div></div></section>
 <p class="artnote">Banner: original artwork made for this course, chip wiring giving way to a quantum interference pattern.</p>
-<div class="tiles"><a class="card tile" href="L1/index.html"><span class="num">LECTURE 1</span><span class="t">CMOS technology, device physics and short-channel effects</span><span class="b">11 interactive animations, with things to try in class and check questions.</span></a></div>
+<div class="tiles"><a class="card tile" href="L1/index.html"><span class="num">LECTURE 1</span><span class="t">CMOS technology, device physics and short-channel effects</span><span class="b">11 interactive animations, with things to try in class and check questions.</span></a><a class="card tile" href="L2/index.html"><span class="num">LECTURE 2</span><span class="t">Quantum wells, wires and dots</span><span class="b">7 interactive animations, with things to try in class and check questions.</span></a></div>
 <p class="wrap foot" style="padding:0">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p></div>
 </body></html>

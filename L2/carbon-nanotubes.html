@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Carbon nanotubes: roll your own · KKKC6353 Lecture 2</title>
+<meta name="description" content="Choose how to roll a sheet of graphene and the nanotube you get is either a metal or a semiconductor. Pick the chiral indices (n, m), see the tube, its diameter and band gap, and whether it could make a transistor. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="author" content="Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
+<link rel="canonical" href="https://faizverse.github.io/nanoelectronic-devices/L2/carbon-nanotubes.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KKKC6353 Nanoelectronic Devices · Universiti Kebangsaan Malaysia">
+<meta property="og:title" content="Carbon nanotubes: roll your own · KKKC6353 Lecture 2">
+<meta property="og:description" content="Choose how to roll a sheet of graphene and the nanotube you get is either a metal or a semiconductor. Pick the chiral indices (n, m), see the tube, its diameter and band gap, and whether it could make a transistor. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta property="og:url" content="https://faizverse.github.io/nanoelectronic-devices/L2/carbon-nanotubes.html">
+<meta property="og:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<meta property="og:image:secure_url" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KKKC6353 Nanoelectronic Devices: Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Carbon nanotubes: roll your own · KKKC6353 Lecture 2">
+<meta name="twitter:description" content="Choose how to roll a sheet of graphene and the nanotube you get is either a metal or a semiconductor. Pick the chiral indices (n, m), see the tube, its diameter and band gap, and whether it could make a transistor. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="twitter:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
+<style>:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2430; --muted:#5b6876; --line:#d8dee6; --grid:#e7ebf0;
+  --navy:#1f3a5f; --blue:#2e75b6; --rust:#b4451f; --green:#2f8a5b; --gold:#c08a12; --violet:#7a4fb5;
+  --electron:#2e75b6; --hole:#c8402a; --oxide:#e9d9a6; --si:#dfe7ef; --nplus:#b9d3ee; --pbody:#f2dcd2;
+  --metal:#7d8794; --depl:#f6efe0; --chip:#eef3f9; --focus:#2e75b6;
+  --radius:10px; --shadow:0 1px 2px rgba(20,30,45,.06),0 4px 14px rgba(20,30,45,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body.big{font-size:19px}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.top{background:#1f3a5f;color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:center;justify-content:space-between;padding:.6rem 16px}
+.top a{color:#fff;text-decoration:none;opacity:.9}
+.top a:hover{opacity:1;text-decoration:underline}
+.crumb{font-size:.85rem;letter-spacing:.02em;opacity:.92}
+.tools{display:flex;gap:.4rem}
+.tools button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:.25rem .6rem;font:inherit;font-size:.8rem;cursor:pointer}
+.tools button:hover{background:rgba(255,255,255,.22)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.hero{padding:1.4rem 0 .6rem}
+.kicker{color:var(--rust);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;margin:0 0 .25rem}
+h1{font-size:clamp(1.5rem,3.2vw,2.1rem);line-height:1.2;margin:0 0 .4rem;color:var(--navy);text-wrap:balance}
+.lede{color:var(--muted);max-width:70ch;margin:0}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;margin:1rem 0}
+.lab:fullscreen{background:var(--bg);padding:16px;align-content:center}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.stage{padding:10px;display:grid;gap:10px;min-width:0}
+.stage canvas{width:100%;display:block;border-radius:6px}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:10px}
+.fig{min-width:0}
+.fig h3{font-size:.82rem;font-weight:600;color:var(--muted);margin:.1rem .2rem .3rem;letter-spacing:.02em}
+.controls{padding:14px 14px 10px;display:flex;flex-direction:column;gap:12px;align-self:start}
+.controls h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0}
+.ctl label{display:flex;justify-content:space-between;gap:.5rem;font-size:.92rem;margin-bottom:2px}
+.ctl label b{font-weight:600}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--rust);font-weight:600;white-space:nowrap}
+.ctl input[type=range]{width:100%;accent-color:var(--rust);margin:2px 0}
+.ctl .hint{font-size:.78rem;color:var(--muted);margin-top:1px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{flex:1 1 auto;font:inherit;font-size:.84rem;padding:.35rem .5rem;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--panel)}
+.btn{font:inherit;font-size:.88rem;padding:.42rem .7rem;border-radius:6px;border:1px solid var(--rust);background:var(--rust);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--rust)}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px}
+.readout{display:grid;grid-template-columns:1fr auto;gap:4px 8px;font-size:.84rem;line-height:1.35;border-top:1px solid var(--line);padding-top:10px}
+.readout dt{color:var(--muted)}
+.readout dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.readout dd.warn{color:var(--rust)}
+.status{font-size:.86rem;padding:.45rem .6rem;border-radius:6px;background:var(--chip);border-left:3px solid var(--blue)}
+.status.bad{border-left-color:var(--rust)}
+.status.good{border-left-color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted);padding:0 .2rem}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+main.notes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin:0 0 1rem}
+@media (max-width:860px){main.notes{grid-template-columns:minmax(0,1fr)}}
+.notes section{padding:16px 18px}
+.notes section.wide{grid-column:1/-1}
+.notes h2{font-size:1.08rem;color:var(--navy);margin:0 0 .5rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+.notes p,.notes li{max-width:75ch}
+.notes ol,.notes ul{padding-left:1.25rem;margin:.4rem 0}
+.notes li{margin:.25rem 0}
+.eq{display:block;text-align:center;margin:.6rem 0;font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.12em;overflow-x:auto}
+var{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-style:italic}
+details{border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem;margin:.45rem 0;background:var(--bg)}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:.35rem}
+.pill{display:inline-block;font-size:.75rem;padding:.05rem .45rem;border-radius:99px;background:var(--chip);color:var(--muted);border:1px solid var(--line)}
+.caveat{font-size:.9rem;color:var(--muted)}
+footer.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1rem 0 2rem;border-top:1px solid var(--line);margin-top:.5rem}
+footer.nav a{text-decoration:none;font-weight:600}
+footer.nav small{display:block;color:var(--muted);font-weight:400}
+.foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<script>/* Shared helpers for the KKKC6353 animations: theme tokens, controls, plots, animation loop. */
+const NX = (() => {
+  const root = document.documentElement;
+  let tok = {};
+  function readTokens() {
+    const cs = getComputedStyle(root);
+    ["bg","panel","ink","muted","line","grid","navy","blue","rust","green","gold","violet","electron","hole",
+     "oxide","si","nplus","pbody","metal","depl","chip"].forEach(k => tok[k] = cs.getPropertyValue("--" + k).trim());
+    return tok;
+  }
+  readTokens();
+  const redrawers = new Set();
+  function onRedraw(fn) { redrawers.add(fn); }
+  function redrawAll() { readTokens(); redrawers.forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+  let rT; addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(redrawAll, 80); });
+
+  /* ---------- number formatting ---------- */
+  function fmt(v, d = 2) {
+    if (!isFinite(v)) return "—";
+    const a = Math.abs(v);
+    if (a !== 0 && (a < 1e-2 || a >= 1e4)) {
+      const e = Math.floor(Math.log10(a)), m = v / Math.pow(10, e);
+      return m.toFixed(1) + "×10" + sup(e);
+    }
+    return v.toFixed(d);
+  }
+  function sup(n) { const s = "⁰¹²³⁴⁵⁶⁷⁸⁹"; return String(n).replace("-", "⁻").replace(/\d/g, c => s[c]); }
+  function si(v, unit, d = 3) {
+    if (!isFinite(v) || v === 0) return (v === 0 ? "0 " : "— ") + unit;
+    if (Math.abs(v) < 1e-15) return "< 1 f" + unit;
+    const p = ["f","p","n","µ","m","","k","M","G"]; let e = Math.floor(Math.log10(Math.abs(v)) / 3);
+    e = Math.max(-5, Math.min(3, e));
+    const m = v / Math.pow(1000, e);
+    return (+m.toPrecision(d)) + " " + p[e + 5] + unit;
+  }
+
+  /* ---------- controls ---------- */
+  function slider(host, o) {
+    const id = "s_" + o.id;
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label for="${id}"><b>${o.label}</b><output id="${id}_o"></output></label>
+      <input type="range" id="${id}" min="${o.min}" max="${o.max}" step="${o.step}" value="${o.value}">
+      ${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    host.appendChild(w);
+    const inp = w.querySelector("input"), out = w.querySelector("output");
+    const show = () => { out.textContent = (o.fmt ? o.fmt(+inp.value) : (+inp.value).toFixed(o.dp ?? 2) + (o.unit ? " " + o.unit : "")); };
+    inp.addEventListener("input", () => { show(); o.on && o.on(+inp.value); });
+    show();
+    return { get value() { return +inp.value; }, set value(v) { inp.value = v; show(); }, input: inp, el: w };
+  }
+  function seg(host, o) {
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label><b>${o.label}</b></label><div class="seg" role="group" aria-label="${o.label}"></div>${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    const g = w.querySelector(".seg"); let val = o.value;
+    const btns = o.options.map(([v, t]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+      b.setAttribute("aria-pressed", v === val); b.onclick = () => { set(v); o.on && o.on(v); };
+      g.appendChild(b); return [v, b];
+    });
+    function set(v) { val = v; btns.forEach(([k, b]) => b.setAttribute("aria-pressed", k === v)); }
+    host.appendChild(w);
+    return { get value() { return val; }, set value(v) { set(v); }, el: w };
+  }
+
+  /* ---------- canvas with DPR handling ---------- */
+  function fitCanvas(cv, aspect) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const w = Math.max(200, cv.clientWidth || cv.parentElement.clientWidth);
+    const h = Math.round(w / aspect);
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.height = h + "px";
+    }
+    const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { g, w, h };
+  }
+
+  /* ---------- 2-D plot ---------- */
+  function niceTicks(a, b, n = 5) {
+    const span = b - a, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const r = step0 / mag, step = (r < 1.5 ? 1 : r < 3.5 ? 2 : r < 7.5 ? 5 : 10) * mag;
+    const t = []; for (let v = Math.ceil(a / step - 1e-9) * step; v <= b + step * 1e-6; v += step) t.push(+v.toFixed(12));
+    return t;
+  }
+  class Plot {
+    constructor(cv, o) { this.cv = cv; this.o = Object.assign({ aspect: 1.45, m: [14, 16, 44, 58] }, o); }
+    setX(a, b) { this.o.x = [a, b]; } setY(a, b) { this.o.y = [a, b]; }
+    begin() {
+      const { g, w, h } = fitCanvas(this.cv, this.o.aspect); this.g = g; this.w = w; this.h = h;
+      const [mt, mr, mb, ml] = this.o.m; this.L = ml; this.R = w - mr; this.T = mt; this.B = h - mb;
+      g.clearRect(0, 0, w, h); g.fillStyle = tok.panel; g.fillRect(0, 0, w, h);
+      return this;
+    }
+    tx(v) { const [a, b] = this.o.x; const f = this.o.xlog ? (Math.log10(v) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.L + f * (this.R - this.L); }
+    ty(v) { const [a, b] = this.o.y; const f = this.o.ylog ? (Math.log10(Math.max(v, 1e-300)) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.B - f * (this.B - this.T); }
+    axes() {
+      const g = this.g, o = this.o; g.save();
+      g.font = "12px system-ui,sans-serif"; g.lineWidth = 1;
+      const ticks = (lo, hi, log) => log ? (() => { const t = []; for (let e = Math.ceil(Math.log10(lo) - 1e-9); e <= Math.floor(Math.log10(hi) + 1e-9); e++) t.push(Math.pow(10, e)); return t; })() : niceTicks(lo, hi, o.nt || 5);
+      const xt = ticks(o.x[0], o.x[1], o.xlog), yt0 = ticks(o.y[0], o.y[1], o.ylog);
+      const yt = o.ylog && yt0.length > 8 ? yt0.filter((v, i) => i % 2 === (yt0.length % 2 ? 0 : 1)) : yt0;
+      g.strokeStyle = tok.grid;
+      xt.forEach(v => { const X = this.tx(v); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); });
+      yt.forEach(v => { const Y = this.ty(v); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); });
+      g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
+      g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
+      const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
+      if (!o.noxt) xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      g.textAlign = "right"; g.textBaseline = "middle";
+      yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
+      g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";
+      if (o.xlabel) { g.textAlign = "center"; g.textBaseline = "bottom"; g.fillText(o.xlabel, (this.L + this.R) / 2, this.h - 4); }
+      if (o.ylabel) { g.save(); g.translate(13, (this.T + this.B) / 2); g.rotate(-Math.PI / 2); g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(o.ylabel, 0, 0); g.restore(); }
+      g.restore(); return this;
+    }
+    clip(fn) { const g = this.g; g.save(); g.beginPath(); g.rect(this.L, this.T, this.R - this.L, this.B - this.T); g.clip(); fn(g); g.restore(); return this; }
+    line(xs, ys, s = {}) {
+      return this.clip(g => {
+        g.strokeStyle = s.color || tok.ink; g.lineWidth = s.width || 2; g.setLineDash(s.dash || []); g.lineJoin = "round";
+        g.beginPath(); let pen = false;
+        for (let i = 0; i < xs.length; i++) {
+          const y = ys[i]; if (!isFinite(y) || (this.o.ylog && y <= 0)) { pen = false; continue; }
+          const X = this.tx(xs[i]), Y = Math.max(-1e4, Math.min(1e4, this.ty(y)));
+          pen ? g.lineTo(X, Y) : g.moveTo(X, Y); pen = true;
+        }
+        g.stroke();
+      });
+    }
+    fn(f, s = {}, n = 240) {
+      const [a, b] = this.o.x, xs = [], ys = [];
+      for (let i = 0; i <= n; i++) { const x = this.o.xlog ? a * Math.pow(b / a, i / n) : a + (b - a) * i / n; xs.push(x); ys.push(f(x)); }
+      return this.line(xs, ys, s);
+    }
+    point(x, y, s = {}) { return this.clip(g => { g.fillStyle = s.color || tok.rust; g.strokeStyle = tok.panel; g.lineWidth = 2; g.beginPath(); g.arc(this.tx(x), this.ty(y), s.r || 5, 0, 7); g.fill(); g.stroke(); }); }
+    vline(x, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const X = this.tx(x); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "left"; g.textBaseline = "top"; g.fillText(s.label, X + (s.align === "right" ? -4 : 4), this.T + 4 + (s.dy || 0)); } }); }
+    hline(y, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const Y = this.ty(y); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "right"; g.textBaseline = "bottom"; g.fillText(s.label, s.align === "left" ? this.L + 4 : this.R - 4, Y - 3); } }); }
+    band(x0, x1, color, alpha = .12) { return this.clip(g => { g.globalAlpha = alpha; g.fillStyle = color; g.fillRect(this.tx(x0), this.T, this.tx(x1) - this.tx(x0), this.B - this.T); }); }
+    text(x, y, t, s = {}) { const g = this.g; g.save(); g.font = (s.bold ? "600 " : "") + (s.size || 12) + "px system-ui,sans-serif"; g.fillStyle = s.color || tok.ink; g.textAlign = s.align || "left"; g.textBaseline = s.base || "middle"; g.fillText(t, this.tx(x) + (s.dx || 0), this.ty(y) + (s.dy || 0)); g.restore(); return this; }
+  }
+
+  /* ---------- drawing utilities for device pictures ---------- */
+  function rect(g, x, y, w, h, fill, stroke) { g.fillStyle = fill; g.fillRect(x, y, w, h); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1; g.strokeRect(x + .5, y + .5, w - 1, h - 1); } }
+  function label(g, t, x, y, o = {}) { g.save(); g.font = (o.bold ? "600 " : "") + (o.size || 13) + "px system-ui,sans-serif"; g.fillStyle = o.color || tok.ink; g.textAlign = o.align || "center"; g.textBaseline = o.base || "middle"; g.fillText(t, x, y); g.restore(); }
+  function arrow(g, x0, y0, x1, y1, color, w = 2, head = 8) {
+    g.save(); g.strokeStyle = color; g.fillStyle = color; g.lineWidth = w; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+    const a = Math.atan2(y1 - y0, x1 - x0); g.beginPath(); g.moveTo(x1, y1);
+    g.lineTo(x1 - head * Math.cos(a - .4), y1 - head * Math.sin(a - .4)); g.lineTo(x1 - head * Math.cos(a + .4), y1 - head * Math.sin(a + .4)); g.closePath(); g.fill(); g.restore();
+  }
+  function dot(g, x, y, r, fill, sign) { g.fillStyle = fill; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); if (sign && r >= 4) { g.strokeStyle = "#fff"; g.lineWidth = 1.3; g.beginPath(); g.moveTo(x - r * .55, y); g.lineTo(x + r * .55, y); if (sign === "+") { g.moveTo(x, y - r * .55); g.lineTo(x, y + r * .55); } g.stroke(); } }
+
+  /* ---------- animation loop that pauses off-screen / when paused ---------- */
+  function loop(step) {
+    let last = 0, running = true, visible = true;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const st = { get running() { return running; }, set running(v) { running = v; } };
+    if (reduce) running = false;
+    function f(t) { const dt = Math.min(0.05, (t - last) / 1000 || 0); last = t; if (running && visible && !document.hidden) step(dt); requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+    return st;
+  }
+
+  /* ---------- page chrome: text size, theme, full screen ---------- */
+  function chrome() {
+    const big = document.getElementById("tbig"), th = document.getElementById("ttheme"), fs = document.getElementById("tfs");
+    try { if (localStorage.getItem("nx-big") === "1") document.body.classList.add("big"); const t = localStorage.getItem("nx-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+    big && (big.onclick = () => { const on = document.body.classList.toggle("big"); try { localStorage.setItem("nx-big", on ? "1" : "0"); } catch (e) {} redrawAll(); });
+    th && (th.onclick = () => { const dark = getComputedStyle(root).getPropertyValue("color-scheme").trim() === "dark"; root.dataset.theme = dark ? "light" : "dark"; try { localStorage.setItem("nx-theme", root.dataset.theme); } catch (e) {} redrawAll(); });
+    const lab = document.querySelector(".lab");
+    fs && lab && lab.requestFullscreen ? (fs.onclick = () => document.fullscreenElement ? document.exitFullscreen() : lab.requestFullscreen()) : fs && (fs.hidden = true);
+    document.addEventListener("fullscreenchange", () => setTimeout(redrawAll, 60));
+    readTokens();
+  }
+  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", chrome) : chrome();
+
+  /* ---------- physical constants (SI unless stated) ---------- */
+  const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
+  C.Vt = C.k * C.T / C.q;
+
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+})();
+</script></head>
+<body>
+<div class="top"><div class="wrap">
+<a class="crumb" href="index.html">KKKC6353 Nanoelectronic Devices · Lecture 2 animations</a>
+<div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
+<button id="ttheme" type="button" title="Switch light/dark">Theme</button><button id="tfs" type="button" title="Show the animation full screen">Full screen</button></div></div></div>
+<div class="wrap"><header class="hero">
+    <p class="kicker">Animation 6 of 7 · Document 2, Section 5</p>
+    <h1>Carbon nanotubes: roll your own</h1><p class="lede">Choose how to roll a sheet of graphene and the nanotube you get is either a metal or a semiconductor. Pick the chiral indices (n, m), see the tube, its diameter and band gap, and whether it could make a transistor.</p></header>
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>Graphene sheet: chiral vector C and the strip that rolls up</h3><canvas id="sheet"></canvas></div>
+      <div class="fig"><h3>The rolled tube (front atoms dark, back atoms faint)</h3><canvas id="tube"></canvas></div>
+    </div>
+    <div class="fig"><h3>Band gap against diameter for every semiconducting tube; your tube is highlighted</h3><canvas id="gap"></canvas></div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>The chiral vector.</b> A single-walled nanotube is a sheet of graphene rolled into a seamless cylinder. The roll is fixed by the lattice vector that wraps once around the circumference, <b>C</b> = n<b>a</b><sub>1</sub> + m<b>a</b><sub>2</sub>. The pair of integers (n, m) determines everything: diameter, twist and electronic character. Tubes with m = 0 are <b>zigzag</b>, those with n = m <b>armchair</b>, the rest <b>chiral</b>.</p>
+<span class="eq">d = (a/π)√(n² + nm + m²), &nbsp; a = 0.246 nm</span>
+<p><b>Metal or semiconductor.</b> Rolling makes the electron's wave periodic around the circumference, which allows only certain lines of states through graphene's band structure. If n − m is divisible by 3, one of those lines passes through the point where graphene's bands touch and the tube is a metal. Otherwise it is a semiconductor with a band gap that falls as 1/d — about 0.8 eV·nm / d.</p>
+<p>Two-thirds of all possible tubes are semiconducting. A transistor needs a semiconducting tube; a metallic one cannot be switched off. Growth produces a mixture, which is why sorting tubes is the central problem of nanotube electronics.</p></section>
+<section class="card"><h2>Try this in class</h2><ol>
+<li>Start at (10, 0), a zigzag tube. Semiconductor or metal? Predict from n − m, then check. Now try (9, 0).</li>
+<li>Set (10, 10), armchair. Every armchair tube is metallic. What is its diameter (1.36 nm) and its ballistic resistance?</li>
+<li>Find two semiconducting tubes with nearly the same diameter but different (n, m). Do their gaps agree with the 0.8/d rule?</li>
+<li>Pick tubes at random (the Random button) and count how many would make a working transistor out of ten.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does the gap fall as the tube gets wider?</summary>The allowed lines through graphene's band structure are spaced by 2/d in wavevector. In a wider tube they lie closer together, so the nearest line passes closer to the point where the bands touch, and the gap shrinks in proportion to 1/d.</details>
+<details><summary>A metallic tube is ballistic over a micrometre. Is its resistance zero?</summary>No. With two conducting modes, each spin-degenerate, a perfect ballistic tube still has h/4e² ≈ 6.45 kΩ, set by the contacts. Ballistic means no resistance that grows with length.</details>
+<details><summary>Why is a chip of a billion CNTFETs so hard to make?</summary>One metallic tube shorts a transistor, so semiconducting purity must exceed about 99.9999%. Tubes must also be placed, aligned and contacted at uniform density — problems of manufacturing, not of physics.</details></section>
+<section class="card"><h2>The model behind it</h2>
+<p>Lattice vectors <b>a</b><sub>1</sub>, <b>a</b><sub>2</sub> of length a = 0.246 nm at 60°, carbon–carbon distance a<sub>cc</sub> = 0.142 nm. Chiral angle θ = arctan[√3m/(2n + m)]. Translational vector <b>T</b> = [(2m + n)<b>a</b><sub>1</sub> − (2n + m)<b>a</b><sub>2</sub>]/d<sub>R</sub>, d<sub>R</sub> = gcd(2n + m, 2m + n). Semiconducting gap from the zone-folding tight-binding model:</p>
+<span class="eq">E<sub>g</sub> ≈ 2a<sub>cc</sub>γ<sub>0</sub>/d, &nbsp; γ<sub>0</sub> ≈ 2.9 eV</span>
+<p class="caveat">Left out: curvature effects, which open a small gap (tens of meV) in non-armchair "metallic" tubes and shift the gaps of the smallest tubes; and excitonic effects in optical spectra. Diameters below about 0.6 nm are strained and unstable.</p></section>
+</main>
+<script>
+(() => {
+  const a = 0.246, acc = a / Math.sqrt(3), g0 = 2.9;
+  const st = { n: 10, m: 0 };
+  const ctl = document.getElementById("ctl");
+  const sn = NX.slider(ctl, { id: "n", label: "n", min: 1, max: 20, step: 1, value: st.n, dp: 0, on: v => { st.n = v; if (st.m > v) { st.m = v; sm.value = v; } update(); } });
+  const sm = NX.slider(ctl, { id: "m", label: "m (0 ≤ m ≤ n)", min: 0, max: 20, step: 1, value: st.m, dp: 0, on: v => { st.m = Math.min(v, st.n); sm.value = st.m; update(); } });
+  const br = document.createElement("div"); br.className = "btnrow";
+  br.innerHTML = '<button class="btn ghost" type="button" data-p="10,0">Zigzag (10,0)</button><button class="btn ghost" type="button" data-p="10,10">Armchair (10,10)</button><button class="btn ghost" type="button" data-p="10,5">Chiral (10,5)</button><button class="btn" type="button" id="rnd">Random</button>';
+  ctl.appendChild(br);
+  br.querySelectorAll("[data-p]").forEach(b => b.onclick = () => { const [n, m] = b.dataset.p.split(",").map(Number); set(n, m); });
+  br.querySelector("#rnd").onclick = () => { let n, m, d; do { n = 4 + Math.floor(Math.random() * 14); m = Math.floor(Math.random() * (n + 1)); d = a / Math.PI * Math.sqrt(n * n + n * m + m * m); } while (d < 0.7 || d > 1.8); set(n, m); };
+  function set(n, m) { st.n = n; st.m = m; sn.value = n; sm.value = m; update(); }
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const gp = new NX.Plot(document.getElementById("gap"), { aspect: 3.0, x: [0.3, 2.8], y: [0, 2.6], xlabel: "Tube diameter d (nm)", ylabel: "Band gap (eV)", m: [10, 16, 40, 52] });
+  const gcd = (x, y) => y ? gcd(y, x % y) : x;
+  const A1 = [Math.sqrt(3) / 2 * a, a / 2], A2 = [Math.sqrt(3) / 2 * a, -a / 2], DB = [acc, 0];
+  const NB = [[acc, 0], [-acc / 2, a / 2], [-acc / 2, -a / 2]];       // A -> three B neighbours
+  let M;
+  function update() {
+    const { n, m } = st, L2 = n * n + n * m + m * m, Cl = a * Math.sqrt(L2), d = Cl / Math.PI;
+    const metal = (n - m) % 3 === 0, th = Math.atan2(Math.sqrt(3) * m, 2 * n + m) * 180 / Math.PI;
+    const dR = gcd(2 * n + m, 2 * m + n), t1 = (2 * m + n) / dR, t2 = -(2 * n + m) / dR, Tl = Math.sqrt(3) * Cl / dR, Nat = 4 * L2 / dR;
+    const Eg = metal ? 0 : 2 * acc * g0 / d;
+    const kind = m === 0 ? "zigzag" : n === m ? "armchair" : "chiral";
+    M = { n, m, Cl, d, metal, th, t1, t2, Tl, Nat, Eg, kind };
+    status.className = "status " + (metal ? "bad" : "good");
+    status.textContent = metal ? `(${n},${m}) is metallic: n − m = ${n - m} is divisible by 3. As a transistor channel it could not be switched off.` :
+      `(${n},${m}) is a semiconductor with a ${Eg.toFixed(2)} eV gap: it can switch, like silicon (1.12 eV).`;
+    ro.innerHTML = `<dt>Type</dt><dd>${kind}, ${metal ? "metallic" : "semiconducting"}</dd>
+      <dt>Diameter</dt><dd>${d.toFixed(3)} nm</dd><dt>Chiral angle</dt><dd>${th.toFixed(1)}°</dd>
+      <dt>Band gap</dt><dd>${metal ? (n === m ? "0 (exactly)" : "≈ 0 (tiny curvature gap)") : Eg.toFixed(2) + " eV"}</dd>
+      <dt>Unit cell length |T|</dt><dd>${Tl.toFixed(2)} nm</dd><dt>Atoms per unit cell</dt><dd>${Nat}</dd>
+      <dt>Ballistic resistance</dt><dd>${metal ? "h/4e² = 6.45 kΩ" : "6.45 kΩ when switched on"}</dd>
+      <dt>Max current, one tube</dt><dd>≈ 25 µA</dd>`;
+    drawSheet(); drawTube(); drawGap();
+  }
+  function drawSheet() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("sheet"), 1.15);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const C = [M.n * A1[0] + M.m * A2[0], M.n * A1[1] + M.m * A2[1]], T = [M.t1 * A1[0] + M.t2 * A2[0], M.t1 * A1[1] + M.t2 * A2[1]];
+    const Tshow = Math.min(1, 2.2 * M.Cl / M.Tl) , Ts = [T[0] * Tshow, T[1] * Tshow];
+    const xs = [0, C[0], Ts[0], C[0] + Ts[0]], ys = [0, C[1], Ts[1], C[1] + Ts[1]];
+    const x0 = Math.min(...xs) - 0.35, x1 = Math.max(...xs) + 0.35, y0 = Math.min(...ys) - 0.35, y1 = Math.max(...ys) + 0.35;
+    const sc = Math.min((w - 20) / (x1 - x0), (h - 30) / (y1 - y0));
+    const X = x => 10 + (x - x0) * sc + ((w - 20) - (x1 - x0) * sc) / 2, Y = y => h - 20 - (y - y0) * sc - ((h - 30) - (y1 - y0) * sc) / 2;
+    const K = Math.ceil((Math.max(x1 - x0, y1 - y0) + 2) / a) + 4;
+    g.strokeStyle = t.line; g.lineWidth = Math.max(0.6, sc * 0.012);
+    const inside = (x, y) => x > x0 - 0.2 && x < x1 + 0.2 && y > y0 - 0.2 && y < y1 + 0.2;
+    g.beginPath();
+    for (let i = -K; i <= K; i++) for (let j = -K; j <= K; j++) {
+      const ax = i * A1[0] + j * A2[0], ay = i * A1[1] + j * A2[1]; if (!inside(ax, ay)) continue;
+      NB.forEach(([dx, dy]) => { g.moveTo(X(ax), Y(ay)); g.lineTo(X(ax + dx), Y(ay + dy)); });
+    }
+    g.stroke();
+    // strip that rolls up
+    g.fillStyle = "rgba(180,69,31,.10)"; g.strokeStyle = t.rust; g.lineWidth = 1.2; g.setLineDash([5, 4]);
+    g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(C[0]), Y(C[1])); g.lineTo(X(C[0] + Ts[0]), Y(C[1] + Ts[1])); g.lineTo(X(Ts[0]), Y(Ts[1])); g.closePath(); g.fill(); g.stroke(); g.setLineDash([]);
+    NX.arrow(g, X(0), Y(0), X(C[0]), Y(C[1]), t.rust, 2.6, 10);
+    NX.arrow(g, X(0), Y(0), X(Ts[0]), Y(Ts[1]), t.blue, 2, 9);
+    NX.arrow(g, X(0), Y(0), X(A1[0]), Y(A1[1]), t.ink, 1.6, 6); NX.arrow(g, X(0), Y(0), X(A2[0]), Y(A2[1]), t.ink, 1.6, 6);
+    NX.label(g, `C = (${M.n}, ${M.m})`, X(C[0] / 2), Y(C[1] / 2) - 14, { color: t.rust, bold: true, size: 13 });
+    NX.label(g, Tshow < 1 ? "T (axis, cut short)" : "T (tube axis)", X(Ts[0] * 0.6) + 8, Y(Ts[1] * 0.6), { color: t.blue, size: 11.5, align: "left" });
+    NX.label(g, "a₁", X(A1[0]) + 8, Y(A1[1]) - 6, { size: 11 }); NX.label(g, "a₂", X(A2[0]) + 8, Y(A2[1]) + 8, { size: 11 });
+    NX.label(g, "roll the shaded strip so that C closes on itself", w / 2, h - 8, { size: 11, color: t.muted });
+  }
+  function drawTube() {
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("tube"), 1.15);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const Cl = M.Cl, R = M.d / 2, Lshow = Math.max(2.2, 3.2 * M.d);
+    const c = [(M.n * A1[0] + M.m * A2[0]) / Cl, (M.n * A1[1] + M.m * A2[1]) / Cl], tv = [-c[1], c[0]];
+    const sc = Math.min((w - 40) / Lshow, (h - 70) / (2 * R) * 0.9), cx = w / 2, cy = h / 2;
+    const K = Math.ceil((Cl + Lshow) / a) + 3, pts = [];
+    const map = (x, y) => { let u = x * c[0] + y * c[1], v = x * tv[0] + y * tv[1]; u = ((u % Cl) + Cl) % Cl; const th = 2 * Math.PI * u / Cl; return { X: cx + (v - Lshow / 2) * sc, Y: cy - R * Math.cos(th) * sc, z: Math.sin(th), v, th }; };
+    const bonds = [];
+    for (let i = -K; i <= K; i++) for (let j = -K; j <= K; j++) {
+      const ax = i * A1[0] + j * A2[0], ay = i * A1[1] + j * A2[1];
+      const pa = map(ax, ay); if (pa.v < -0.2 || pa.v > Lshow + 0.2) continue;
+      const u0 = ax * c[0] + ay * c[1]; if (u0 < -Cl * 2 || u0 > Cl * 3) continue;
+      NB.forEach(([dx, dy]) => { const pb = map(ax + dx, ay + dy); if (Math.abs(pa.th - pb.th) < 1.5 && pb.v >= 0 && pa.v >= 0 && pb.v <= Lshow && pa.v <= Lshow) bonds.push([pa, pb]); });
+    }
+    // dedupe by drawing back first
+    bonds.sort((p, q) => (p[0].z + p[1].z) - (q[0].z + q[1].z));
+    const seen = new Set();
+    bonds.forEach(([p, q]) => { const k = Math.round(p.X) + "," + Math.round(p.Y) + "," + Math.round(q.X) + "," + Math.round(q.Y) + (p.z + q.z > 0 ? "f" : "b"); if (seen.has(k)) return; seen.add(k);
+      const z = (p.z + q.z) / 2; g.strokeStyle = z > 0 ? (M.metal ? "#c08a12" : t.navy) : t.line; g.globalAlpha = z > 0 ? 0.55 + 0.45 * z : 0.5; g.lineWidth = z > 0 ? 1.6 : 1; g.beginPath(); g.moveTo(p.X, p.Y); g.lineTo(q.X, q.Y); g.stroke(); });
+    g.globalAlpha = 1;
+    g.strokeStyle = t.muted; g.lineWidth = 1; g.strokeRect(cx - Lshow / 2 * sc, cy - R * sc, Lshow * sc, 2 * R * sc);
+    NX.label(g, `d = ${M.d.toFixed(2)} nm`, cx, cy + R * sc + 18, { size: 12.5, color: t.ink, bold: true });
+    NX.label(g, `${M.kind}, ${M.metal ? "metallic" : "semiconducting"}`, cx, 16, { size: 12.5, color: M.metal ? t.gold : t.navy, bold: true });
+    NX.label(g, `${Lshow.toFixed(1)} nm of tube shown`, cx, h - 10, { size: 11, color: t.muted });
+  }
+  function drawGap() {
+    const t = NX.tok; gp.begin().axes();
+    gp.fn(d => 2 * acc * g0 / d, { color: t.muted, width: 1.2, dash: [5, 4] });
+    gp.hline(1.12, { label: "silicon 1.12 eV", color: t.muted, dash: [2, 3] });
+    for (let n = 3; n <= 36; n++) for (let m = 0; m <= n; m++) {
+      const d = a / Math.PI * Math.sqrt(n * n + n * m + m * m); if (d < 0.3 || d > 2.8) continue;
+      const metal = (n - m) % 3 === 0; gp.point(d, metal ? 0.03 : 2 * acc * g0 / d, { color: metal ? t.gold : t.line, r: 2.6 });
+    }
+    gp.point(M.d, M.metal ? 0.03 : M.Eg, { color: t.rust, r: 6.5 });
+    gp.text(2.75, 2.35, "grey: semiconducting · gold (on the axis): metallic", { align: "right", size: 11, color: t.muted });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>
+<footer class="nav wrap"><a href="quantum-dot-colour.html" rel="prev"><small>← Previous</small>Quantum-dot colour</a><a href="quantum-dot-growth.html" rel="next" style="text-align:right"><small>Next →</small>Growing quantum dots</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
+</body></html>

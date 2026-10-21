@@ -19,10 +19,22 @@ Teaching animations for the postgraduate course KKKC6353 Nanoelectronic Devices,
 | 10 | [Gate-induced drain leakage](https://faizverse.github.io/nanoelectronic-devices/L1/gidl.html) | Doc 3, §4 |
 | 11 | [Variability: random dopants](https://faizverse.github.io/nanoelectronic-devices/L1/variability.html) | Doc 3, §5 |
 
+## Lecture 2
+
+| # | Animation | Notes section |
+|---|---|---|
+| 1 | [Particle in a box](https://faizverse.github.io/nanoelectronic-devices/L2/particle-in-a-box.html) | Doc 1, §4–6 |
+| 2 | [Density of states, 3D to 0D](https://faizverse.github.io/nanoelectronic-devices/L2/density-of-states.html) | Doc 2, §2 |
+| 3 | [Quantum-well emission](https://faizverse.github.io/nanoelectronic-devices/L2/quantum-well-emission.html) | Doc 3, §6.1 |
+| 4 | [Quantum cascade laser](https://faizverse.github.io/nanoelectronic-devices/L2/quantum-cascade-laser.html) | Doc 3, §6.4 |
+| 5 | [Quantum-dot colour](https://faizverse.github.io/nanoelectronic-devices/L2/quantum-dot-colour.html) | Doc 2, §6 |
+| 6 | [Carbon nanotubes: roll your own](https://faizverse.github.io/nanoelectronic-devices/L2/carbon-nanotubes.html) | Doc 2, §5 |
+| 7 | [Growing quantum dots](https://faizverse.github.io/nanoelectronic-devices/L2/quantum-dot-growth.html) | Doc 3, §3–4 |
+
 Each page is a single self-contained HTML file (no external dependencies; it works offline).
 
 ## Editing
 
 The published pages are generated. Edit the files in `source/src/` and run `python3 build.py`
 from `source/`; it inlines the shared CSS/JS into each page and writes them to `source/site/`.
-Copy `source/site/index.html` and `source/site/L1/` to the repository root to publish.
+Copy `source/site/index.html`, `source/site/L1/` and `source/site/L2/` to the repository root to publish.
