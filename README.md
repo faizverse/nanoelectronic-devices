@@ -46,10 +46,23 @@ Each Lecture 3 page opens in a simple view. **More detail** shows the numbers an
 | 5 | [Tunnel FET versus MOSFET](https://faizverse.github.io/nanoelectronic-devices/L3/tunnel-fet.html) | Doc 2, §5 |
 | 6 | [Single-electron transistor](https://faizverse.github.io/nanoelectronic-devices/L3/single-electron-transistor.html) | Doc 3, §1–3 |
 
+## Lecture 4
+
+Each Lecture 4 page opens in a simple view. **More detail** shows the numbers and graphs.
+
+| # | Animation | Notes section |
+|---|---|---|
+| 1 | [Nanotube band structure: zone folding](https://faizverse.github.io/nanoelectronic-devices/L4/cnt-band-structure.html) | Doc 1, §4–5 |
+| 2 | [The ballistic nanotube transistor](https://faizverse.github.io/nanoelectronic-devices/L4/cntfet-ballistic.html) | Doc 2, §3–4 |
+| 3 | [Schottky-barrier nanotube transistor](https://faizverse.github.io/nanoelectronic-devices/L4/sb-cntfet.html) | Doc 2, §2 and 4.4 |
+| 4 | [FinFET and nanosheet: width and control](https://faizverse.github.io/nanoelectronic-devices/L4/finfet-nanosheet.html) | Doc 3, §1–2 |
+| 5 | [SOI: partially and fully depleted](https://faizverse.github.io/nanoelectronic-devices/L4/soi-pd-fd.html) | Doc 3, §6–7 |
+| 6 | [Compound semiconductors: speed and colour](https://faizverse.github.io/nanoelectronic-devices/L4/compound-semiconductors.html) | Doc 4, §1–2 |
+
 Each page is a single self-contained HTML file (no external dependencies; it works offline).
 
 ## Editing
 
 The published pages are generated. Edit the files in `source/src/` and run `python3 build.py`
 from `source/`; it inlines the shared CSS/JS into each page and writes them to `source/site/`.
-Copy `source/site/index.html` and the `source/site/L1/`, `L2/` and `L3/` folders to the repository root to publish.
+Copy `source/site/index.html` and the `source/site/L1/`, `L2/`, `L3/` and `L4/` folders to the repository root to publish.

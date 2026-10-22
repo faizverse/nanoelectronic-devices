@@ -1,0 +1,121 @@
+<!--META
+{"num":5,"slug":"soi-pd-fd","title":"SOI: partially and fully depleted","ref":"Document 3, Sections 6–7","blurb":"Thin the silicon film or change its doping and watch the depletion region reach the buried oxide: partially depleted becomes fully depleted. Then use the substrate as a second gate, and see the kink that a floating body causes."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>Cross-section of an SOI nMOSFET at threshold</h3><canvas id="xs"></canvas></div>
+      <div class="fig"><h3>Front threshold voltage against back-gate voltage</h3><canvas id="lf"></canvas></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--depl)"></i>depleted silicon</span><span><i style="background:var(--pbody)"></i>neutral (floating) body</span><span><i style="background:var(--oxide)"></i>buried oxide (BOX)</span><span><i style="background:var(--nplus)"></i>n⁺ source and drain</span></div>
+    <div class="figs adv">
+      <div class="fig"><h3>Output characteristics: the kink of a floating body</h3><canvas id="out"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Left.</b> At threshold the gate depletes the film to a depth x<sub>d,max</sub> = √(4ε<sub>Si</sub>φ<sub>F</sub>/qN<sub>A</sub>). If the film is thicker, a neutral body is left underneath, connected to nothing: <b>partially depleted</b> (PD). If it is thinner, the depletion reaches the BOX: <b>fully depleted</b> (FD).</p>
+<p><b>Right.</b> In an FD film the front and back interfaces are coupled through the film, so the substrate acts as a second gate. Its voltage shifts the front threshold along the Lim–Fossum line, until the back surface inverts or accumulates and screens it. In a PD film the neutral body screens the back gate completely.</p>
+<p><b>More detail.</b> In a PD device, holes from impact ionisation collect in the floating body, raise its potential and lower V<sub>T</sub>: the current jumps, the "kink".</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Start at 150 nm and 10¹⁷ cm⁻³ (PD). Thin the film until it becomes fully depleted. Compare the thickness with x<sub>d,max</sub>.</li>
+<li>Choose the 28 nm FD-SOI preset (7 nm film, 25 nm BOX). Sweep the back gate. How many mV/V? Now set a 145 nm BOX.</li>
+<li>Compare the body factor n and the swing for PD and FD.</li>
+<li>With More detail on, raise the drain voltage in a PD device and find the kink. Switch on a body tie.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>What is the condition for full depletion?</summary>t<sub>Si</sub> &lt; x<sub>d,max</sub>. If both interfaces are depleting the film, a neutral layer survives only if t<sub>Si</sub> &gt; 2x<sub>d,max</sub>.</details>
+<details><summary>Why does the back gate shift the threshold only in FD-SOI?</summary>In a PD film the neutral body sits between the back interface and the channel and screens the back gate. In an FD film there is no neutral layer: the field from the back gate reaches the front channel through the depleted silicon.</details>
+<details><summary>Why does a thin BOX give stronger coupling?</summary>The coupling coefficient is C<sub>Si</sub>C<sub>ob</sub>/[C<sub>of</sub>(C<sub>Si</sub> + C<sub>ob</sub>)] ≈ t<sub>of</sub>/t<sub>BOX</sub> for a thin film, so a thinner BOX couples more strongly.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>φ<sub>F</sub> = (k<sub>B</sub>T/q)ln(N<sub>A</sub>/n<sub>i</sub>), x<sub>d,max</sub> = √(4ε<sub>Si</sub>φ<sub>F</sub>/qN<sub>A</sub>). FD: ∂V<sub>Tf</sub>/∂V<sub>Gb</sub> = −C<sub>Si</sub>C<sub>ob</sub>/[C<sub>of</sub>(C<sub>Si</sub> + C<sub>ob</sub>)] (Lim and Fossum, 1983), applied over the back-gate range in which the back surface potential runs from 0 (accumulation) to 2φ<sub>F</sub> (inversion), a range of 2φ<sub>F</sub>(1 + C<sub>Si</sub>/C<sub>ob</sub>), here centred on V<sub>Gb</sub> = 0 with V<sub>Tf</sub> = 0.40 V for reference. Body factor n = 1 + C<sub>Si</sub>C<sub>ob</sub>/[C<sub>of</sub>(C<sub>Si</sub> + C<sub>ob</sub>)] (FD) or 1 + C<sub>dep</sub>/C<sub>of</sub> (PD), swing = n·ln(10)k<sub>B</sub>T/q. The kink is a smooth step in the body potential above a drain voltage of about V<sub>Dsat</sub> + 0.5 V; illustrative only.</p>
+<p class="caveat">Left out: quantum confinement in very thin films, the fixed charges and work functions that set the absolute V<sub>T</sub>, short-channel effects and self-heating.</p></section>
+</main>
+<script>
+(() => {
+  const st = { tSi: 150, logNA: 17, tbox: 145, tox: 2.0, Vgb: 0, tie: false };
+  const ctl = document.getElementById("ctl");
+  const S = {};
+  S.tSi = NX.slider(ctl, { id: "tSi", label: "Silicon film thickness", min: 5, max: 200, step: 1, value: st.tSi, unit: "nm", dp: 0, on: v => { st.tSi = v; update(); } });
+  S.logNA = NX.slider(ctl, { id: "NA", label: "Body doping", min: 15, max: 18.5, step: 0.05, value: st.logNA, fmt: v => NX.fmt(Math.pow(10, v), 1) + " cm⁻³", on: v => { st.logNA = v; update(); } });
+  S.tbox = NX.slider(ctl, { id: "tbox", label: "BOX thickness", min: 10, max: 400, step: 5, value: st.tbox, unit: "nm", dp: 0, on: v => { st.tbox = v; update(); } });
+  S.tox = NX.slider(ctl, { id: "tox", label: "Front oxide (CET)", min: 1, max: 5, step: 0.1, value: st.tox, unit: "nm", dp: 1, on: v => { st.tox = v; update(); } });
+  S.Vgb = NX.slider(ctl, { id: "Vgb", label: "Back-gate voltage", min: -3, max: 3, step: 0.05, value: st.Vgb, unit: "V", dp: 2, on: v => { st.Vgb = v; update(); } });
+  const br = document.createElement("div"); br.className = "btnrow"; ctl.appendChild(br);
+  [["PD-SOI (2000s)", { tSi: 150, logNA: 17.5, tbox: 145, tox: 2.0 }], ["28 nm FD-SOI", { tSi: 7, logNA: 15, tbox: 25, tox: 1.8 }], ["Thick-BOX FD", { tSi: 20, logNA: 16, tbox: 145, tox: 2.0 }]].forEach(([n, p]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = n; b.onclick = () => { Object.assign(st, p); Object.keys(p).forEach(k => S[k].value = p[k]); update(); }; br.appendChild(b); });
+  const tie = NX.seg(ctl, { label: "Body contact (PD only)", value: "float", options: [["float", "floating"], ["tie", "body tie"]], on: v => { st.tie = v === "tie"; update(); } });
+  tie.el.classList.add("adv");
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const lfP = new NX.Plot(document.getElementById("lf"), { aspect: 1.25, x: [-3, 3], y: [0, 0.8], xlabel: "Back-gate voltage (V)", ylabel: "Front V_T (V)" });
+  const outP = new NX.Plot(document.getElementById("out"), { aspect: 2.0, x: [0, 3], y: [0, 2.4], xlabel: "Drain voltage (V)", ylabel: "Drain current (arb.)" });
+  const eps0 = 8.854e-14, eSi = 11.7 * eps0, q = 1.602e-19, ni = 1e10, kT = 0.02585;
+  function phys() {
+    const NA = Math.pow(10, st.logNA), phiF = kT * Math.log(NA / ni), xd = Math.sqrt(4 * eSi * phiF / (q * NA)) * 1e7;
+    const Cof = 3.9 / st.tox, Cob = 3.9 / st.tbox, Csi = 11.7 / st.tSi, Cdep = 11.7 / xd;
+    const FD = st.tSi < xd, slope = FD ? Csi * Cob / (Cof * (Csi + Cob)) : 0;
+    const n = FD ? 1 + slope : 1 + Cdep / Cof;
+    // back-gate range over which the back surface is depleted: from accumulation (psi_b = 0) to inversion (psi_b = 2phiF)
+    const half = Math.max(phiF, 0.35) * (1 + Csi / Cob), vAcc = -half, vInv = half;   // back surface potential from 0 to 2phiF, centred on V_Gb = 0
+    const VT = vgb => FD ? 0.40 - slope * (Math.min(vInv, Math.max(vAcc, vgb))) : 0.40;
+    return { NA, phiF, xd, FD, slope, n, VT, vAcc, vInv };
+  }
+  let P;
+  function update() {
+    P = phys();
+    const ss = P.n * Math.LN10 * kT * 1000, vt = P.VT(st.Vgb);
+    status.className = "status " + (P.FD ? "good" : "bad");
+    status.textContent = P.FD ? `Fully depleted: film ${st.tSi} nm < x_d,max = ${P.xd.toFixed(0)} nm. Back-gate coupling ${(P.slope * 1000).toFixed(0)} mV/V.` :
+      `Partially depleted: film ${st.tSi} nm > x_d,max = ${P.xd.toFixed(0)} nm. A floating neutral body remains; the back gate has no effect on V_T.`;
+    ro.innerHTML = `<dt>φ<sub>F</sub></dt><dd>${P.phiF.toFixed(3)} V</dd><dt>x<sub>d,max</sub></dt><dd>${P.xd.toFixed(1)} nm</dd>
+      <dt>Mode</dt><dd>${P.FD ? "fully depleted" : "partially depleted"}</dd>
+      <dt>Back-gate coupling</dt><dd>${P.FD ? (P.slope * 1000).toFixed(0) + " mV/V" : "0"}</dd>
+      <dt>Front V<sub>T</sub> here</dt><dd>${vt.toFixed(3)} V</dd>
+      <dt>Body factor n</dt><dd>${P.n.toFixed(3)}</dd><dt>Swing</dt><dd>${ss.toFixed(0)} mV/dec</dd>
+      <dt class="adv">t<sub>of</sub>/t<sub>BOX</sub></dt><dd class="adv">${(st.tox / st.tbox * 1000).toFixed(0)} mV/V</dd>`;
+    drawXS(); drawLF(); drawOut();
+  }
+  function drawXS() {
+    const cv = document.getElementById("xs"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.25);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    // vertical scale: compress thick layers with a sqrt map so 5 nm and 200 nm films are both visible
+    const sq = v => 9 * Math.sqrt(v), fT = sq(st.tSi), bT = sq(st.tbox) * 0.7, sub = 50, gT = 34, oT = 8;
+    const tot = sub + bT + fT + oT + gT, s = (h - 34) / tot, x0 = 20, x1 = w - 20;
+    let y = h - 22;
+    const band = (hh, c, lab, tc) => { const H = hh * s; NX.rect(g, x0, y - H, x1 - x0, H, c); if (lab) NX.label(g, lab, (x0 + x1) / 2, y - H / 2, { size: 12, color: tc || t.ink }); y -= H; return y; };
+    band(sub, t.si, "silicon substrate = back gate");
+    band(bT, t.oxide, `BOX ${st.tbox} nm`);
+    const fy0 = y, fH = fT * s, dep = Math.min(1, P.xd / st.tSi);
+    const sx = x0 + (x1 - x0) * 0.22, ex = x0 + (x1 - x0) * 0.78;
+    NX.rect(g, x0, fy0 - fH, sx - x0, fH, t.nplus); NX.rect(g, ex, fy0 - fH, x1 - ex, fH, t.nplus);
+    NX.rect(g, sx, fy0 - fH, ex - sx, fH * dep, t.depl); if (dep < 1) NX.rect(g, sx, fy0 - fH + fH * dep, ex - sx, fH * (1 - dep), t.pbody);
+    const ny = fH > 30 ? fy0 - fH / 2 - 8 : fy0 - fH / 2; NX.label(g, "n⁺", (x0 + sx) / 2, ny, { size: 12 }); NX.label(g, "n⁺", (ex + x1) / 2, ny, { size: 12 });
+    if (fH > 14) NX.label(g, dep < 1 ? "neutral body (floating)" : "fully depleted film", (sx + ex) / 2, fy0 - fH * (dep < 1 ? (1 - dep) / 2 : 0.5), { size: 11 });
+    if (dep < 1) NX.label(g, `depleted ${P.xd.toFixed(0)} nm`, (sx + ex) / 2, fy0 - fH + fH * dep / 2, { size: 11 });
+    y = fy0 - fH; NX.rect(g, sx, y - oT * s, ex - sx, oT * s, t.green); NX.rect(g, sx, y - (oT + gT) * s, ex - sx, gT * s, t.violet);
+    NX.label(g, "front gate", (sx + ex) / 2, y - (oT + gT / 2) * s, { size: 12, color: "#fff", bold: true });
+    NX.label(g, `film ${st.tSi} nm`, (ex + x1) / 2, fH > 30 ? fy0 - fH / 2 + 10 : fy0 - fH - 10, { size: 11 });
+    NX.label(g, "(layer thicknesses drawn on a square-root scale)", w / 2, h - 8, { size: 10, color: t.muted });
+  }
+  function drawLF() {
+    const t = NX.tok; lfP.begin().axes();
+    lfP.fn(P.VT, { color: P.FD ? t.green : t.muted, width: 2.4 }, 200);
+    if (P.FD) { if (P.vInv < 3) lfP.vline(P.vInv, { label: "back surface inverts", color: t.muted }); if (P.vAcc > -3) lfP.vline(P.vAcc, { label: "back accumulates", color: t.muted, align: "left" }); }
+    lfP.point(st.Vgb, P.VT(st.Vgb));
+  }
+  function drawOut() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; outP.begin().axes();
+    const kink = !P.FD && !st.tie;
+    [[1.5, t.gold], [2.0, t.blue], [2.5, t.green]].forEach(([vg, c]) => {
+      const f = (vd, k) => { const vov = vg - 0.6, vds = Math.min(vd, vov); let I = (vov * vds - vds * vds / 2) * (1 + 0.03 * vd); if (k) I += 0.07 * vov * vov / (1 + Math.exp(-(vd - (vov + 0.45)) / 0.12)); return I; };
+      outP.fn(v => f(v, kink), { color: c, width: 2.2 }); if (kink) outP.fn(v => f(v, false), { color: c, width: 1, dash: [3, 3] });
+    });
+    outP.text(0.15, 2.2, kink ? "floating body: kinks (dotted = body tied)" : P.FD ? "fully depleted: no kink" : "body tied: no kink", { color: t.ink, size: 12 });
+  }
+  NX.onRedraw(update); update();
+})();
+</script>

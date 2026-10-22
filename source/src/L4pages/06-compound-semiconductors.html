@@ -1,0 +1,96 @@
+<!--META
+{"num":6,"slug":"compound-semiconductors","title":"Compound semiconductors: speed and colour","ref":"Document 4, Sections 1–2","blurb":"Two views of why engineers use materials other than silicon. Compare how fast electrons move in Si, GaAs, InGaAs, SiC and GaN as the field rises; then move along an alloy and read off its band gap, lattice match and the colour of light it would emit."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div id="tabV">
+      <div class="figs"><div class="fig solo" style="max-width:none"><h3>Electron drift velocity against electric field</h3><canvas id="vf"></canvas></div></div>
+    </div>
+    <div id="tabG" hidden>
+      <div class="figs"><div class="fig solo" style="max-width:none"><h3>Band gap against lattice constant</h3><canvas id="map"></canvas></div></div>
+    </div>
+    <div class="legend" id="leg"></div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Velocity–field.</b> At low fields the velocity is mobility × field, so light-electron materials (GaAs, InGaAs) are far faster than silicon. In GaAs and InGaAs the velocity <b>peaks</b> at a few kV/cm and then falls: hot electrons move into heavy "satellite" valleys (the transferred-electron, or Gunn, effect). At high fields everything saturates, and the wide-gap materials SiC and GaN saturate highest.</p>
+<p><b>Band-gap map.</b> Alloys of two compounds have band gaps and lattice constants between those of their ends, so the gap can be tuned. A layer grows without defects only on a substrate with nearly the same lattice constant. A direct gap emits light at λ ≈ 1240/E<sub>g</sub> nm.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Read the velocity of each material at 1 kV/cm, then at 100 kV/cm. Which order do they come in at each field?</li>
+<li>Find the field at which GaAs is fastest. What happens to its velocity at ten times that field?</li>
+<li>Move along InGaAs and find the composition that matches InP. What is its gap, and what wavelength would it detect?</li>
+<li>Move along AlGaAs. Where does it become indirect? Along InGaN, which composition gives green light?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does the GaAs velocity fall above about 4 kV/cm?</summary>Electrons gain enough energy (about 0.29 eV) to scatter into the L valleys, where their effective mass is much larger, so the average velocity drops. This negative differential mobility is the basis of the Gunn diode.</details>
+<details><summary>Why can AlGaAs be grown on GaAs at any composition?</summary>AlAs and GaAs have almost the same lattice constant (a difference of about 0.14%), so the alloy is lattice-matched to GaAs throughout.</details>
+<details><summary>Why do wide-gap materials matter for power electronics?</summary>Their critical field is about ten times silicon's, and the ideal on-resistance of a power device falls as the cube of the critical field. Their higher saturated velocity also helps at high frequency.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Velocity–field: Si, SiC and GaN use v = μE/[1 + (μE/v<sub>s</sub>)<sup>β</sup>]<sup>1/β</sup>; GaAs and InGaAs use the transferred-electron form v = [μE + v<sub>s</sub>(E/E<sub>0</sub>)⁴]/[1 + (E/E<sub>0</sub>)⁴]. Parameters (μ cm²/V s, v<sub>s</sub> 10⁷ cm/s): Si 1400, 1.0; GaAs 8500, 1.0, E<sub>0</sub> = 4 kV/cm; In₀.₅₃Ga₀.₄₇As 12000, 0.8, E<sub>0</sub> = 3 kV/cm; 4H-SiC 900, 2.0; GaN 1000, 2.5. Alloys: linear lattice constants (Vegard's law) and band gaps with bowing parameters from Vurgaftman, Meyer and Ram-Mohan (2001); AlGaAs and GaInP switch from direct to indirect where their X valley falls below Γ.</p>
+<p class="caveat">Fits to typical room-temperature data for undoped material. The weak velocity peak of GaN, doping and alloy scattering, strain and temperature are left out.</p></section>
+</main>
+<script>
+(() => {
+  const st = { tab: "v", logF: 0.5, scale: "log", sel: { Si: true, GaAs: true, InGaAs: true, SiC: true, GaN: true }, alloy: "InGaAs", x: 0.53 };
+  const ctl = document.getElementById("ctl");
+  const MAT = {
+    Si: { c: "ink", f: E => ct(E, 1400, 1.0e7, 2) }, GaAs: { c: "rust", f: E => ted(E, 8500, 1.0e7, 4000) }, InGaAs: { c: "violet", f: E => ted(E, 12000, 0.8e7, 3000), name: "In₀.₅₃Ga₀.₄₇As" },
+    SiC: { c: "green", f: E => ct(E, 900, 2.0e7, 1.2), name: "4H-SiC" }, GaN: { c: "blue", f: E => ct(E, 1000, 2.5e7, 1.4) } };
+  function ct(E, mu, vs, b) { return mu * E / Math.pow(1 + Math.pow(mu * E / vs, b), 1 / b); }
+  function ted(E, mu, vs, E0) { const r = Math.pow(E / E0, 4); return (mu * E + vs * r) / (1 + r); }
+  const ALLOY = {
+    AlGaAs: { name: "AlₓGa₁₋ₓAs", A: "GaAs", B: "AlAs", a: x => 5.653 + 0.008 * x, eg: x => { const G = 1.424 + 1.247 * x, X = 1.9 + 0.125 * x + 0.143 * x * x; return [Math.min(G, X), G <= X]; }, sub: ["GaAs", 5.653], cub: true },
+    InGaAs: { name: "InₓGa₁₋ₓAs", A: "GaAs", B: "InAs", a: x => 5.653 + 0.405 * x, eg: x => [1.424 - 1.548 * x + 0.478 * x * x, true], sub: ["InP", 5.869], cub: true },
+    GaInP: { name: "GaₓIn₁₋ₓP", A: "InP", B: "GaP", a: x => 5.869 - 0.418 * x, eg: x => { const G = 1.344 * (1 - x) + 2.78 * x - 0.65 * x * (1 - x), X = 2.38 * (1 - x) + 2.26 * x - 0.2 * x * (1 - x); return [Math.min(G, X), G <= X]; }, sub: ["GaAs", 5.653], cub: true },
+    InGaN: { name: "InₓGa₁₋ₓN", A: "GaN", B: "InN", a: x => 3.189 + 0.356 * x, eg: x => [3.42 * (1 - x) + 0.7 * x - 1.43 * x * (1 - x), true], sub: ["GaN", 3.189], cub: false },
+    AlGaN: { name: "AlₓGa₁₋ₓN", A: "GaN", B: "AlN", a: x => 3.189 - 0.077 * x, eg: x => [3.42 * (1 - x) + 6.1 * x - 0.8 * x * (1 - x), true], sub: ["GaN", 3.189], cub: false } };
+  const BIN = { cub: [["Si", 5.431, 1.12, 0], ["Ge", 5.658, 0.66, 0], ["GaAs", 5.653, 1.42, 1], ["AlAs", 5.661, 2.16, 0], ["InAs", 6.058, 0.354, 1], ["InP", 5.869, 1.344, 1], ["GaP", 5.451, 2.26, 0], ["AlP", 5.464, 2.45, 0], ["InSb", 6.479, 0.17, 1], ["GaSb", 6.096, 0.73, 1], ["AlSb", 6.136, 1.62, 0], ["ZnSe", 5.668, 2.70, 1]],
+    hex: [["GaN", 3.189, 3.42, 1], ["AlN", 3.112, 6.1, 1], ["InN", 3.545, 0.7, 1], ["4H-SiC", 3.073, 3.26, 0], ["ZnO", 3.25, 3.37, 1]] };
+  NX.seg(ctl, { label: "View", value: "v", options: [["v", "Velocity–field"], ["g", "Band-gap map"]], on: v => { st.tab = v; show(); draw(); } });
+  const vBox = document.createElement("div"); vBox.style.display = "contents"; ctl.appendChild(vBox);
+  const gBox = document.createElement("div"); gBox.style.display = "contents"; ctl.appendChild(gBox);
+  NX.slider(vBox, { id: "F", label: "Electric field", min: -1, max: 3, step: 0.01, value: st.logF, fmt: v => { const E = Math.pow(10, v); return (E < 10 ? E.toFixed(2) : E.toFixed(0)) + " kV/cm"; }, on: v => { st.logF = v; draw(); } });
+  NX.seg(vBox, { label: "Field axis", value: "log", options: [["log", "log"], ["lin", "linear, to 40 kV/cm"]], on: v => { st.scale = v; draw(); } });
+  const mw = document.createElement("div"); mw.className = "ctl"; mw.innerHTML = "<label><b>Materials</b></label>"; const mg = document.createElement("div"); mg.className = "seg"; mw.appendChild(mg); vBox.appendChild(mw);
+  Object.keys(MAT).forEach(k => { const b = document.createElement("button"); b.type = "button"; b.textContent = MAT[k].name ? MAT[k].name.replace("In₀.₅₃Ga₀.₄₇As", "InGaAs") : k; b.setAttribute("aria-pressed", true); b.onclick = () => { st.sel[k] = !st.sel[k]; b.setAttribute("aria-pressed", st.sel[k]); draw(); }; mg.appendChild(b); });
+  NX.seg(gBox, { label: "Alloy", value: st.alloy, options: Object.keys(ALLOY).map(k => [k, k]), on: v => { st.alloy = v; draw(); } });
+  NX.slider(gBox, { id: "x", label: "Composition x", min: 0, max: 1, step: 0.01, value: st.x, dp: 2, on: v => { st.x = v; draw(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  const vfP = new NX.Plot(document.getElementById("vf"), { aspect: 1.9, x: [0.1, 2000], xlog: true, y: [0, 3.0], xlabel: "Field (kV/cm)", ylabel: "Velocity (10⁷ cm/s)" });
+  const mapP = new NX.Plot(document.getElementById("map"), { aspect: 1.9, x: [5.35, 6.55], y: [0, 3.8], xlabel: "Lattice constant a (Å)", ylabel: "Band gap (eV)" });
+  function show() { document.getElementById("tabV").hidden = st.tab !== "v"; document.getElementById("tabG").hidden = st.tab !== "g"; vBox.querySelectorAll(".ctl").forEach(e => e.style.display = st.tab === "v" ? "" : "none"); gBox.querySelectorAll(".ctl").forEach(e => e.style.display = st.tab === "g" ? "" : "none"); }
+  function rgb(nm) { let r = 0, g = 0, b = 0; if (nm >= 380 && nm < 440) { r = (440 - nm) / 60; b = 1; } else if (nm < 490) { g = (nm - 440) / 50; b = 1; } else if (nm < 510) { g = 1; b = (510 - nm) / 20; } else if (nm < 580) { r = (nm - 510) / 70; g = 1; } else if (nm < 645) { r = 1; g = (645 - nm) / 65; } else if (nm <= 750) r = 1; return nm < 380 || nm > 750 ? null : `rgb(${Math.round(255 * r)},${Math.round(255 * g)},${Math.round(255 * b)})`; }
+  function draw() { st.tab === "v" ? drawV() : drawG(); }
+  function drawV() {
+    const t = NX.tok, lin = st.scale === "lin", E = Math.pow(10, st.logF);
+    if (lin) { vfP.o.xlog = false; vfP.setX(0, 40); } else { vfP.o.xlog = true; vfP.setX(0.1, 2000); }
+    vfP.begin().axes();
+    Object.entries(MAT).forEach(([k, m]) => { if (st.sel[k]) vfP.fn(x => m.f(x * 1e3) / 1e7, { color: t[m.c], width: 2.4 }, 400); });
+    if (!lin || E <= 40) { vfP.vline(E, { label: `${E < 10 ? E.toFixed(2) : E.toFixed(0)} kV/cm` }); Object.entries(MAT).forEach(([k, m]) => { if (st.sel[k]) vfP.point(E, m.f(E * 1e3) / 1e7, { color: t[m.c] }); }); }
+    document.getElementById("leg").innerHTML = Object.entries(MAT).map(([k, m]) => `<span><i style="background:var(--${m.c})"></i>${m.name || k}</span>`).join("");
+    const rows = Object.entries(MAT).filter(([k]) => st.sel[k]).map(([k, m]) => [m.name || k, m.f(E * 1e3)]).sort((a, b) => b[1] - a[1]);
+    status.className = "status"; status.textContent = rows.length ? `At ${E < 10 ? E.toFixed(2) : E.toFixed(0)} kV/cm the fastest is ${rows[0][0]}.` : "Choose at least one material.";
+    ro.innerHTML = rows.map(([n, v]) => `<dt>${n}</dt><dd>${(v / 1e7).toFixed(2)}×10⁷ cm/s</dd>`).join("") + (rows.length ? `<dt>Time to cross 50 nm (${rows[0][0]})</dt><dd>${(50e-7 / rows[0][1] * 1e12).toFixed(2)} ps</dd>` : "");
+  }
+  function drawG() {
+    const t = NX.tok, al = ALLOY[st.alloy], bins = al.cub ? BIN.cub : BIN.hex;
+    if (al.cub) { mapP.setX(5.35, 6.55); mapP.setY(0, 3.8); } else { mapP.setX(3.0, 3.6); mapP.setY(0, 6.6); }
+    mapP.begin().axes();
+    mapP.clip(g => { g.globalAlpha = .22; for (let nm = 380; nm <= 750; nm += 5) { const E1 = 1240 / nm, E2 = 1240 / (nm + 5); g.fillStyle = rgb(nm); g.fillRect(mapP.L, mapP.ty(E1), mapP.R - mapP.L, mapP.ty(E2) - mapP.ty(E1)); } g.globalAlpha = 1; });
+    const xs = [], ys = []; for (let x = 0; x <= 1.0001; x += 0.01) { xs.push(al.a(x)); ys.push(al.eg(x)[0]); } mapP.line(xs, ys, { color: t.navy, width: 2.4 });
+    mapP.vline(al.sub[1], { label: `matched to ${al.sub[0]}`, color: t.green });
+    bins.forEach(([n, a, e, d]) => { mapP.point(a, e, { color: d ? t.rust : t.muted, r: 4.5 }); mapP.text(a, e, n, { dx: 7, dy: -9, size: 11 }); });
+    const a = al.a(st.x), [eg, dir] = al.eg(st.x), lam = 1240 / eg, mis = (a - al.sub[1]) / al.sub[1] * 100, col = rgb(lam);
+    mapP.point(a, eg, { color: t.gold, r: 8 });
+    document.getElementById("leg").innerHTML = `<span><i class="dot" style="background:var(--rust)"></i>direct gap</span><span><i class="dot" style="background:var(--muted)"></i>indirect gap</span><span><i style="background:var(--navy)"></i>${al.name}, from ${al.A} (x = 0) to ${al.B} (x = 1)</span><span>background: visible light at λ = 1240/E<sub>g</sub></span>`;
+    status.className = "status " + (Math.abs(mis) < 0.3 ? "good" : "");
+    status.innerHTML = `${al.name.replace("ₓ", "<sub>" + st.x.toFixed(2) + "</sub>").replace("₁₋ₓ", "<sub>" + (1 - st.x).toFixed(2) + "</sub>")}: E<sub>g</sub> = ${eg.toFixed(2)} eV, ${dir ? "direct" : "indirect"}. ${Math.abs(mis) < 0.3 ? "Lattice-matched to " + al.sub[0] + "." : "Mismatch to " + al.sub[0] + ": " + mis.toFixed(2) + "%."}`;
+    ro.innerHTML = `<dt>Band gap</dt><dd>${eg.toFixed(3)} eV</dd><dt>Gap type</dt><dd>${dir ? "direct" : "indirect"}</dd><dt>Lattice constant a</dt><dd>${a.toFixed(3)} Å</dd>
+      <dt>Mismatch to ${al.sub[0]}</dt><dd>${mis.toFixed(2)}%</dd><dt>Wavelength 1240/E<sub>g</sub></dt><dd>${lam.toFixed(0)} nm</dd>
+      <dt>Colour</dt><dd>${col ? `<span style="display:inline-block;width:2.2em;height:1em;vertical-align:middle;border-radius:3px;background:${col}"></span>` : lam > 750 ? "infrared" : "ultraviolet"}</dd>`;
+  }
+  NX.onRedraw(draw); show(); draw();
+})();
+</script>

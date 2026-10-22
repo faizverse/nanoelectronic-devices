@@ -1,0 +1,132 @@
+<!--META
+{"num":2,"slug":"cntfet-ballistic","title":"The ballistic nanotube transistor","ref":"Document 2, Sections 3–4","blurb":"In a short nanotube, electrons cross from source to drain without scattering. The current is set by how many states at the top of the barrier are filled from each end. Change the gate, the drain, the tube and the insulator, and watch the quantum capacitance limit the charge."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>At the top of the barrier: right-movers filled from the source, left-movers from the drain</h3><canvas id="top"></canvas></div>
+      <div class="fig"><h3>Drain current against gate voltage</h3><canvas id="iv"></canvas></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--gold)"></i>states filled from the source (moving to the drain)</span><span><i style="background:var(--violet)"></i>states filled from the drain (moving back)</span><span><i class="dot" style="background:var(--electron)"></i>electrons crossing</span></div>
+    <div class="figs adv">
+      <div class="fig"><h3>Output curves at four gate voltages</h3><canvas id="out"></canvas></div>
+      <div class="fig"><h3>How the gate voltage divides: insulator against quantum capacitance</h3><canvas id="cap"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Left.</b> The energy of the first subband at the top of the barrier in the channel (black line), set by the gate. Electrons moving towards the drain come from the source and fill states up to the source Fermi level μ<sub>S</sub>; those moving back come from the drain, filled up to μ<sub>D</sub> = μ<sub>S</sub> − qV<sub>D</sub>. The current is the difference.</p>
+<p><b>Right.</b> The transfer curve. Below threshold the gate lowers the barrier and the current rises tenfold every 60 mV at 300 K. Above threshold the current rises roughly linearly, at most 4q²/h = 155 µA per volt for one subband.</p>
+<p><b>The quantum capacitance.</b> Adding electrons to the tube costs energy because its density of states is finite. With a thin high-κ gate, the gate moves the bands almost one-for-one, and the charge, and so the current, is set by the tube's own states.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>At V<sub>D</sub> = 0.5 V sweep the gate. Read the swing below threshold. Now raise the temperature to 400 K.</li>
+<li>Switch the insulator from SiO₂ to HfO₂ and thin it from 10 nm to 2 nm. When does the on-current stop rising? (More detail shows why.)</li>
+<li>Lower V<sub>D</sub> to 0.05 V, then raise it. Why does the current saturate after only about 0.1 V?</li>
+<li>Make the tube wider. What happens to the second subband, and to the current at high gate voltage?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does the current saturate without pinch-off?</summary>Once μ<sub>D</sub> is a few k<sub>B</sub>T below the barrier top, the drain no longer fills any left-moving states, so the current is set by the source alone and stops depending on V<sub>D</sub>.</details>
+<details><summary>Why does making the insulator thinner eventually stop helping?</summary>The gate drives the insulator capacitance and the quantum capacitance in series. Once C<sub>ins</sub> ≫ C<sub>Q</sub>, the series combination is limited by C<sub>Q</sub>, which depends only on the tube.</details>
+<details><summary>What is the most current one subband can carry?</summary>4q²/h ≈ 155 µA per volt of overdrive: four channels (two spins, two valleys), each carrying q/h per unit energy.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Top-of-the-barrier model (Natori; Rahman, Guo, Datta and Lundstrom, 2003). Electron density at the barrier n = ∫D(E)[f(E + U − μ<sub>S</sub>) + f(E + U − μ<sub>D</sub>)]/2 dE, with hyperbolic subbands and D(E) = (8/hv<sub>F</sub>)E/√(E² − Δ²). Self-consistent potential U = −q(α<sub>G</sub>V<sub>G</sub> + α<sub>D</sub>V<sub>D</sub>) + q²n/C<sub>Σ</sub>, with C<sub>ins</sub> = 2πε/ln[(2t<sub>ox</sub> + d)/d], α<sub>G</sub> = 0.97, α<sub>D</sub> = 0.03. Current I = (4qk<sub>B</sub>T/h)·q[ln(1 + e<sup>η<sub>S</sub></sup>) − ln(1 + e<sup>η<sub>D</sub></sup>)] per subband. Two subbands; γ<sub>0</sub> = 2.7 eV. The threshold is set by a fixed band offset (doped, ohmic contacts).</p>
+<p class="caveat">Left out: contact resistance (at least 6.45 kΩ per tube in reality), phonon scattering (real devices reach 50–80% of this ballistic current), band-to-band leakage and interface traps.</p></section>
+</main>
+<script>
+/*INCLUDE l4.js*/
+(() => {
+  const st = { Vg: 0.45, Vd: 0.5, d: 1.5, tox: 3, kappa: 16, T: 300 };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "Vg", label: "Gate voltage", min: -0.3, max: 0.8, step: 0.01, value: st.Vg, unit: "V", dp: 2, on: v => { st.Vg = v; update(); } });
+  NX.slider(ctl, { id: "Vd", label: "Drain voltage", min: 0, max: 0.8, step: 0.01, value: st.Vd, unit: "V", dp: 2, on: v => { st.Vd = v; update(true); } });
+  NX.slider(ctl, { id: "d", label: "Tube diameter", min: 1.0, max: 2.2, step: 0.05, value: st.d, unit: "nm", dp: 2, on: v => { st.d = v; update(true); } });
+  NX.slider(ctl, { id: "tox", label: "Insulator thickness", min: 1, max: 15, step: 0.5, value: st.tox, unit: "nm", dp: 1, on: v => { st.tox = v; update(true); } });
+  NX.seg(ctl, { label: "Insulator (wrap-around gate)", value: 16, options: [[3.9, "SiO₂"], [16, "HfO₂"], [25, "κ = 25"]], on: v => { st.kappa = v; update(true); } });
+  NX.slider(ctl, { id: "T", label: "Temperature", min: 200, max: 400, step: 10, value: st.T, unit: "K", dp: 0, on: v => { st.T = v; update(true); } });
+  let logY = true; NX.seg(ctl, { label: "Current axis", value: "log", options: [["log", "log"], ["lin", "linear"]], on: v => { logY = v === "log"; drawIV(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const opt = () => ({ d: st.d, tox: st.tox, kappa: st.kappa, T: st.T, VT0: 0.25, g0: 2.7, nsub: 2 });
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 1.25, x: [-0.3, 0.8], y: [1e-12, 2e-4], ylog: true, xlabel: "Gate voltage (V)", ylabel: "Current per tube (A)" });
+  const out = new NX.Plot(document.getElementById("out"), { aspect: 1.25, x: [0, 0.8], y: [0, 80], xlabel: "Drain voltage (V)", ylabel: "Current per tube (µA)" });
+  const cap = new NX.Plot(document.getElementById("cap"), { aspect: 1.25, x: [0.5, 15], y: [0, 1.6], xlabel: "Insulator thickness (nm)", ylabel: "fF per µm of tube" });
+  let curve = null, cur = null;
+  const CQ = () => 1.602e-19 * (4 / (Math.PI * L4.HBARVF0 * 2.7)) * 1e9 * 1e9; // fF/µm
+  function update(recurve) {
+    const o = opt();
+    if (recurve || !curve) { curve = { x: [], y: [] }; for (let v = -0.3; v <= 0.8001; v += 0.02) { curve.x.push(v); curve.y.push(L4.ballistic(v, st.Vd, o).I); } }
+    cur = L4.ballistic(st.Vg, st.Vd, o);
+    // swing between 1e-10 and 1e-9 A
+    const find = I0 => { let lo = -0.3, hi = 0.8; for (let k = 0; k < 40; k++) { const m = (lo + hi) / 2; L4.ballistic(m, st.Vd, o).I < I0 ? lo = m : hi = m; } return (lo + hi) / 2; };
+    const ss = (find(1e-9) - find(1e-10)) * 1e3, lim = Math.LN10 * 8.617e-5 * st.T * 1e3;
+    const Cins = cur.Cins * 1e9 * 1e3 / 1e3, cq = CQ(), ratio = Cins / (Cins + cq);
+    status.className = "status " + (cur.I > 1e-6 ? "good" : "");
+    status.textContent = cur.I < 1e-9 ? "Off: the subband is well above the source Fermi level; only the hot tail of electrons gets over." :
+      cur.I < 5e-6 ? "Near threshold: the barrier top is close to the source Fermi level." :
+      `On: about ${(cur.I / ((4 * 1.602e-19 ** 2 / 6.626e-34) * Math.max(0.01, st.Vd)) * 100).toFixed(0)}% of the ballistic maximum 4q²/h × V_D for one subband.`;
+    ro.innerHTML = `<dt>Current per tube</dt><dd>${NX.si(cur.I, "A")}</dd>
+      <dt>Band gap</dt><dd>${cur.Eg.toFixed(2)} eV</dd>
+      <dt>Swing (0.1 → 1 nA)</dt><dd>${isFinite(ss) ? ss.toFixed(0) : "—"} mV/dec (limit ${lim.toFixed(0)})</dd>
+      <dt>Array of 200 tubes/µm</dt><dd>${NX.si(cur.I * 200, "A")}/µm</dd>
+      <dt class="adv">C<sub>ins</sub> (wrap-around)</dt><dd class="adv">${Cins.toFixed(2)} fF/µm</dd>
+      <dt class="adv">C<sub>Q</sub> (metallic value)</dt><dd class="adv">${cq.toFixed(2)} fF/µm</dd>
+      <dt class="adv">On-state ΔΨ/ΔV<sub>G</sub> ≈ C<sub>ins</sub>/(C<sub>ins</sub> + C<sub>Q</sub>)</dt><dd class="adv">${(ratio * 100).toFixed(0)}%</dd>
+      <dt class="adv">Electrons per nm at the barrier</dt><dd class="adv">${(cur.n * 1e-9).toFixed(3)}</dd>`;
+    drawIV(); if (recurve) { drawOut(); drawCap(); }
+  }
+  function drawIV() {
+    const t = NX.tok;
+    if (logY) { iv.o.ylog = true; iv.setY(1e-12, 2e-4); iv.o.ylabel = "Current per tube (A)"; iv.begin().axes(); iv.line(curve.x, curve.y, { color: t.gold, width: 2.4 }); iv.point(st.Vg, cur.I, { color: t.rust }); }
+    else { iv.o.ylog = false; iv.setY(0, 90); iv.o.ylabel = "Current per tube (µA)"; iv.begin().axes(); iv.line(curve.x, curve.y.map(v => v * 1e6), { color: t.gold, width: 2.4 }); iv.point(st.Vg, cur.I * 1e6, { color: t.rust });
+      iv.hline(4 * 1.602e-19 ** 2 / 6.626e-34 * st.Vd * 1e6, { color: t.rust, label: "4q²/h × V_D" }); }
+  }
+  function drawOut() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok, o = opt(); out.begin().axes();
+    [[0.3, t.gold], [0.45, t.blue], [0.6, t.green], [0.75, t.violet]].forEach(([vg, c]) => { const xs = [], ys = []; for (let v = 0; v <= 0.8001; v += 0.025) { xs.push(v); ys.push(L4.ballistic(vg, v, o).I * 1e6); } out.line(xs, ys, { color: c, width: 2 }); out.text(0.62, ys[ys.length - 6] + 3, `V_G = ${vg}`, { color: c, size: 11 }); });
+    out.point(st.Vd, cur.I * 1e6, { color: t.rust });
+  }
+  function drawCap() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; cap.begin().axes();
+    [[3.9, t.blue, "SiO₂"], [16, t.green, "HfO₂"], [25, t.violet, "κ = 25"]].forEach(([k, c, n]) => { cap.fn(x => L4.cins(st.d, x, k) * 1e9 * 1e3 / 1e3, { color: c, width: 2 }); });
+    cap.hline(CQ(), { color: t.rust, label: "C_Q ≈ " + CQ().toFixed(2) + " fF/µm" });
+    cap.point(st.tox, L4.cins(st.d, st.tox, st.kappa) * 1e9 * 1e3 / 1e3, { color: t.gold });
+  }
+  // top-of-barrier picture with animated electrons
+  let dots = [];
+  function drawTop() {
+    const cv = document.getElementById("top"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.25);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const Eb = 0.25 + cur.U, muS = 0, muD = -st.Vd;  // first subband edge at the barrier top, relative to muS
+    const Y = E => 30 + (0.55 - E) / 1.5 * (h - 60), X = x => 20 + x * (w - 40); // x in 0..1 along the device
+    const prof = x => { const s = 0.5 * (1 + Math.tanh((x - 0.22) / 0.05)), dd = 0.5 * (1 + Math.tanh((x - 0.78) / 0.05)); return Eb * (s - dd) * 1 + (-0.12) * (1 - s) + (-0.12 - st.Vd) * dd; };
+    // source and drain fills
+    g.fillStyle = t.gold; g.globalAlpha = .35; g.fillRect(X(0), Y(muS), X(0.18) - X(0), Y(-0.9) - Y(muS)); g.fillStyle = t.violet; g.fillRect(X(0.82), Y(muD), X(1) - X(0.82), Y(-0.9 - st.Vd) - Y(muD)); g.globalAlpha = 1;
+    g.strokeStyle = t.ink; g.lineWidth = 2.2; g.beginPath(); for (let i = 0; i <= 200; i++) { const x = i / 200; i ? g.lineTo(X(x), Y(prof(x))) : g.moveTo(X(x), Y(prof(x))); } g.stroke();
+    g.setLineDash([5, 4]); g.lineWidth = 1.2; g.strokeStyle = t.gold; g.beginPath(); g.moveTo(X(0), Y(muS)); g.lineTo(X(0.5), Y(muS)); g.stroke();
+    g.strokeStyle = t.violet; g.beginPath(); g.moveTo(X(0.5), Y(muD)); g.lineTo(X(1), Y(muD)); g.stroke(); g.setLineDash([]);
+    NX.label(g, "μ_S", X(0.04), Y(muS) - 9, { size: 11, color: t.gold, bold: true }); NX.label(g, "μ_D", X(0.96), Y(muD) - 9, { size: 11, color: t.violet, bold: true });
+    // energy window at the barrier top: right-movers filled up to muS
+    const top = Eb, x0 = X(0.5);
+    if (muS > top) { g.fillStyle = t.gold; g.globalAlpha = .45; g.fillRect(x0 - 26, Y(muS), 24, Y(top) - Y(muS)); g.globalAlpha = 1; }
+    if (muD > top) { g.fillStyle = t.violet; g.globalAlpha = .45; g.fillRect(x0 + 2, Y(muD), 24, Y(top) - Y(muD)); g.globalAlpha = 1; }
+    NX.label(g, `barrier top ${(top * 1e3).toFixed(0)} meV ${top > 0 ? "above" : "below"} μ_S`, X(0.5), Y(Math.max(top, muS)) - 16, { size: 11, color: t.rust });
+    ["source", "gated tube", "drain"].forEach((s, i) => NX.label(g, s, X([0.09, 0.5, 0.91][i]), h - 10, { size: 11 }));
+    dots.forEach(p => NX.dot(g, X(p.x), Y(p.E), 3.2, t.electron));
+    return { prof, top };
+  }
+  let geo = null;
+  NX.loop(dt => {
+    const rate = Math.max(0, Math.min(14, 2.2 * (Math.log10(cur.I) + 10.5)));
+    const top = 0.25 + cur.U;
+    if (Math.random() < rate * dt) dots.push({ x: 0.05, E: top < 0 ? top + 0.01 + Math.random() * (-top - 0.01) : top + 0.01 - Math.log(Math.random()) * 8.617e-5 * st.T });
+    dots.forEach(p => p.x += 0.55 * dt); dots = dots.filter(p => p.x < 0.98);
+    geo = drawTop();
+  });
+  NX.onRedraw(() => { update(true); drawTop(); });
+  update(true); drawTop();
+})();
+</script>
