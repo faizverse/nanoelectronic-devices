@@ -4,7 +4,7 @@
 <div class="lab">
   <div class="card stage">
     <div class="fig"><h3>The box, its allowed energies, and the wave at each energy</h3><canvas id="well"></canvas>
-      <div class="legend"><span><i style="background:var(--ink)"></i>the walls of the box</span><span><i style="background:var(--muted)"></i>allowed energies</span><span><i style="background:var(--rust)"></i>the wave (or where the electron is likely to be), drawn on its energy</span></div></div>
+      <div class="legend"><span><i style="background:var(--ink)"></i>the walls of the box</span><span><i style="background:var(--muted)"></i>allowed energies</span><span><i style="background:linear-gradient(90deg,#2f6fb5,#d1495b,#2a9d8f,#e9a03b)"></i>each allowed wave (or where the electron is likely to be), drawn on its own energy line</span></div></div>
     <div class="figs adv">
       <div class="fig"><h3>Level energies against box width</h3><canvas id="ew"></canvas></div>
       <div class="fig"><h3>Chance of finding the electron outside the box</h3><canvas id="pout"></canvas></div>
@@ -37,7 +37,7 @@
   const st = { walls: "infinite", L: 10, V0: 0.24, m: 0.067, show: "psi" };
   const ctl = document.getElementById("ctl");
   NX.seg(ctl, { label: "Walls", value: st.walls, options: [["infinite", "Perfect"], ["finite", "Real (leaky)"]], on: v => { st.walls = v; vS.el.style.opacity = v === "finite" ? 1 : .45; update(); } });
-  NX.slider(ctl, { id: "L", label: "Box width", min: 1, max: 30, step: 0.1, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "L", label: "Box width", min: 2, max: 30, step: 0.1, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
   const vS = NX.slider(ctl, { id: "V0", label: "Wall height (leaky walls)", min: 0.02, max: 1.0, step: 0.01, value: st.V0, unit: "eV", hint: "GaAs between AlGaAs: 0.24 eV", on: v => { st.V0 = v; update(); } }); vS.el.classList.add("adv"); vS.el.style.opacity = .45;
   NX.seg(ctl, { label: "Electron inside", value: st.m, hint: "lighter → energies further apart", options: [[0.023, "InAs (lightest)"], [0.067, "GaAs"], [0.19, "Si"], [1, "empty space"]], on: v => { st.m = v; update(); } });
   NX.seg(ctl, { label: "Show", value: st.show, options: [["psi", "the wave ψ"], ["prob", "where it is likely, |ψ|²"]], on: v => { st.show = v; update(); } });
@@ -72,21 +72,24 @@
     drawWell(); drawPlots();
   }
   function drawWell() {
-    const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("well"), 1.9);
+    const cvw = document.getElementById("well"), narrow = (cvw.clientWidth || 700) < 560;
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(cvw, narrow ? 1.25 : 1.9);
     g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
     const fin = st.walls === "finite", span = Math.max(st.L * 2.6, st.L + 12), xL = -span / 2, xR = span / 2;
-    const Etop = fin ? st.V0 * 1.25 : Math.max(1.15 * (S[Math.min(3, S.length - 1)].E), 0.02);
-    const pl = 56, pr = 110, pt = 16, pb = 34;
+    const Etop = fin ? Math.min(st.V0 * 1.25, Math.max(1.35 * S[Math.min(7, S.length - 1)].E, 0.02)) : Math.max(1.15 * (S[Math.min(3, S.length - 1)].E), 0.02);
+    const pl = narrow ? 30 : 56, pr = narrow ? 96 : 118, pt = 16, pb = 34;
     const X = x => pl + (x - xL) / (xR - xL) * (w - pl - pr), Y = E => h - pb - E / Etop * (h - pt - pb);
-    // barriers
+    // barriers (the wall top is clamped to the plot when it lies above the view)
+    const Yw = Math.max(pt, Y(st.V0));
     g.fillStyle = t.si; const a = st.L / 2;
     g.fillRect(X(xL), pt, X(-a) - X(xL), Y(0) - pt + (h - pb - Y(0))); g.fillRect(X(a), pt, X(xR) - X(a), h - pb - pt);
-    if (fin) { g.fillStyle = t.panel; g.fillRect(X(xL), pt, X(xR) - X(xL), Y(st.V0) - pt); }
+    if (fin) { g.fillStyle = t.panel; g.fillRect(X(xL), pt, X(xR) - X(xL), Yw - pt); }
     g.strokeStyle = t.ink; g.lineWidth = 2.2; g.beginPath();
-    if (fin) { g.moveTo(X(xL), Y(st.V0)); g.lineTo(X(-a), Y(st.V0)); g.lineTo(X(-a), Y(0)); g.lineTo(X(a), Y(0)); g.lineTo(X(a), Y(st.V0)); g.lineTo(X(xR), Y(st.V0)); }
+    if (fin) { g.moveTo(X(xL), Yw); g.lineTo(X(-a), Yw); g.lineTo(X(-a), Y(0)); g.lineTo(X(a), Y(0)); g.lineTo(X(a), Yw); g.lineTo(X(xR), Yw); }
     else { g.moveTo(X(-a), pt); g.lineTo(X(-a), Y(0)); g.lineTo(X(a), Y(0)); g.lineTo(X(a), pt); }
     g.stroke();
-    const nshow = fin ? S.length : S.filter(s => s.E < Etop).length;
+    const nshow = Math.min(8, fin ? S.length : S.filter(s => s.E < Etop).length);
+    const eLab = E => E >= 1 ? E.toFixed(2) + " eV" : (E * 1e3).toFixed(E < 0.01 ? 1 : 0) + " meV"; let lastY = 1e9;
     const sp = nshow > 1 ? (S[1].E - S[0].E) : S[0].E;
     for (let j = 0; j < nshow; j++) {
       const s = S[j], col = COL[j % COL.length], Ey = Y(s.E);
@@ -97,9 +100,9 @@
       g.lineTo(X(xR), Ey); g.lineTo(X(xL), Ey); g.closePath(); g.globalAlpha = .18; g.fillStyle = col; g.fill(); g.globalAlpha = 1;
       g.beginPath(); for (let i = 0; i <= 300; i++) { const x = xL + (xR - xL) * i / 300; const yy = Ey - amp * f(x); i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }
       g.strokeStyle = col; g.lineWidth = 2; g.stroke();
-      NX.label(g, `n=${j + 1}  ${(s.E * 1e3).toFixed(0)} meV`, X(xR) + 6, Ey, { align: "left", size: 12, color: col, bold: true });
+      if (Math.abs(lastY - Ey) >= 14) { NX.label(g, `n=${j + 1}  ${eLab(s.E)}`, X(xR) + 6, Ey, { align: "left", size: 12, color: col, bold: true }); lastY = Ey; }
     }
-    if (fin) NX.label(g, `top of the walls ${(st.V0 * 1e3).toFixed(0)} meV`, X(xR) + 6, Y(st.V0) - 22, { align: "left", size: 11.5, color: t.muted });
+    if (fin) NX.label(g, st.V0 < Etop ? `top of the walls: ${(st.V0 * 1e3).toFixed(0)} meV` : `walls continue up to ${(st.V0 * 1e3).toFixed(0)} meV`, X(xL) + 6, Math.max(pt + 8, Y(st.V0) - 9), { align: "left", size: 11.5, color: t.muted });
     // axes
     g.fillStyle = t.muted; g.font = "12px system-ui"; g.textAlign = "center"; g.textBaseline = "top";
     for (const x of [-a, 0, a]) g.fillText(x === 0 ? "0" : (x > 0 ? "+" : "−") + Math.abs(x).toFixed(1) + " nm", X(x), h - pb + 6);
