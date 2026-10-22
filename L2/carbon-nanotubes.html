@@ -351,7 +351,7 @@ const NX = (() => {
   const a = 0.246, acc = a / Math.sqrt(3), g0 = 2.9;
   const st = { n: 10, m: 0 };
   const ctl = document.getElementById("ctl");
-  const sn = NX.slider(ctl, { id: "n", label: "How it is rolled: n", min: 1, max: 20, step: 1, value: st.n, dp: 0, on: v => { st.n = v; if (st.m > v) { st.m = v; sm.value = v; } update(); } });
+  const sn = NX.slider(ctl, { id: "n", label: "How it is rolled: n", min: 4, max: 20, step: 1, value: st.n, dp: 0, on: v => { st.n = v; if (st.m > v) { st.m = v; sm.value = v; } update(); } });
   const sm = NX.slider(ctl, { id: "m", label: "How it is rolled: m (0 to n)", min: 0, max: 20, step: 1, value: st.m, dp: 0, on: v => { st.m = Math.min(v, st.n); sm.value = st.m; update(); } });
   const br = document.createElement("div"); br.className = "btnrow";
   br.innerHTML = '<button class="btn ghost" type="button" data-p="10,0">Zigzag (10,0)</button><button class="btn ghost" type="button" data-p="10,10">Armchair (10,10)</button><button class="btn ghost" type="button" data-p="10,5">Chiral (10,5)</button><button class="btn" type="button" id="rnd">Random</button>';
@@ -374,9 +374,11 @@ const NX = (() => {
     const Eg = metal ? 0 : 2 * acc * g0 / d;
     const kind = m === 0 ? "zigzag" : n === m ? "armchair" : "chiral";
     M = { n, m, Cl, d, metal, th, t1, t2, Tl, Nat, Eg, kind };
-    status.className = "status " + (metal ? "bad" : "good");
+    const thin = d < 0.6;
+    status.className = "status " + (metal || thin ? "bad" : "good");
     status.textContent = metal ? `(${n},${m}) is a metal: n − m = ${n - m} can be divided by 3. As a transistor it could not be switched off.` :
       `(${n},${m}) is a semiconductor: n − m = ${n - m} cannot be divided by 3. Its ${Eg.toFixed(2)} eV gap lets it switch, like silicon (1.12 eV).`;
+    if (thin) status.textContent = `(${n},${m}) would be only ${d.toFixed(2)} nm across: too tightly curved to be stable. Real tubes are at least about 0.6 nm across, so make n or m larger.`;
     ro.innerHTML = `<dt>Type</dt><dd>${kind}, ${metal ? "metallic" : "semiconducting"}</dd>
       <dt>Diameter</dt><dd>${d.toFixed(3)} nm</dd><dt class="adv">Chiral angle</dt><dd class="adv">${th.toFixed(1)}°</dd>
       <dt>Band gap</dt><dd>${metal ? (n === m ? "0 (exactly)" : "≈ 0 (tiny curvature gap)") : Eg.toFixed(2) + " eV"}</dd>
@@ -389,7 +391,8 @@ const NX = (() => {
     const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("sheet"), 1.15);
     g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
     const C = [M.n * A1[0] + M.m * A2[0], M.n * A1[1] + M.m * A2[1]], T = [M.t1 * A1[0] + M.t2 * A2[0], M.t1 * A1[1] + M.t2 * A2[1]];
-    const Tshow = Math.min(1, 2.2 * M.Cl / M.Tl) , Ts = [T[0] * Tshow, T[1] * Tshow];
+    // any length of strip rolls into a tube, so keep the strip visibly wide
+    const Tshow = Math.max(0.45 * M.Cl / M.Tl, Math.min(1, 2.2 * M.Cl / M.Tl)), Ts = [T[0] * Tshow, T[1] * Tshow];
     const xs = [0, C[0], Ts[0], C[0] + Ts[0]], ys = [0, C[1], Ts[1], C[1] + Ts[1]];
     const x0 = Math.min(...xs) - 0.35, x1 = Math.max(...xs) + 0.35, y0 = Math.min(...ys) - 0.35, y1 = Math.max(...ys) + 0.35;
     const sc = Math.min((w - 20) / (x1 - x0), (h - 30) / (y1 - y0));
@@ -408,10 +411,11 @@ const NX = (() => {
     g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(C[0]), Y(C[1])); g.lineTo(X(C[0] + Ts[0]), Y(C[1] + Ts[1])); g.lineTo(X(Ts[0]), Y(Ts[1])); g.closePath(); g.fill(); g.stroke(); g.setLineDash([]);
     NX.arrow(g, X(0), Y(0), X(C[0]), Y(C[1]), t.rust, 2.6, 10);
     NX.arrow(g, X(0), Y(0), X(Ts[0]), Y(Ts[1]), t.blue, 2, 9);
-    NX.arrow(g, X(0), Y(0), X(A1[0]), Y(A1[1]), t.ink, 1.6, 6); NX.arrow(g, X(0), Y(0), X(A2[0]), Y(A2[1]), t.ink, 1.6, 6);
+    const adv = document.body.classList.contains("more");
+    if (adv) { NX.arrow(g, X(0), Y(0), X(A1[0]), Y(A1[1]), t.ink, 1.6, 6); NX.arrow(g, X(0), Y(0), X(A2[0]), Y(A2[1]), t.ink, 1.6, 6); }
     NX.label(g, `C = (${M.n}, ${M.m})`, X(C[0] / 2), Y(C[1] / 2) - 14, { color: t.rust, bold: true, size: 13 });
     NX.label(g, Tshow < 1 ? "along the tube (cut short)" : "along the tube", X(Ts[0] * 0.6) + 8, Y(Ts[1] * 0.6), { color: t.blue, size: 11.5, align: "left" });
-    NX.label(g, "a₁", X(A1[0]) + 8, Y(A1[1]) - 6, { size: 11 }); NX.label(g, "a₂", X(A2[0]) + 8, Y(A2[1]) + 8, { size: 11 });
+    if (adv) { NX.label(g, "a₁", X(A1[0]) + 8, Y(A1[1]) - 6, { size: 11 }); NX.label(g, "a₂", X(A2[0]) + 8, Y(A2[1]) + 8, { size: 11 }); }
     NX.label(g, "roll the shaded strip so the two ends of the arrow meet", w / 2, h - 8, { size: 11, color: t.muted });
   }
   function drawTube() {

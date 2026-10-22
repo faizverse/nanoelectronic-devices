@@ -473,12 +473,19 @@ const QM = (() => {
       for (const { E: En, deg } of ed) {
         if (dim === 2) s += deg * (E > En ? 1 : 0);
         else if (dim === 1) { const x = E - En; s += deg * (x > 0 ? 1 / Math.sqrt(x + brd) : 0); }
-        else { const sg = Math.max(0.0015, 2 * sigFrac * En); s += deg * Math.exp(-0.5 * ((E - En) / sg) ** 2) / sg; }
+        else { const sg = Math.max(0.0015, 2 * sigFrac * En), z = (E - En) / sg; if (Math.abs(z) < 3.5) s += deg * Math.exp(-0.5 * z * z) / sg; }   // size spread, cut at 3.5σ so no dot is unphysically large
       }
       return s;
     });
   }
   function occ(g, T) { const kT = QM.kT300 * T / 300; return g.map((v, i) => v * Math.exp(-Es[i] / kT)); }
+  // dots: electrons cannot move between dots, so each level keeps the size spread of the ensemble and is
+  // filled according to the Boltzmann factor of its own (nominal) energy within a dot
+  function occDot(L, sigFrac, T, brd = 0.0015) {
+    const kT = QM.kT300 * T / 300, ed = edges(0, L), E1 = ed[0].E;
+    return Es.map(E => { let s = 0; for (const { E: En, deg } of ed) { const sg = Math.max(brd, 2 * sigFrac * En), z = (E - En) / sg; if (Math.abs(z) < 3.5) s += deg * Math.exp(-0.5 * z * z) / sg * Math.exp(-(En - E1) / kT); } return s; });
+  }
+  const occOf = (dim, L, sig, T) => dim === 0 ? occDot(L, sig, T) : occ(gOf(dim, L, sig), T);
   function fwhm(n) {
     const mx = Math.max(...n); let lo = -1, hi = -1;
     for (let i = 0; i < n.length; i++) if (n[i] >= mx / 2) { if (lo < 0) lo = i; hi = i; }
@@ -487,9 +494,9 @@ const QM = (() => {
   function update() {
     sL.el.style.opacity = st.dim === 3 ? .45 : 1; sS.el.style.opacity = st.dim === 0 ? 1 : .45;
     const t = NX.tok;
-    const sp = [3, 2, 1, 0].map(d => { setGrid(span(d)); return fwhm(occ(gOf(d, st.L, st.sig), st.T)) * 1e3; });
+    const sp = [3, 2, 1, 0].map(d => { setGrid(span(d)); return fwhm(occOf(d, st.L, st.sig, st.T)) * 1e3; });
     setGrid(span(st.dim)); dos.setX(0, Emax * 1e3);
-    const g = gOf(st.dim, st.L, st.sig), n = occ(g, st.T), gb = Es.map(E => Math.sqrt(E));
+    const g = gOf(st.dim, st.L, st.sig), n = occOf(st.dim, st.L, st.sig, st.T), gb = Es.map(E => Math.sqrt(E));
     const nz = a => { const m = Math.max(...a); return a.map(v => v / m); };
     dos.begin().axes();
     dos.line(Es.map(e => e * 1e3), nz(gb), { color: t.muted, width: 1.2, dash: [5, 4] });

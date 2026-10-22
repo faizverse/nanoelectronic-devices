@@ -341,7 +341,7 @@ const NX = (() => {
 <details><summary>Why do the flask-grown dots come out nearly the same size?</summary>They are all seeded in one short burst and then grow together, so they all have the same time to grow.</details>
 <details><summary>How do you get red dots instead of green from the same recipe?</summary>Let them grow longer before stopping the growth. Bigger dots glow redder.</details></section>
 <section class="card"><h2>For the curious: the model behind it</h2>
-<p><b>Self-assembled:</b> the wetting layer grows to a critical thickness h<sub>c</sub> ≈ 12.2/ε layers (ε, the mismatch in per cent), which gives 1.7 for InAs/GaAs and 2.9 for Ge/Si; further material goes into islands. <b>Flask:</b> seeds form at a rate J ∝ exp(−B/ln²S), where S is how far the dissolved building blocks exceed their saturation level, and each dot grows as</p>
+<p><b>Self-assembled:</b> the wetting layer grows to a critical thickness h<sub>c</sub> ≈ 12.2/ε layers (ε, the mismatch in per cent), which gives 1.7 for InAs/GaAs and 2.9 for Ge/Si; further material goes into islands. <b>Flask:</b> seeds form at a rate J ∝ exp(−B/ln²S) (B = 90, a sharp threshold near S = 4.4), where S is how far the dissolved building blocks exceed their saturation level, and each dot grows as</p>
 <span class="eq">dr/dt = G (S − e<sup>α/r</sup>) / r, &nbsp; with S falling as material is used up</span>
 <p>Small dots dissolve when S runs low (Ostwald ripening), so the size spread first narrows, then widens. "More detail" shows the materials, the ingredient amount and temperature, and graphs of where the material goes, the supersaturation and the size distribution. Colours use the CdSe sizing curve of Animation 6.</p>
 <p class="caveat">Both models are qualitative. Island size and density depend on temperature and growth rate in ways not modelled, and the flask time scale is illustrative.</p></section>
@@ -493,7 +493,7 @@ const QM = (() => {
       }
     }
     NX.label(g, "substrate", 36, base - 1.2 * r, { size: 11, color: t.ink });
-    if (wl > 0) NX.label(g, "wetting layer", w - 58, y0 - 4 * r, { size: 11, color: t.ink });
+    if (wl > 0) NX.label(g, "wetting layer", w / 3, y0 - Math.ceil(wl) * 1.75 * r - 10, { size: 11, color: t.ink });
     if (isl > 0) NX.label(g, "islands = quantum dots", w / 2, 14, { size: 12, color: s.isl, bold: true });
     status.className = "status " + (isl > 0 ? "good" : "");
     status.textContent = isl > 0 ? `Past ${hc.toFixed(1)} layers: new material bunches up into islands, the quantum dots.` : `Below ${hc.toFixed(1)} layers: the film grows flat, squeezed to fit the crystal underneath.`;
@@ -510,17 +510,17 @@ const QM = (() => {
   /* ---------------- colloidal ---------------- */
   const sim = { t: 0, S: 1, parts: [], hist: [], quenched: false, running: false };
   const alpha = 0.55, r0 = 0.55; const sim2 = null;
-  function inject() { sim.t = 0; sim.S = st.C0; sim.parts = []; sim.hist = [[0, sim.S]]; sim.quenched = false; sim.running = true; sim.nuc = 0; sim.beta = 0.0012; sim.minSpread = 1; sim.J = 0; }
+  function inject() { sim.t = 0; sim.S = st.C0; sim.parts = []; sim.hist = [[0, sim.S]]; sim.quenched = false; sim.running = true; sim.nuc = 0; sim.beta = 0.0003; sim.sp = []; sim.J = 0; }
   document.getElementById("inj").onclick = inject;
   document.getElementById("qn").onclick = () => { sim.quenched = true; sim.running = false; };
   function stepSim(dtReal) {
     if (!sim.running) return;
-    const G = 0.4 * Math.exp((st.T - 280) / 28);
-    let rem = dtReal * 1.2;                                 // simulated minutes per real second
+    const G = 0.12 * Math.exp((st.T - 280) / 28);
+    let rem = dtReal * 0.4;                                 // simulated minutes per real second (slow enough to stop at a chosen colour)
     while (rem > 0) {
       const dt = Math.min(rem, 0.01); rem -= dt;
       const lnS = Math.log(Math.max(1.0001, sim.S));
-      const J = sim.S > 1 ? 3e7 * Math.exp(-30 / (lnS * lnS)) : 0; sim.J = J;
+      const J = sim.S > 1 ? 1e18 * Math.exp(-90 / (lnS * lnS)) : 0;   // sharp threshold near S = 4.4: a short burst sim.J = J;
       let newN = J * dt; while (newN > 0 && sim.parts.length < 1500) { if (newN >= 1 || Math.random() < newN) sim.parts.push({ r: r0 * (1 + 0.1 * Math.random()), x: Math.random(), y: Math.random() }); newN -= 1; }
       let vol = 0;
       sim.parts.forEach(p => { p.r += G * (sim.S - Math.exp(alpha / p.r)) / p.r * dt; vol += p.r ** 3; });
@@ -529,7 +529,7 @@ const QM = (() => {
       sim.t += dt;
     }
     if (sim.hist.length === 0 || sim.t - sim.hist[sim.hist.length - 1][0] > 0.1) sim.hist.push([sim.t, sim.S]);
-    if (sim.t >= 30) sim.running = false;
+    if (sim.t >= 40) sim.running = false;
   }
   const lamY = d => { const D = l => 1.6122e-9 * l ** 4 - 2.6575e-6 * l ** 3 + 1.6242e-3 * l ** 2 - 0.4277 * l + 41.57; if (d < D(400)) return 400; if (d > D(660)) return 680; let lo = 400, hi = 660; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; D(m) < d ? lo = m : hi = m; } return (lo + hi) / 2 + 20; };
   function drawCol() {
@@ -539,15 +539,19 @@ const QM = (() => {
     show.forEach(p => { const x = p.x * (w - 24) + 12, y = 26 + p.y * (h - 40); g.fillStyle = QM.wlColor(lamY(2 * p.r)); g.beginPath(); g.arc(x, y, Math.max(1.2, p.r * sc), 0, 7); g.fill(); });
     const ds = P.map(p => 2 * p.r), mean = n ? ds.reduce((a, b) => a + b, 0) / n : NaN, sd = n ? Math.sqrt(ds.reduce((a, b) => a + (b - mean) ** 2, 0) / n) : NaN;
     NX.label(g, sim.running ? `growing · t = ${sim.t.toFixed(1)} min` : sim.quenched ? `quenched at ${sim.t.toFixed(1)} min` : n ? "finished" : "press Inject", w / 2, 14, { color: "#e6ebf1", size: 12.5, bold: true });
-    const stage = !n ? "" : sim.J > 5 ? "Seeding: a burst of new dots is forming." : (sd / mean < (sim.minSpread || 1) + 0.002 ? "Growing together: the dots are getting bigger and more even in size." : "Growing too long: ingredients are running out, small dots dissolve and the sizes spread out. Quench soon.");
-    if (n && sim.J <= 5 && sim.running) sim.minSpread = Math.min(sim.minSpread || 1, sd / mean);
-    status.className = "status " + (sim.J > 5 ? "" : sd / mean <= (sim.minSpread || 1) + 0.002 ? "good" : "bad");
-    status.textContent = sim.quenched ? `Stopped: the dots are about ${mean.toFixed(1)} nm across, within ${(100 * sd / mean).toFixed(0)} % of each other.` : (stage || "Press Inject to start.");
+    // stage from the trend of the size spread over the last simulated minute
+    const spr = n ? sd / mean : NaN;
+    if (n && sim.running) { (sim.sp = sim.sp || []).push([sim.t, spr]); while (sim.sp.length > 2 && sim.sp[1][0] < sim.t - 1) sim.sp.shift(); }
+    const old = sim.sp && sim.sp.length ? sim.sp[0][1] : spr, rising = n && sim.t > 3 && spr - old > 0.002;
+    const seeding = n && sim.J > 1 && sim.t < 3;
+    const stage = !n ? "" : seeding ? "Seeding: a burst of new dots is forming." : rising ? "Growing too long: ingredients are running out, small dots dissolve and the sizes spread out. Quench soon." : "Growing together: the dots are getting bigger and more even in size.";
+    status.className = "status " + (seeding ? "" : rising ? "bad" : "good");
+    status.textContent = sim.quenched || (n && !sim.running) ? `${sim.quenched ? "Stopped" : "Finished"}: the dots are about ${mean.toFixed(1)} nm across, within ${(100 * sd / mean).toFixed(0)} % of each other.` : (stage || "Press Inject to start.");
     ro.innerHTML = `<dt class="adv">Supersaturation S</dt><dd class="adv">${sim.S.toFixed(2)}</dd><dt class="adv">Dots formed (simulated)</dt><dd class="adv">${n}</dd>
       <dt>Average size</dt><dd>${isFinite(mean) ? mean.toFixed(2) + " nm" : "—"}</dd><dt class="adv">Size spread σ/d</dt><dd class="adv">${isFinite(sd) ? (100 * sd / mean).toFixed(1) + " %" : "—"}</dd>
       <dt>Colour of the light (CdSe)</dt><dd>${isFinite(mean) ? lamY(mean).toFixed(0) + " nm" : "—"}</dd>`;
     pa.begin().axes();
-    pa.hline(4.1, { label: "nucleation threshold", color: t.rust }); pa.hline(1, { label: "solubility", color: t.muted });
+    pa.hline(4.4, { label: "seeding threshold", color: t.rust }); pa.hline(1, { label: "solubility", color: t.muted });
     if (sim.hist.length > 1) pa.line(sim.hist.map(q => q[0]), sim.hist.map(q => q[1]), { color: t.ink, width: 2.2 });
     pb.begin().axes();
     if (n) {
