@@ -333,6 +333,7 @@ const NX = (() => {
 <p><b>Only certain notes fit.</b> A guitar string pinned at both ends can only vibrate with a whole number of humps. An electron trapped in a box is the same: its wave must fit inside the box, so only whole numbers of half-waves are allowed. Each one has its own energy, and no energies in between are possible. The lowest is labelled n = 1, the next n = 2, and so on.</p>
 <p><b>Smaller box, bigger energies.</b> Squeeze the box and every wave must wiggle more tightly, so every energy goes up: halve the width and the energies go up four times. A lighter particle also has more widely spaced energies.</p>
 <p><b>It never sits still.</b> There is no n = 0, so the lowest energy is never zero.</p>
+<p><b>Watch it move.</b> In "the wave" view each wave vibrates up and down like a plucked string, and higher energies vibrate faster. In the "where it is likely" view nothing moves: the chance of finding the electron at each place stays the same. The energy scale and the 40 nm window are fixed, so as you move the box width you see the box itself narrow or widen and the energies climb or fall.</p>
 <p><b>Real walls leak.</b> Choose "Real (leaky)" walls and the wave spills a little way into the walls. The energies drop slightly, and a shallow box can only hold a few of them.</p></section>
 <section class="card"><h2>Try this</h2><ol>
 <li>Start with perfect walls and a 10 nm box. Note the lowest energy. Predict what happens if you halve the width to 5 nm, then try it (it goes up four times).</li>
@@ -477,44 +478,57 @@ const QM = (() => {
       "The allowed energies are close together: at room temperature they blur, and the box behaves almost like ordinary matter.";
     drawWell(); drawPlots();
   }
+  // Fixed scales, so that the picture itself changes as the controls move: the box narrows and widens
+  // on a fixed 40 nm window, and the levels climb or fall against a fixed energy axis.
+  let tPhase = 0;
   function drawWell() {
     const cvw = document.getElementById("well"), narrow = (cvw.clientWidth || 700) < 560;
     const t = NX.tok, { g, w, h } = NX.fitCanvas(cvw, narrow ? 1.25 : 1.9);
     g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
-    const fin = st.walls === "finite", span = Math.max(st.L * 2.6, st.L + 12), xL = -span / 2, xR = span / 2;
-    const Etop = fin ? Math.min(st.V0 * 1.25, Math.max(1.35 * S[Math.min(7, S.length - 1)].E, 0.02)) : Math.max(1.15 * (S[Math.min(3, S.length - 1)].E), 0.02);
-    const pl = narrow ? 30 : 56, pr = narrow ? 96 : 118, pt = 16, pb = 34;
-    const X = x => pl + (x - xL) / (xR - xL) * (w - pl - pr), Y = E => h - pb - E / Etop * (h - pt - pb);
-    // barriers (the wall top is clamped to the plot when it lies above the view)
-    const Yw = Math.max(pt, Y(st.V0));
-    g.fillStyle = t.si; const a = st.L / 2;
-    g.fillRect(X(xL), pt, X(-a) - X(xL), Y(0) - pt + (h - pb - Y(0))); g.fillRect(X(a), pt, X(xR) - X(a), h - pb - pt);
-    if (fin) { g.fillStyle = t.panel; g.fillRect(X(xL), pt, X(xR) - X(xL), Yw - pt); }
+    const fin = st.walls === "finite", xL = -20, xR = 20;
+    const Etop = fin ? Math.max(0.3, st.V0 * 1.25) : 0.6;
+    const pl = narrow ? 40 : 50, pr = narrow ? 96 : 118, pt = 26, pb = 34, H = h - pt - pb;
+    const X = x => pl + (x - xL) / (xR - xL) * (w - pl - pr), Y = E => h - pb - E / Etop * H;
+    // energy axis with ticks, fixed for each kind of wall
+    const step = Etop > 0.45 ? 0.1 : 0.05;
+    g.font = "11.5px system-ui"; g.textAlign = "right"; g.textBaseline = "middle";
+    for (let E = 0; E <= Etop + 1e-9; E += step) { g.strokeStyle = t.grid; g.lineWidth = 1; g.beginPath(); g.moveTo(pl, Y(E)); g.lineTo(X(xR), Y(E)); g.stroke(); g.fillStyle = t.muted; g.fillText((E * 1e3).toFixed(0), pl - 5, Y(E)); }
+    NX.label(g, "energy (meV)", 4, 11, { align: "left", size: 11.5, color: t.ink });
+    // walls (the top of leaky walls is clamped to the plot if it lies above the view)
+    const Yw = Math.max(pt, Y(st.V0)), a = st.L / 2;
+    g.fillStyle = t.si;
+    if (fin) { g.fillRect(X(xL), Yw, X(-a) - X(xL), Y(0) - Yw); g.fillRect(X(a), Yw, X(xR) - X(a), Y(0) - Yw); }
+    else { g.fillRect(X(xL), pt, X(-a) - X(xL), H); g.fillRect(X(a), pt, X(xR) - X(a), H); }
     g.strokeStyle = t.ink; g.lineWidth = 2.2; g.beginPath();
     if (fin) { g.moveTo(X(xL), Yw); g.lineTo(X(-a), Yw); g.lineTo(X(-a), Y(0)); g.lineTo(X(a), Y(0)); g.lineTo(X(a), Yw); g.lineTo(X(xR), Yw); }
     else { g.moveTo(X(-a), pt); g.lineTo(X(-a), Y(0)); g.lineTo(X(a), Y(0)); g.lineTo(X(a), pt); }
     g.stroke();
-    const nshow = Math.min(8, fin ? S.length : S.filter(s => s.E < Etop).length);
+    // levels inside the view (at most eight)
+    const vis = S.filter(s => s.E < Etop * 0.985).slice(0, 8), above = S.filter(s => s.E >= Etop * 0.985);
     const eLab = E => E >= 1 ? E.toFixed(2) + " eV" : (E * 1e3).toFixed(E < 0.01 ? 1 : 0) + " meV"; let lastY = 1e9;
-    const sp = nshow > 1 ? (S[1].E - S[0].E) : S[0].E;
-    for (let j = 0; j < nshow; j++) {
-      const s = S[j], col = COL[j % COL.length], Ey = Y(s.E);
+    const gapPx = vis.length > 1 ? (Y(vis[0].E) - Y(vis[1].E)) : H;
+    const amp = Math.max(5, Math.min(0.13 * H, 0.45 * gapPx));
+    const E1 = S[0].E;
+    vis.forEach((s, j) => {
+      const col = COL[j % COL.length], Ey = Y(s.E);
       g.strokeStyle = t.muted; g.setLineDash([4, 4]); g.lineWidth = 1; g.beginPath(); g.moveTo(X(xL), Ey); g.lineTo(X(xR), Ey); g.stroke(); g.setLineDash([]);
-      const amp = 0.42 * Math.min(sp, Etop * 0.25) / Etop * (h - pt - pb);
-      const f = x => { let p; if (fin) p = QM.psiFinite(s, st.L, x); else p = Math.abs(x) <= a ? Math.sqrt(2 / st.L) * Math.sin(s.n * Math.PI * (x + a) / st.L) : 0; return st.show === "psi" ? p * Math.sqrt(st.L / 2) : p * p * st.L / 2; };
-      g.beginPath(); for (let i = 0; i <= 300; i++) { const x = xL + (xR - xL) * i / 300; const yy = Ey - amp * f(x); i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }
-      g.lineTo(X(xR), Ey); g.lineTo(X(xL), Ey); g.closePath(); g.globalAlpha = .18; g.fillStyle = col; g.fill(); g.globalAlpha = 1;
-      g.beginPath(); for (let i = 0; i <= 300; i++) { const x = xL + (xR - xL) * i / 300; const yy = Ey - amp * f(x); i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); }
-      g.strokeStyle = col; g.lineWidth = 2; g.stroke();
+      // in the wave view each standing wave vibrates, faster for higher energy (like a string's overtones)
+      const fHz = Math.min(2, 0.25 * s.E / E1), osc = st.show === "psi" ? Math.cos(2 * Math.PI * fHz * tPhase) : 1;
+      const f = x => { let p; if (fin) p = QM.psiFinite(s, st.L, x); else p = Math.abs(x) <= a ? Math.sqrt(2 / st.L) * Math.sin(s.n * Math.PI * (x + a) / st.L) : 0; return st.show === "psi" ? osc * p * Math.sqrt(st.L / 2) : p * p * st.L / 2; };
+      const path = () => { g.beginPath(); for (let i = 0; i <= 400; i++) { const x = xL + (xR - xL) * i / 400, yy = Ey - amp * f(x); i ? g.lineTo(X(x), yy) : g.moveTo(X(x), yy); } };
+      path(); g.lineTo(X(xR), Ey); g.lineTo(X(xL), Ey); g.closePath(); g.globalAlpha = .18; g.fillStyle = col; g.fill(); g.globalAlpha = 1;
+      path(); g.strokeStyle = col; g.lineWidth = 2; g.stroke();
       if (Math.abs(lastY - Ey) >= 14) { NX.label(g, `n=${j + 1}  ${eLab(s.E)}`, X(xR) + 6, Ey, { align: "left", size: 12, color: col, bold: true }); lastY = Ey; }
-    }
-    if (fin) NX.label(g, st.V0 < Etop ? `top of the walls: ${(st.V0 * 1e3).toFixed(0)} meV` : `walls continue up to ${(st.V0 * 1e3).toFixed(0)} meV`, X(xL) + 6, Math.max(pt + 8, Y(st.V0) - 9), { align: "left", size: 11.5, color: t.muted });
-    // axes
+    });
+    if (above.length && !fin) NX.label(g, narrow ? `n ≥ ${vis.length + 1}: above the view` : `n = ${vis.length + 1} and higher are above the top of this view`, X(xR) - 6, pt + 9, { align: "right", size: 11, color: t.muted });
+    if (fin) NX.label(g, st.V0 < Etop ? `top of the walls: ${(st.V0 * 1e3).toFixed(0)} meV` : `walls continue up to ${(st.V0 * 1e3).toFixed(0)} meV`, X(xL) + 6, Math.max(pt + 8, Yw - 9), { align: "left", size: 11.5, color: t.muted });
+    if (fin && S.length > vis.length) NX.label(g, `${S.length - vis.length} more allowed energies not drawn`, X(xR) - 6, pt + 9, { align: "right", size: 11, color: t.muted });
+    // box width marker
     g.fillStyle = t.muted; g.font = "12px system-ui"; g.textAlign = "center"; g.textBaseline = "top";
-    for (const x of [-a, 0, a]) g.fillText(x === 0 ? "0" : (x > 0 ? "+" : "−") + Math.abs(x).toFixed(1) + " nm", X(x), h - pb + 6);
-    g.save(); g.translate(14, (pt + h - pb) / 2); g.rotate(-Math.PI / 2); g.textAlign = "center"; g.fillStyle = t.ink; g.fillText("Energy above the bottom of the box", 0, 0); g.restore();
-    g.strokeStyle = t.ink; g.lineWidth = 1; g.beginPath(); g.moveTo(X(-a), h - pb + 22); g.lineTo(X(a), h - pb + 22); g.stroke();
+    g.strokeStyle = t.ink; g.lineWidth = 1; g.beginPath(); g.moveTo(X(-a), h - pb + 8); g.lineTo(X(a), h - pb + 8); g.moveTo(X(-a), h - pb + 4); g.lineTo(X(-a), h - pb + 12); g.moveTo(X(a), h - pb + 4); g.lineTo(X(a), h - pb + 12); g.stroke();
+    g.fillStyle = t.ink; g.fillText(`box width ${st.L.toFixed(1)} nm`, X(0), h - pb + 15);
   }
+  NX.loop(dt => { if (st.show === "psi") { tPhase += dt; drawWell(); } });
   function drawPlots() {
     const t = NX.tok, Ls = []; for (let L = 1; L <= 30.001; L += 0.25) Ls.push(L);
     ew.begin().axes();
