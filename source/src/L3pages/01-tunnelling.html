@@ -1,0 +1,168 @@
+<!--META
+{"num":1,"slug":"tunnelling","title":"Tunnelling through a wall","ref":"Document 1, Sections 1–3","blurb":"Send an electron, as a wave packet, at a wall it does not have the energy to climb. Most of it bounces back, but a little appears on the far side. Make the wall thicker or higher and watch how fast the chance falls."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>An electron wave packet meeting a wall</h3><canvas id="cv"></canvas>
+      <div class="legend"><span><i style="background:var(--ink)"></i>the wall (energy barrier)</span><span><i style="background:var(--blue)"></i>the electron's wave: tall where the electron is likely to be</span><span><i style="background:var(--gold)"></i>far side, magnified when very little gets through</span><span><i style="background:var(--muted)"></i>the electron's energy</span></div></div>
+    <div class="figs adv">
+      <div class="fig"><h3>Chance of getting through against wall thickness</h3><canvas id="pw"></canvas></div>
+      <div class="fig"><h3>Chance of getting through against electron energy</h3><canvas id="pe"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>A wave, not a ball.</b> The blue hump is the electron, drawn as a wave packet: it is tall where the electron is likely to be. It moves towards a wall that is higher than its energy (the grey line). A ball would simply bounce back.</p>
+<p><b>Most bounces, some gets through.</b> When the packet hits the wall, most of it reflects. A smaller packet appears on the far side and carries on with the same energy. The size of that packet is the chance that the electron tunnelled through. When the chance is tiny, the far side is drawn magnified (gold) so you can still see it.</p>
+<p><b>The wall must be thin.</b> Make the wall a little thicker and the far-side packet shrinks enormously: the chance falls by the same factor for every extra slice of wall. Raising the wall, or using a heavier particle, does the same.</p>
+<p><b>Above the wall.</b> Give the electron more energy than the wall and most of it goes over, yet a little still reflects, which a ball would never do.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Start with the default wall (0.5 nm, 1 eV above the electron's energy). Note the chance of getting through. Predict what happens if you double the thickness, then try it.</li>
+<li>Keep the thickness and raise the wall. Which matters more: doubling the thickness, or doubling the height above the electron?</li>
+<li>Switch the particle from "electron in vacuum" to "electron in GaAs". Why does it tunnel more easily?</li>
+<li>Raise the electron's energy above the top of the wall. Does all of it get through?</li>
+<li>Switch to "the wave" view and watch inside the wall: the wave stops wiggling and just fades.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Does the electron lose energy by tunnelling?</summary>No. The packet on the far side has the same wavelength, and so the same energy. Tunnelling is all or nothing: the electron is either found on the far side with all its energy, or back where it started.</details>
+<details><summary>Why does doubling the thickness do so much more than doubling the height?</summary>The chance depends on e<sup>−2κd</sup>. The thickness d sits in the exponent directly, but the height enters only through κ ∝ √(height above the electron). Doubling d squares the (small) chance; doubling the height multiplies κ by only √2.</details>
+<details><summary>Why do electrons tunnel in devices but atoms do not?</summary>A heavier particle's wave fades much faster inside the wall (κ ∝ √m). An atom is thousands of times heavier than an electron, so through a wall of the same size its chance is smaller by many orders of magnitude.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>The wave packet is built from exact stationary solutions of the Schrödinger equation for a rectangular barrier (matched at each edge with transfer matrices), each given its own time dependence e<sup>−iEt/ħ</sup>. The read-out "chance of getting through" is the exact transmission T at the packet's central energy; the "measured" value is the fraction of the packet that has actually reached the far side, which differs slightly because the packet contains a small spread of energies. "More detail" plots T against thickness and against energy.</p>
+<p class="caveat">Left out: the image-force rounding of real barriers, and any change of effective mass inside the barrier. The time axis is slowed so that the packet crosses the screen in a few seconds.</p></section>
+</main>
+<script>
+/*INCLUDE tun.js*/
+(() => {
+  const st = { d: 0.5, dV: 1.0, E: 0.5, m: 1, show: "prob" };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "d", label: "Wall thickness", min: 0.1, max: 3, step: 0.05, value: st.d, unit: "nm", dp: 2, on: v => { st.d = v; rebuild(); } });
+  NX.slider(ctl, { id: "V", label: "Wall height", min: 0.1, max: 3, step: 0.05, value: st.E + st.dV, unit: "eV", dp: 2, on: v => { st.dV = v - st.E; rebuild(); } });
+  const eS = NX.slider(ctl, { id: "E", label: "Electron energy", min: 0.05, max: 2.5, step: 0.05, value: st.E, unit: "eV", dp: 2, on: v => { const V = st.E + st.dV; st.E = v; st.dV = V - v; rebuild(); } });
+  NX.seg(ctl, { label: "Particle", value: st.m, hint: "heavier → fades faster inside the wall", options: [[1, "electron in vacuum"], [0.067, "electron in GaAs"], [10, "10× heavier"]], on: v => { st.m = v; rebuild(); } });
+  NX.seg(ctl, { label: "Show", value: st.show, options: [["prob", "where it is likely"], ["psi", "the wave"]], on: v => { st.show = v; } });
+  const row = document.createElement("div"); row.className = "btnrow"; ctl.appendChild(row);
+  const bR = document.createElement("button"); bR.className = "btn"; bR.type = "button"; bR.textContent = "Send again"; row.appendChild(bR);
+  const bP = document.createElement("button"); bP.className = "btn ghost"; bP.type = "button"; bP.textContent = "Pause"; row.appendChild(bP);
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const pw = new NX.Plot(document.getElementById("pw"), { aspect: 1.3, x: [0, 3], y: [1e-12, 1], ylog: true, xlabel: "Wall thickness (nm)", ylabel: "Chance of getting through" });
+  const pe = new NX.Plot(document.getElementById("pe"), { aspect: 1.3, x: [0, 3], y: [0, 1], xlabel: "Electron energy (eV)", ylabel: "Chance of getting through" });
+
+  const W = 40, WC = 64, NXP = 1000, NK = 140, xs = new Float64Array(NXP);   // shown: |x| < W nm; computed: |x| < WC nm
+  for (let i = 0; i < NXP; i++) xs[i] = -WC + 2 * WC * i / (NXP - 1);
+  const dx = xs[1] - xs[0];
+  let K = null, sim = { t: 0, tEnd: 1, rate: 1, hold: 0, paused: false }, cur = null, norm0 = 1, Tc = 0, far = 0, near = 0, farMax = 0;
+  function rebuild() {
+    const V0 = st.E + st.dV, a = st.d / 2, edges = [-a, a], Vs = [0, V0, 0];
+    const k0 = Math.sqrt(st.E * st.m / TUN.HB2M), sx = Math.max(2.3, Math.sqrt(55 / (2.4 * k0))), sk = 1 / (2 * sx), x0 = -Math.max(12, 3 * sx + a + 3);
+    const ks = [], re = [], im = [], ar = [], ai = [], om = [];
+    const kmin = Math.max(0.02, k0 - 4 * sk), kmax = k0 + 4 * sk, dk = (kmax - kmin) / (NK - 1);
+    for (let j = 0; j < NK; j++) {
+      const k = kmin + j * dk, E = TUN.HB2M * k * k / st.m, s = TUN.psi(xs, E, edges, Vs, st.m);
+      const gk = Math.exp(-((k - k0) ** 2) / (4 * sk * sk)) * dk;
+      ks.push(k); re.push(s.re); im.push(s.im); ar.push(gk * Math.cos(-k * x0)); ai.push(gk * Math.sin(-k * x0)); om.push(E / TUN.HBAR);
+    }
+    K = { ks, re, im, ar, ai, om, V0, a, x0, k0 };
+    Tc = TUN.Trect(st.E, V0, st.d, st.m);
+    const v = 2 * TUN.HB2M * k0 / (st.m * TUN.HBAR);            // group velocity, nm/fs
+    farMax = 0; sim.t = 0; sim.tEnd = (W - x0 + W * 0.15) / v; sim.rate = sim.tEnd / 6.5; sim.hold = 0;
+    cur = field(0); norm0 = 0; let pk = 0;
+    for (let i = 0; i < NXP; i++) { const p = cur.re[i] ** 2 + cur.im[i] ** 2; norm0 += p * dx; pk = Math.max(pk, p); }
+    K.peak = pk;
+    eS.value = st.E; update();
+  }
+  function field(t) {
+    const R = new Float64Array(NXP), I = new Float64Array(NXP);
+    for (let j = 0; j < NK; j++) {
+      const c = Math.cos(K.om[j] * t), s = -Math.sin(K.om[j] * t);
+      const wr = K.ar[j] * c - K.ai[j] * s, wi = K.ar[j] * s + K.ai[j] * c, pr = K.re[j], pi = K.im[j];
+      for (let i = 0; i < NXP; i++) { R[i] += wr * pr[i] - wi * pi[i]; I[i] += wr * pi[i] + wi * pr[i]; }
+    }
+    return { re: R, im: I };
+  }
+  function measure() {
+    far = 0; near = 0;
+    for (let i = 0; i < NXP; i++) { const p = (cur.re[i] ** 2 + cur.im[i] ** 2) * dx; if (xs[i] > K.a) far += p; else if (xs[i] < -K.a) near += p; }
+    far /= norm0; near /= norm0; farMax = Math.max(farMax, far);
+  }
+  const pct = f => f <= 0 ? "0%" : f < 1e-4 ? NX.fmt(100 * f, 1) + "%" : (100 * f).toFixed(f < 0.001 ? 4 : f < 0.1 ? 2 : 1) + "%";
+  function update() {
+    measure();
+    const V0 = K.V0, above = st.E >= V0, kap = TUN.kappa(V0 - st.E, st.m);
+    ro.innerHTML = `<dt>Chance of getting through</dt><dd>${TUN.odds(Tc)}</dd>
+      <dt>Measured on the far side</dt><dd>${pct(farMax)}</dd>
+      <dt>Wall above the electron</dt><dd>${above ? "none: it goes over" : (V0 - st.E).toFixed(2) + " eV"}</dd>
+      <dt class="adv">Fade length 1/κ inside the wall</dt><dd class="adv">${above ? "—" : (1 / kap).toFixed(3) + " nm"}</dd>
+      <dt class="adv">2κd</dt><dd class="adv">${above ? "—" : (2 * kap * st.d).toFixed(2)}</dd>
+      <dt class="adv">Exact T</dt><dd class="adv">${NX.fmt(Tc, 4)}</dd>`;
+    status.className = "status " + (above ? "good" : Tc > 1e-3 ? "good" : "bad");
+    status.textContent = above ? "The electron has more energy than the wall: most goes over, but a little still reflects." :
+      Tc > 0.05 ? "A thin, low wall: a good share of the electron gets through." :
+      Tc > 1e-6 ? "Only a small fraction tunnels. Each extra slice of wall cuts it by the same factor." :
+      "Almost nothing gets through: the wall is too thick or too high (or the particle too heavy).";
+    drawPlots();
+  }
+  function draw() {
+    const cv = document.getElementById("cv"), narrow = (cv.clientWidth || 700) < 560;
+    const t = NX.tok, { g, w, h } = NX.fitCanvas(cv, narrow ? 1.2 : 2.0);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const V0 = K.V0, Etop = Math.max(V0, st.E) * 1.45, pl = narrow ? 34 : 44, pr = 12, pt = 22, pb = 30, H = h - pt - pb;
+    const X = x => pl + (x + W) / (2 * W) * (w - pl - pr), Y = E => h - pb - E / Etop * H;
+    // energy grid
+    g.font = "11px system-ui"; g.textAlign = "right"; g.textBaseline = "middle";
+    const step = Etop > 3 ? 1 : Etop > 1.2 ? 0.5 : 0.2;
+    for (let E = 0; E <= Etop + 1e-9; E += step) { g.strokeStyle = t.grid; g.lineWidth = 1; g.beginPath(); g.moveTo(pl, Y(E)); g.lineTo(w - pr, Y(E)); g.stroke(); g.fillStyle = t.muted; g.fillText(E.toFixed(1), pl - 4, Y(E)); }
+    NX.label(g, "energy (eV)", 4, 10, { align: "left", size: 11, color: t.ink });
+    // barrier
+    g.fillStyle = t.si; g.fillRect(X(-K.a), Y(V0), Math.max(2, X(K.a) - X(-K.a)), Y(0) - Y(V0));
+    g.strokeStyle = t.ink; g.lineWidth = 2; g.beginPath(); g.moveTo(pl, Y(0)); g.lineTo(X(-K.a), Y(0)); g.lineTo(X(-K.a), Y(V0)); g.lineTo(X(K.a), Y(V0)); g.lineTo(X(K.a), Y(0)); g.lineTo(w - pr, Y(0)); g.stroke();
+    { const txt = `wall: ${st.d.toFixed(2)} nm thick, ${V0.toFixed(2)} eV high`; g.font = "11.5px system-ui"; const tw = g.measureText(txt).width, right = X(K.a) + 8 + tw < w - pr;
+      NX.label(g, txt, right ? X(K.a) + 8 : X(-K.a) - 8, Math.max(pt + 6, Y(V0) - 10), { align: right ? "left" : "right", size: 11.5, color: t.ink }); }
+    // energy line
+    const yE = Y(st.E); g.strokeStyle = t.muted; g.setLineDash([5, 4]); g.lineWidth = 1; g.beginPath(); g.moveTo(pl, yE); g.lineTo(w - pr, yE); g.stroke(); g.setLineDash([]);
+    NX.label(g, "electron energy", pl + 4, yE + 9, { align: "left", size: 11, color: t.muted });
+    // packet
+    const A0 = 0.3 * H, pk = K.peak || 1, Tm = Math.max(Tc, 1e-30);
+    const mag = st.E < V0 && Tm < 0.05 ? Math.pow(10, Math.min(12, Math.round(Math.log10(0.3 / Tm)))) : 1;
+    const valAt = (i, m) => st.show === "prob" ? (cur.re[i] ** 2 + cur.im[i] ** 2) * m / pk : cur.re[i] * Math.sqrt(m / pk);
+    const drawPart = (from, to, m, col) => {
+      g.beginPath(); let first = true;
+      for (let i = 0; i < NXP; i++) { if (xs[i] < Math.max(from, -W) || xs[i] > Math.min(to, W)) continue; const yy = yE - A0 * valAt(i, m); first ? (g.moveTo(X(xs[i]), yy), first = false) : g.lineTo(X(xs[i]), yy); }
+      g.strokeStyle = col; g.lineWidth = 2; g.stroke();
+      if (st.show === "prob") { g.lineTo(X(Math.min(to, W)), yE); g.lineTo(X(Math.max(from, -W)), yE); g.closePath(); g.globalAlpha = .18; g.fillStyle = col; g.fill(); g.globalAlpha = 1; }
+    };
+    g.save(); g.beginPath(); g.rect(pl, pt - 4, w - pl - pr, H + 4); g.clip();
+    drawPart(-W, K.a, 1, t.blue);
+    drawPart(K.a, W, mag, mag > 1 ? t.gold : t.blue);
+    g.restore();
+    if (mag > 1) NX.label(g, `far side magnified ×${mag < 1e4 ? mag : "10" + NX.sup(Math.round(Math.log10(mag)))}`, w - pr - 6, pt + 6, { align: "right", size: 11.5, color: t.gold, bold: true });
+  }
+  function drawPlots() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok, V0 = K.V0;
+    pw.begin().axes();
+    pw.fn(d => TUN.Trect(st.E, V0, d, st.m), { color: t.blue, width: 2.2 }, 200);
+    pw.point(st.d, Math.max(Tc, 1e-12), { color: t.rust });
+    pw.text(1.5, 0.3, `electron ${st.E.toFixed(2)} eV, wall ${V0.toFixed(2)} eV`, { align: "center", size: 11, color: t.muted });
+    const Emax = Math.max(2 * V0, st.E * 1.2, 0.5); pe.setX(0, Emax); pe.begin().axes();
+    pe.fn(E => TUN.Trect(Math.max(E, 1e-4), V0, st.d, st.m), { color: t.blue, width: 2.2 }, 300);
+    pe.vline(V0, { label: "top of the wall", color: t.ink });
+    pe.point(st.E, Tc, { color: t.rust });
+  }
+  bR.onclick = () => { farMax = 0; sim.t = 0; sim.hold = 0; cur = field(0); update(); draw(); };
+  bP.onclick = () => { sim.paused = !sim.paused; bP.textContent = sim.paused ? "Play" : "Pause"; };
+  NX.loop(dt => {
+    if (sim.paused) return;
+    if (sim.t >= sim.tEnd) { sim.hold += dt; if (sim.hold > 1.6) { sim.t = 0; sim.hold = 0; farMax = 0; } }
+    else sim.t = Math.min(sim.tEnd, sim.t + dt * sim.rate);
+    cur = field(sim.t);
+    measure(); const dd = ro.querySelectorAll("dd"); if (dd[1]) dd[1].textContent = pct(farMax);
+    draw();
+  });
+  NX.onRedraw(() => { update(); draw(); });
+  rebuild(); draw();
+})();
+</script>

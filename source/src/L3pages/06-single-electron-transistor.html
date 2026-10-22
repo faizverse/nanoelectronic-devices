@@ -1,0 +1,172 @@
+<!--META
+{"num":6,"slug":"single-electron-transistor","title":"Single-electron transistor","ref":"Document 3, Sections 1–3","blurb":"Electrons tunnel onto a tiny island and off again, one at a time. Adding one more costs the charging energy, so the current is blocked until the gate lines up the next place on the island. Turn the gate, warm the device up, and shrink the island."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>The device: electrons hop one at a time</h3><canvas id="dev"></canvas></div>
+      <div class="fig"><h3>Energies: source, drain and the island's places</h3><canvas id="lad"></canvas></div>
+    </div>
+    <div class="legend"><span><i class="dot" style="background:var(--electron)"></i>an electron tunnelling</span><span><i style="background:var(--nplus)"></i>filled states in source and drain</span><span><i style="background:var(--ink)"></i>island places already filled</span><span><i style="background:var(--muted)"></i>next empty places (dashed)</span></div>
+    <div class="figs">
+      <div class="fig solo"><h3>Current against gate voltage (Coulomb oscillations)</h3><canvas id="osc"></canvas></div>
+      <div class="fig adv"><h3>Coulomb diamonds: current against both voltages</h3><canvas id="dia"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>A tiny island.</b> The island is joined to the source and drain only through two thin tunnel junctions. The gate is close to it but no electrons cross to the gate.</p>
+<p><b>One more electron costs energy.</b> Electrons repel, so adding one more to a small island costs the charging energy. On the right, the island's places form a ladder: filled places (solid) and the next empty ones (dashed). An electron can hop on from the source only if the next empty place is below the source's level, and off to the drain only if that place is above the drain's level.</p>
+<p><b>The gate moves the ladder.</b> Turning up the gate lowers the island's places. When the next empty place sits between the source and drain levels, electrons pass one by one: a current peak. Move on and the place fills and stays filled: blocked again, with one more electron on the island. So the current rises and falls repeatedly: <b>Coulomb oscillations</b>.</p>
+<p><b>Heat and size.</b> When the thermal energy approaches the charging energy, random kicks let electrons through anyway and the peaks wash out. A smaller island has a larger charging energy and survives higher temperatures.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>With the gate at a valley (blocked), raise the gate slowly until current flows. Where is the next empty place on the ladder?</li>
+<li>Keep raising the gate through two peaks. How many extra electrons are on the island after each?</li>
+<li>Warm the 100 nm island from 1 K to 30 K. What happens to the peaks?</li>
+<li>Now shrink the island to 2 nm and set 300 K. Are the oscillations still visible?</li>
+<li>In a blocked state, raise the source–drain voltage until current flows. In More detail, where does this happen on the diamond picture?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>What blocks the current in Coulomb blockade?</summary>Not a thick wall, but the energy cost of one extra electron. If the voltages do not supply the charging energy, no electron can tunnel onto the island, so none can tunnel off it either.</details>
+<details><summary>Why are the current peaks evenly spaced in gate voltage?</summary>Each peak adds exactly one electron to the island, and that always needs the same extra charge on the gate capacitor: one period is e/C<sub>g</sub>.</details>
+<details><summary>Why does a room-temperature SET need an island of only a nanometre or two?</summary>The charging energy is e²/2C, and C grows with the island's size. For the charging energy to be well above the thermal energy at 300 K (26 meV), the island's capacitance must be below about 10<sup>−19</sup> F, which means an island only 1–2 nm across.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>The "orthodox theory" of single-electron tunnelling: a metallic island of total capacitance C<sub>Σ</sub> = 2πε<sub>0</sub>ε<sub>r</sub>d (ε<sub>r</sub> = 3.9) with two identical junctions of resistance 100 kΩ (above h/e² ≈ 26 kΩ) and a gate capacitance C<sub>g</sub> = 0.3 C<sub>Σ</sub>. Each tunnelling event has a rate Γ = ΔF/[e²R(1 − e<sup>−ΔF/k<sub>B</sub>T</sup>)] set by the energy ΔF it releases. The current is found from the steady state of the master equation for the number of electrons on the island; the moving electrons are a kinetic Monte Carlo run of the same rates, slowed down to a few hops per second.</p>
+<p class="caveat">Left out: the island's own quantised energy levels (important for semiconductor dots; see Document 3, Section 4), co-tunnelling, and stray charges near the island. The source–drain voltage is applied symmetrically.</p></section>
+</main>
+<script>
+(() => {
+  const st = { ng: 0.25, u: 0.06, logT: 0, d: 100 };          // u = V / (e/C_Σ); temperature 10^logT K
+  const e = 1.602e-19, eps0 = 8.854e-12, kB = 8.617e-5, R = 1e5;
+  const CS = () => 2 * Math.PI * eps0 * 3.9 * st.d * 1e-9, Ec = () => e / (2 * CS());   // Ec in eV
+  const Cg = () => 0.3 * CS(), TK = () => Math.pow(10, st.logT);
+  const kTn = () => Math.max(1e-5, kB * TK() / Ec());       // k_BT in units of Ec
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "ng", label: "Gate voltage", min: 0, max: 3.5, step: 0.01, value: st.ng, fmt: v => (v * e / Cg() * 1e3).toPrecision(3) + " mV", on: v => { st.ng = v; update(); } });
+  NX.slider(ctl, { id: "u", label: "Source–drain voltage", min: 0, max: 1.6, step: 0.01, value: st.u, fmt: v => (v * e / CS() * 1e3).toPrecision(3) + " mV", on: v => { st.u = v; update(true); } });
+  NX.slider(ctl, { id: "T", label: "Temperature", min: -1, max: 2.5, step: 0.05, value: st.logT, fmt: v => { const T = Math.pow(10, v); return (T < 10 ? T.toFixed(T < 1 ? 2 : 1) : T.toFixed(0)) + " K"; }, on: v => { st.logT = v; update(true); } });
+  NX.slider(ctl, { id: "d", label: "Island diameter", min: 0, max: 2.3, step: 0.05, value: 2, fmt: v => { const d = Math.pow(10, v); return (d < 10 ? d.toFixed(1) : d.toFixed(0)) + " nm"; }, on: v => { st.d = Math.pow(10, v); update(true); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const osc = new NX.Plot(document.getElementById("osc"), { aspect: 1.5, x: [0, 3.5], y: [0, 1], xlabel: "Gate voltage (in periods e/Cg)", ylabel: "Current (nA)" });
+
+  // ----- orthodox theory (energies in units of Ec, voltages in units of Ec/e) -----
+  function rate(dE, kT) { const x = dE / kT; if (x > 700) return 0; if (Math.abs(x) < 1e-9) return kT; return -dE / (1 - Math.exp(x)); }
+  function rates(n, ng, V, kT) {      // electron counts n; source at +V/2, drain at -V/2 (electrochemical potentials)
+    const add = (n + 1 - ng) ** 2 - (n - ng) ** 2, rem = (n - 1 - ng) ** 2 - (n - ng) ** 2;
+    return { sIn: rate(add - V / 2, kT), dIn: rate(add + V / 2, kT), sOut: rate(rem + V / 2, kT), dOut: rate(rem - V / 2, kT) };
+  }
+  function current(ng, V, kT) {
+    const n0 = Math.round(ng), ns = []; for (let n = n0 - 5; n <= n0 + 5; n++) ns.push(n);
+    const lp = [0]; for (let i = 0; i < ns.length - 1; i++) {
+      const a = rates(ns[i], ng, V, kT), b = rates(ns[i + 1], ng, V, kT);
+      lp.push(lp[i] + Math.log(Math.max(a.sIn + a.dIn, 1e-300)) - Math.log(Math.max(b.sOut + b.dOut, 1e-300)));
+    }
+    const mx = Math.max(...lp), p = lp.map(v => Math.exp(v - mx)), Z = p.reduce((s, v) => s + v, 0);
+    let I = 0; ns.forEach((n, i) => { const r = rates(n, ng, V, kT); I += p[i] / Z * (r.sIn - r.sOut); });
+    return { I, nMean: ns.reduce((s, n, i) => s + n * p[i] / Z, 0) };
+  }
+  const toAmp = g => g * Ec() / R;                           // rate units -> current in A (I = e Γ, Γ = Ec/(e²R) γ)
+  let OSC = null, DIA = null, n = 0;
+  function update(full) {
+    const kT = kTn(), V = 2 * st.u;                           // V in units of Ec/e (diamond height 2 Ec/e = e/C_Σ)
+    if (full || !OSC) { OSC = []; for (let i = 0; i <= 350; i++) { const g = 3.5 * i / 350; OSC.push([g, toAmp(current(g, V, kT).I)]); } DIA = null; }
+    const r = current(st.ng, V, kT), I = toAmp(r.I), Imax = Math.max(...OSC.map(q => q[1]));
+    n = Math.round(r.nMean);
+    ro.innerHTML = `<dt>Current</dt><dd>${NX.si(Math.max(0, I), "A")}</dd>
+      <dt>Extra electrons on the island</dt><dd>${r.nMean.toFixed(r.nMean % 1 > 0.05 && r.nMean % 1 < 0.95 ? 1 : 0)}</dd>
+      <dt>Charging energy e²/2C</dt><dd>${(Ec() * 1e3).toPrecision(3)} meV</dd>
+      <dt>Thermal energy k<sub>B</sub>T</dt><dd>${(kB * TK() * 1e3).toPrecision(2)} meV</dd>
+      <dt class="adv">Island capacitance C<sub>Σ</sub></dt><dd class="adv">${(CS() * 1e18).toPrecision(3)} aF</dd>
+      <dt class="adv">Gate period e/C<sub>g</sub></dt><dd class="adv">${(e / Cg() * 1e3).toPrecision(3)} mV</dd>
+      <dt class="adv">Diamond height e/C<sub>Σ</sub></dt><dd class="adv">${(e / CS() * 1e3).toPrecision(3)} mV</dd>`;
+    const ratio = kB * TK() / Ec(), frac = Imax > 0 ? I / Imax : 0;
+    status.className = "status " + (ratio > 0.25 ? "bad" : "good");
+    status.textContent = ratio > 0.25 ? "Too hot for this island: the thermal energy is close to the charging energy, so the blockade washes out. Cool it down or shrink the island." :
+      st.u >= 1 ? "The source–drain voltage alone supplies the charging energy: current flows whatever the gate does (outside the diamonds)." :
+      frac < 0.1 ? "Blocked: the next empty place on the island is outside the window between source and drain. Coulomb blockade." :
+      "Current flows: the next place on the island lies between the source and drain levels, and electrons pass one at a time.";
+    drawOsc(); drawDia();
+  }
+  // ----- kinetic Monte Carlo of the hops, slowed down for viewing -----
+  let hops = [], acc = 0;
+  function mc(dt) {
+    const kT = kTn(), V = 2 * st.u, r = rates(n, st.ng, V, kT), tot = r.sIn + r.dIn + r.sOut + r.dOut;
+    const res = rates(Math.round(st.ng - 0.5), Math.round(st.ng - 0.5) + 0.5, V, kT), ref = Math.max(0.05, res.sIn + res.dIn + res.sOut + res.dOut);
+    const S = 5 / ref;                                         // about five hops per second at resonance
+    acc += dt;
+    if (hops.length < 3 && Math.random() < 1 - Math.exp(-tot * S * dt)) {
+      let x = Math.random() * tot; const ev = (x -= r.sIn) < 0 ? "sIn" : (x -= r.dIn) < 0 ? "dIn" : (x -= r.sOut) < 0 ? "sOut" : "dOut";
+      n += ev.endsWith("In") ? 1 : -1;
+      hops.push({ ev, t: 0 });
+    }
+    hops.forEach(h => h.t += dt * 2.2); hops = hops.filter(h => h.t < 1);
+  }
+  function drawDev() {
+    const cv = document.getElementById("dev"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.35);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const cx = w / 2, cy = h * 0.42, r = Math.min(w, h) * 0.17, jw = 8;
+    NX.rect(g, 10, cy - 28, cx - r - jw - 14, 56, t.nplus); NX.rect(g, cx + r + jw + 4, cy - 28, w - (cx + r + jw + 4) - 10, 56, t.nplus);
+    NX.rect(g, cx - r - jw - 4, cy - 28, jw, 56, t.oxide); NX.rect(g, cx + r + 4, cy - 28, jw, 56, t.oxide);
+    g.fillStyle = t.chip; g.strokeStyle = t.ink; g.lineWidth = 1.5; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.fill(); g.stroke();
+    NX.rect(g, cx - r * 1.1, h - 46, 2.2 * r, 26, t.metal);
+    NX.label(g, "source", (10 + cx - r - jw - 4) / 2, cy + 44, { size: 12 }); NX.label(g, "drain", (cx + r + jw + 4 + w - 10) / 2, cy + 44, { size: 12 });
+    NX.label(g, "island", cx, cy - r - 12, { size: 12 }); NX.label(g, "gate", cx, h - 33, { size: 12, color: "#fff" });
+    g.strokeStyle = t.muted; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(cx, cy + r + 4); g.lineTo(cx, h - 48); g.stroke(); g.setLineDash([]);
+    // extra electrons on the island
+    const k = Math.max(0, Math.min(6, n)); for (let i = 0; i < k; i++) { const a = 2 * Math.PI * i / Math.max(k, 1) + 0.4; NX.dot(g, cx + 0.5 * r * Math.cos(a), cy + 0.5 * r * Math.sin(a), 5, t.electron, "-"); }
+    NX.label(g, `${n} extra`, cx, cy + r * 0.05 + (k ? 0 : 0), { size: 12, color: k ? t.muted : t.ink });
+    // hopping electrons
+    const xs = cx - r - jw - 20, xi = cx, xd = cx + r + jw + 20;
+    hops.forEach(hh => {
+      const [x0, x1] = hh.ev === "sIn" ? [xs, xi] : hh.ev === "sOut" ? [xi, xs] : hh.ev === "dIn" ? [xd, xi] : [xi, xd];
+      NX.dot(g, x0 + (x1 - x0) * hh.t, cy - 4 * Math.sin(Math.PI * hh.t), 6, t.electron, "-");
+    });
+  }
+  function drawLad() {
+    const cv = document.getElementById("lad"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.35);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const V = 2 * st.u, Y = E => h / 2 - E / 4.2 * (h - 30), ns = Y(V / 2), nd = Y(-V / 2);
+    const x0 = 14, x1 = w * 0.3, x2 = w * 0.36, x3 = w * 0.64, x4 = w * 0.7, x5 = w - 14;
+    g.fillStyle = t.nplus; g.fillRect(x0, ns, x1 - x0, h - 10 - ns); g.fillRect(x4, nd, x5 - x4, h - 10 - nd);
+    g.strokeStyle = t.rust; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, ns); g.lineTo(x1, ns); g.moveTo(x4, nd); g.lineTo(x5, nd); g.stroke();
+    NX.label(g, "source", (x0 + x1) / 2, h - 18, { size: 11.5 }); NX.label(g, "drain", (x4 + x5) / 2, h - 18, { size: 11.5 });
+    g.fillStyle = t.line; g.fillRect(x1 + 2, 10, 5, h - 20); g.fillRect(x4 - 7, 10, 5, h - 20);
+    // island places: energy to add the (m+1)th electron, relative to the mid-point of source and drain
+    for (let m = n - 3; m <= n + 2; m++) {
+      const E = (m + 1 - st.ng) ** 2 - (m - st.ng) ** 2, y = Y(E); if (y < 8 || y > h - 8) continue;
+      const filled = m < n; g.strokeStyle = filled ? t.ink : t.muted; g.lineWidth = filled ? 2.4 : 1.6; g.setLineDash(filled ? [] : [6, 4]);
+      g.beginPath(); g.moveTo(x2, y); g.lineTo(x3, y); g.stroke(); g.setLineDash([]);
+    }
+    NX.label(g, "island", (x2 + x3) / 2, h - 18, { size: 11.5 });
+    NX.label(g, `spacing = 2 × charging energy = ${(2 * Ec() * 1e3).toPrecision(2)} meV`, w / 2, 12, { size: 11, color: t.muted });
+  }
+  function drawOsc() {
+    const t = NX.tok, ymax = Math.max(1e-15, ...OSC.map(q => q[1])) * 1.15;
+    osc.setY(0, ymax * 1e9); osc.begin().axes(); osc.line(OSC.map(q => q[0]), OSC.map(q => q[1] * 1e9), { color: t.blue, width: 2.2 });
+    osc.point(st.ng, Math.max(0, toAmp(current(st.ng, 2 * st.u, kTn()).I)) * 1e9, { color: t.rust });
+    for (let k = 0; k <= 3; k++) osc.text(k === 0 ? 0.2 : k, ymax * 1e9 * 0.8, `N=${k}`, { align: "center", size: 11, color: t.muted });
+  }
+  function drawDia() {
+    if (!document.body.classList.contains("more")) return;
+    const cv = document.getElementById("dia"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.5);
+    const NXg = 140, NYg = 90, kT = kTn();
+    if (!DIA) { DIA = new Float32Array(NXg * NYg); for (let j = 0; j < NYg; j++) for (let i = 0; i < NXg; i++) DIA[j * NXg + i] = Math.abs(current(3.5 * i / (NXg - 1), -3.2 + 6.4 * j / (NYg - 1), kT).I); }
+    const mx = Math.max(...DIA) || 1, im = g.createImageData(NXg, NYg), c0 = [255, 255, 255], c1 = [31, 58, 95];
+    for (let j = 0; j < NYg; j++) for (let i = 0; i < NXg; i++) { const v = Math.min(1, DIA[j * NXg + i] / mx * 1.6), o = 4 * ((NYg - 1 - j) * NXg + i); for (let k = 0; k < 3; k++) im.data[o + k] = c0[k] + (c1[k] - c0[k]) * v; im.data[o + 3] = 255; }
+    const off = document.createElement("canvas"); off.width = NXg; off.height = NYg; off.getContext("2d").putImageData(im, 0, 0);
+    const pl = 46, pb = 32; g.fillStyle = t.panel; g.fillRect(0, 0, w, h); g.imageSmoothingEnabled = true; g.drawImage(off, pl, 6, w - pl - 8, h - pb - 6);
+    const X = ng => pl + ng / 3.5 * (w - pl - 8), Y = V => 6 + (1 - (V + 3.2) / 6.4) * (h - pb - 6);
+    g.strokeStyle = t.rust; g.lineWidth = 1.5; g.beginPath(); g.arc(X(st.ng), Y(2 * st.u), 6, 0, 7); g.stroke();
+    g.fillStyle = t.ink; g.font = "12px system-ui"; g.textAlign = "center"; g.fillText("gate voltage (periods)", (pl + w) / 2, h - 6);
+    g.textAlign = "right"; g.textBaseline = "middle"; [-2, 0, 2].forEach(v => g.fillText(v === 0 ? "0" : (v > 0 ? "+" : "−") + "e/CΣ", pl - 4, Y(v)));
+    [0, 1, 2, 3].forEach(k => { g.textAlign = "center"; g.fillStyle = t.rust; g.fillText(String(k), X(k), Y(-0.8)); });
+    g.fillStyle = t.ink; g.textAlign = "left"; g.textBaseline = "top"; g.font = "11.5px system-ui"; g.fillStyle = "#fff"; g.fillText("white: blocked (number = extra electrons) · dark: current flows", pl + 6, 10);
+  }
+  NX.loop(dt => { mc(dt); drawDev(); drawLad(); });
+  NX.onRedraw(() => { update(true); drawDev(); drawLad(); });
+  update(true); n = Math.round(current(st.ng, 2 * st.u, kTn()).nMean); drawDev(); drawLad();
+})();
+</script>

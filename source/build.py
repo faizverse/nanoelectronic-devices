@@ -17,6 +17,8 @@ LECTURES = [
      "Eleven interactive models that go with the Lecture 1 notes: how a MOSFET works, how it fails as it shrinks, and why the industry changed the device."),
     ("L2", "L2pages", "Lecture 2", "Quantum wells, wires and dots",
      "Seven interactive models that go with the Lecture 2 notes: an electron in a box, how trapping electrons shares out their energies, quantum-well and cascade lasers, carbon nanotubes, quantum-dot colour, and how dots are grown. Each opens in a simple view; press More detail for the numbers and graphs."),
+    ("L3", "L3pages", "Lecture 3", "Quantum tunnelling devices",
+     "Six interactive models that go with the Lecture 3 notes: an electron tunnelling through a wall, the scanning tunnelling microscope, the tunnel diode, the resonant-tunnelling diode, the tunnel FET, and the single-electron transistor. Each opens in a simple view; press More detail for the numbers and graphs."),
 ]
 
 

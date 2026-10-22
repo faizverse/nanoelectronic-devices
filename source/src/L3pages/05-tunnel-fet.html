@@ -1,0 +1,130 @@
+<!--META
+{"num":5,"slug":"tunnel-fet","title":"Tunnel FET versus MOSFET","ref":"Document 2, Section 5","blurb":"An ordinary transistor switches by letting hot electrons over a barrier, so it can never switch more sharply than about 60 mV per tenfold change in current at room temperature. A tunnel FET opens a tunnelling window instead. Move the gate and the temperature and compare the two."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>MOSFET: electrons go over the barrier</h3><canvas id="mos"></canvas></div>
+      <div class="fig"><h3>Tunnel FET: electrons tunnel through a window</h3><canvas id="tfet"></canvas></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--gold)"></i>electrons in the source, spread in energy (more at the bottom; spread drawn twice as wide for clarity)</span><span><i style="background:var(--nplus)"></i>filled valence band of the p<sup>+</sup> source</span><span><i class="dot" style="background:var(--electron)"></i>electrons getting through</span><span><i style="background:var(--green)"></i>tunnelling window</span></div>
+    <div class="figs">
+      <div class="fig solo"><h3>Drain current against gate voltage (log scale)</h3><canvas id="iv"></canvas>
+        <div class="legend"><span><i style="background:var(--gold)"></i>MOSFET</span><span><i style="background:var(--green)"></i>tunnel FET</span><span><i style="background:var(--muted)"></i>dashed: best possible MOSFET slope at this temperature</span></div></div>
+      <div class="fig adv"><h3>Steepness: gate voltage per tenfold change in current</h3><canvas id="ss"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>MOSFET (left).</b> Electrons in the source have a spread of energies: most are low, a few are "hot". The gate raises and lowers a barrier in the channel. Only electrons above the barrier get through, and their number falls off smoothly with energy. That is why the current can change by at most ten times for every 60 mV on the gate at room temperature, and less sharply still when warmer.</p>
+<p><b>Tunnel FET (right).</b> The source is p-type, so its electrons sit in a filled valence band with a sharp top edge. With the gate off, the channel's conduction band is above that edge and nothing can tunnel. The gate pulls it down; once it drops below the edge, a window (green) opens and electrons tunnel straight through. The hot tail is cut off, so the current can switch on more steeply.</p>
+<p><b>The catch.</b> Tunnelling lets fewer electrons through than going over a barrier, so the tunnel FET's full on-current is much smaller.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Sweep the gate from 0 to 0.8 V and watch both pictures. Where does each device turn on?</li>
+<li>Read the steepness of each at low current. Which beats 60 mV per decade?</li>
+<li>Heat both to 400 K. Which one's switching gets worse? Why does the other hardly change?</li>
+<li>Compare the currents at 0.8 V. Which device would make a faster circuit?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why can a MOSFET not beat 60 mV per decade at room temperature?</summary>It switches by letting electrons over a barrier. The number of electrons above an energy falls off with the Boltzmann factor e<sup>−E/k<sub>B</sub>T</sup>, so lowering the barrier by k<sub>B</sub>T·ln 10 ≈ 60 mV at 300 K raises the current by exactly ten times, at best.</details>
+<details><summary>Why is the tunnel FET's switching almost independent of temperature?</summary>Its current is set by tunnelling through a window between two band edges, not by how many electrons are hot. Temperature hardly changes the band edges, so the steep part of its curve stays steep.</details>
+<details><summary>Why are tunnel FETs not in today's chips?</summary>Their on-current is too small: tunnelling through even a thin junction passes far fewer electrons than going over a lowered barrier, so circuits would be slow. Their steepness also usually holds only over a small range of very low currents.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>MOSFET: I = I<sub>s</sub> ln²[1 + e<sup>(V<sub>G</sub>−V<sub>T</sub>)/(2nk<sub>B</sub>T/q)</sup>] with V<sub>T</sub> = 0.40 V and an ideal gate (n = 1), which gives exactly ln(10)·k<sub>B</sub>T/q per decade below threshold. Tunnel FET: a band-to-band tunnelling current of Kane form, I = A V<sub>eff</sub>² e<sup>−B/V<sub>eff</sub></sup>, with V<sub>eff</sub> the amount by which the gate has pulled the channel band below the source's valence-band edge, plus a small leakage floor. Parameters are chosen to resemble published silicon-based devices: steep at low current, with an on-current only about 1% of the MOSFET's.</p>
+<p class="caveat">Illustrative: real devices depend on materials, geometry and defects. The trend, a MOSFET bound by temperature and a tunnel FET bound by its on-current, is the robust message.</p></section>
+</main>
+<script>
+(() => {
+  const st = { Vg: 0.2, T: 300 };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "Vg", label: "Gate voltage", min: 0, max: 0.8, step: 0.005, value: st.Vg, unit: "V", dp: 3, on: v => { st.Vg = v; update(); } });
+  NX.slider(ctl, { id: "T", label: "Temperature", min: 200, max: 400, step: 10, value: st.T, unit: "K", dp: 0, on: v => { st.T = v; update(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 1.45, x: [0, 0.8], y: [1e-13, 1e-3], ylog: true, xlabel: "Gate voltage (V)", ylabel: "Drain current (A)" });
+  const ss = new NX.Plot(document.getElementById("ss"), { aspect: 1.45, x: [1e-12, 1e-4], xlog: true, y: [0, 200], xlabel: "Drain current (A)", ylabel: "mV per decade" });
+
+  const VT = 0.40, V0 = 0.12, B = 0.9;
+  const vth = () => 8.617e-5 * st.T;
+  const Imos = V => 1.6e-5 * Math.log1p(Math.exp((V - VT) / (2 * vth()))) ** 2 * (st.T / 300) ** -1.5 + 1e-14;
+  const veff = V => 0.02 * Math.log1p(Math.exp((V - V0) / 0.02));
+  const Itfet = V => { const x = veff(V); return (x > 1e-4 ? 1.1e-4 * x * x * Math.exp(-B / x) : 0) + 2e-14; };
+  const slope = (f, V) => { const d = 0.002, a = Math.log10(f(V + d)), b = Math.log10(f(V - d)); return 2 * d / (a - b) * 1e3; };
+  function swing(f, i1, i2) { // gate voltage to go from i1 to i2
+    const find = target => { let lo = 0, hi = 1.2; if (f(hi) < target || f(lo) > target) return NaN; for (let k = 0; k < 60; k++) { const m = (lo + hi) / 2; f(m) < target ? lo = m : hi = m; } return (lo + hi) / 2; };
+    return find(i2) - find(i1);
+  }
+  function update() {
+    const im = Imos(st.Vg), it = Itfet(st.Vg), sm = slope(Imos, st.Vg), stf = slope(Itfet, st.Vg), lim = Math.LN10 * vth() * 1e3;
+    const wm = swing(Imos, 1e-11, 1e-8), wt = swing(Itfet, 1e-11, 1e-8);
+    ro.innerHTML = `<dt>MOSFET current</dt><dd>${NX.si(im, "A")}</dd><dt>Tunnel FET current</dt><dd>${NX.si(it, "A")}</dd>
+      <dt>Steepness here: MOSFET</dt><dd>${sm > 0 && sm < 2000 ? sm.toFixed(0) + " mV/dec" : "—"}</dd>
+      <dt>Steepness here: tunnel FET</dt><dd>${stf > 0 && stf < 2000 ? stf.toFixed(0) + " mV/dec" : "—"}</dd>
+      <dt>Best possible MOSFET at ${st.T} K</dt><dd>${lim.toFixed(0)} mV/dec</dd>
+      <dt class="adv">Gate swing for 10 pA → 10 nA (MOSFET / tunnel FET)</dt><dd class="adv">${isFinite(wm) ? (wm * 1e3).toFixed(0) : "—"} / ${isFinite(wt) ? (wt * 1e3).toFixed(0) : "—"} mV</dd>
+      <dt class="adv">Currents at 0.8 V (MOSFET / tunnel FET)</dt><dd class="adv">${NX.si(Imos(0.8), "A")} / ${NX.si(Itfet(0.8), "A")}</dd>`;
+    const tfOpen = st.Vg > V0 + 0.02;
+    status.className = "status " + (stf > 0 && stf < 0.9 * lim && tfOpen ? "good" : "bad");
+    status.textContent = !tfOpen ? "Tunnel FET off: the channel band is still above the source's filled states, so no window is open." :
+      stf < 0.9 * lim ? `The tunnel FET is switching more steeply (${stf.toFixed(0)} mV/dec) than any MOSFET can at ${st.T} K (${lim.toFixed(0)} mV/dec).` :
+      "At higher gate voltage the tunnel FET's curve flattens: its advantage holds only at low currents, and its on-current is much smaller.";
+    drawIV(); drawSS();
+  }
+  // ----- band pictures -----
+  let dM = [], dT = [];
+  const step = x0 => x => 0.5 * (1 + Math.tanh((x - x0) / 0.05));
+  const s1 = step(1), s2 = step(2);
+  function setup(id) { const cv = document.getElementById(id), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.25); g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h); return { g, w, h, t }; }
+  const phiM = () => Math.max(0.03, 0.45 - st.Vg);                                     // MOSFET channel barrier (eV)
+  function drawMos() {
+    const { g, w, h, t } = setup("mos"), X = x => 10 + x / 3 * (w - 20), Y = E => h - 28 - (E + 0.45) / 1.15 * (h - 48);
+    const Ec = x => phiM() * (s1(x) - s2(x)) - 0.3 * s2(x);
+    // thermal spread of electron energies in the source
+    const kT = 8.617e-5 * st.T; g.fillStyle = t.gold; g.globalAlpha = .55; g.beginPath(); g.moveTo(X(0.05), Y(0));
+    for (let E = 0; E <= 0.62; E += 0.005) g.lineTo(X(0.05 + 0.75 * Math.exp(-E / (2 * kT))), Y(E)); g.lineTo(X(0.05), Y(0.62)); g.closePath(); g.fill(); g.globalAlpha = 1;
+    g.strokeStyle = t.ink; g.lineWidth = 2; g.beginPath(); for (let i = 0; i <= 300; i++) { const x = 3 * i / 300; i ? g.lineTo(X(x), Y(Ec(x))) : g.moveTo(X(x), Y(Ec(x))); } g.stroke();
+    g.strokeStyle = t.rust; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(X(0.9), Y(phiM())); g.lineTo(X(0.05), Y(phiM())); g.stroke(); g.setLineDash([]);
+    NX.label(g, `barrier ${(phiM() * 1e3).toFixed(0)} meV`, X(1.5), Y(phiM()) - 10, { size: 11, color: t.rust });
+    ["source", "channel", "drain"].forEach((s, i) => NX.label(g, s, X(0.5 + i), h - 12, { size: 11, color: t.ink }));
+    dM.forEach(p => NX.dot(g, X(p.x), Y(p.E), 3.3, t.electron));
+  }
+  const EG = 0.7, EcCh = () => V0 - st.Vg + 0.0;                                        // TFET channel conduction-band edge (eV)
+  function drawTfet() {
+    const { g, w, h, t } = setup("tfet"), X = x => 10 + x / 3 * (w - 20), Y = E => h - 28 - (E + 1.4) / 2.3 * (h - 48);
+    const ec = EcCh(), Ec = x => EG * (1 - s1(x)) + ec * (s1(x) - s2(x)) - 0.55 * s2(x), Ev = x => Ec(x) - EG;
+    g.fillStyle = t.nplus; g.beginPath(); g.moveTo(X(0), Y(0)); for (let i = 0; i <= 100; i++) { const x = 1.05 * i / 100; g.lineTo(X(x), Y(Math.min(0, Ev(x)))); } g.lineTo(X(1.05), Y(-0.6)); g.lineTo(X(0), Y(-0.6)); g.closePath(); g.fill();
+    g.strokeStyle = t.ink; g.lineWidth = 2;
+    [Ec, Ev].forEach(f => { g.beginPath(); for (let i = 0; i <= 300; i++) { const x = 3 * i / 300; i ? g.lineTo(X(x), Y(f(x))) : g.moveTo(X(x), Y(f(x))); } g.stroke(); });
+    if (ec < 0) { g.fillStyle = t.green; g.globalAlpha = .25; g.fillRect(X(0.75), Y(0), X(1.25) - X(0.75), Y(ec) - Y(0)); g.globalAlpha = 1; NX.label(g, "window", X(1.55), Y(ec / 2), { size: 11, color: t.green, bold: true }); }
+    else NX.label(g, "no overlap: off", X(1.5), Y(ec) - 12, { size: 11, color: t.muted });
+    ["p⁺ source", "channel", "n⁺ drain"].forEach((s, i) => NX.label(g, s, X(0.5 + i), h - 12, { size: 11, color: t.ink }));
+    dT.forEach(p => NX.dot(g, X(p.x), Y(p.E), 3.3, t.electron));
+  }
+  function spawn(dt) {
+    const rate = I => Math.max(0, Math.min(12, 1.6 * (Math.log10(I) + 12.5)));
+    if (Math.random() < rate(Imos(st.Vg)) * dt) { const kT = 8.617e-5 * st.T; const E = phiM() + 0.005 - Math.log(Math.random()) * kT; dM.push({ x: 0.3, E, v: 1.2 }); }
+    const ec = EcCh(); if (ec < 0 && Math.random() < rate(Itfet(st.Vg)) * dt) dT.push({ x: 0.6, E: ec * Math.random(), v: 1.2 });
+    dM.forEach(p => { p.x += p.v * dt; if (p.x > 2) p.E = Math.max(-0.28, p.E - 0.6 * dt); }); dT.forEach(p => p.x += p.v * dt);
+    dM = dM.filter(p => p.x < 2.95 && p.E < 0.65); dT = dT.filter(p => p.x < 2.95);
+  }
+  function drawIV() {
+    const t = NX.tok; iv.begin().axes();
+    iv.fn(Imos, { color: t.gold, width: 2.4 }, 300); iv.fn(Itfet, { color: t.green, width: 2.4 }, 300);
+    // 60 mV/dec reference through the MOSFET's subthreshold region
+    const lim = Math.LN10 * vth(); const i0 = Imos(0.05) / 4; iv.fn(V => i0 * Math.pow(10, (V - 0.05) / lim), { color: t.muted, width: 1.2, dash: [5, 4] }, 60);
+    iv.point(st.Vg, Imos(st.Vg), { color: t.gold }); iv.point(st.Vg, Itfet(st.Vg), { color: t.green });
+  }
+  function drawSS() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; ss.begin().axes(); const lim = Math.LN10 * vth() * 1e3;
+    const curve = f => { const xs = [], ys = []; for (let V = 0.005; V < 0.8; V += 0.004) { const I = f(V); if (I > 2e-13) { xs.push(I); ys.push(slope(f, V)); } } return [xs, ys]; };
+    const [xm, ym] = curve(Imos), [xt, yt] = curve(Itfet);
+    ss.hline(lim, { label: `${lim.toFixed(0)} mV/dec`, color: t.rust }); ss.line(xm, ym, { color: t.gold, width: 2.2 }); ss.line(xt, yt, { color: t.green, width: 2.2 });
+  }
+  NX.loop(dt => { spawn(dt); drawMos(); drawTfet(); });
+  NX.onRedraw(() => { update(); drawMos(); drawTfet(); });
+  update(); drawMos(); drawTfet();
+})();
+</script>

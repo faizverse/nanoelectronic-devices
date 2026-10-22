@@ -1,0 +1,188 @@
+<!--META
+{"num":4,"slug":"resonant-tunnelling-diode","title":"Resonant-tunnelling diode","ref":"Document 2, Section 4","blurb":"Two thin walls with a quantum well between them let electrons through almost perfectly at one energy and hardly at all at others. Raise the voltage and watch the well's level line up with the incoming electrons, then drop below them."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Energy along the device, and the chance of getting through at each energy</h3><canvas id="band"></canvas>
+      <div class="legend"><span><i style="background:var(--ink)"></i>conduction-band edge (barriers and well)</span><span><i style="background:var(--green)"></i>the well's allowed level</span><span><i class="dot" style="background:var(--electron)"></i>electrons arriving</span><span><i style="background:var(--blue)"></i>chance of getting through (right, log scale)</span></div></div>
+    <div class="figs">
+      <div class="fig solo"><h3>Current against voltage</h3><canvas id="iv"></canvas></div>
+      <div class="fig adv"><h3>Current against voltage at two temperatures</h3><canvas id="iv2"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>A sharp filter.</b> Two AlGaAs barriers a couple of nanometres thick enclose a GaAs quantum well with one allowed level (green). Electrons whose energy matches that level pass through both barriers almost every time; all others are almost always reflected. The blue curve on the right shows this: near 100% at the level's energy, tiny elsewhere.</p>
+<p><b>The voltage moves the level.</b> The voltage tilts the picture and pulls the level down. When it lines up with the electrons waiting in the emitter (left), they pour through: the current peaks. When it drops below the bottom of the emitter's band, no electron has the right energy and the current falls. That fall is negative differential resistance.</p>
+<p><b>Watch the electrons.</b> Electrons arrive at many energies. Those at the right energy go straight through; the rest bounce back.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Raise the voltage slowly from zero and stop at the peak. Where is the green level compared with the electrons on the left?</li>
+<li>Go past the peak. Why does the current fall?</li>
+<li>Make the well narrower. Does the peak move to a higher or lower voltage? Why? (Think of Lecture 2: smaller box, higher level.)</li>
+<li>Make the barriers thicker. What happens to the sharpness of the blue peak, and to the current?</li>
+<li>In More detail, compare 77 K and 300 K. Why is the valley lower when cold?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>How can an electron cross two barriers almost perfectly, when it rarely crosses one?</summary>At the level's energy, the waves bouncing back and forth between the two barriers add up in step, like a string driven at its own note. The reflections from the two barriers cancel, so the wave passes through. At other energies they do not cancel and almost all of the wave is reflected.</details>
+<details><summary>Why does a narrower well move the peak to a higher voltage?</summary>A narrower well raises its allowed level (energy grows as 1/L²). The voltage must then pull it down further before it lines up with the emitter's electrons.</details>
+<details><summary>Why is a resonant-tunnelling diode so fast?</summary>An electron spends only a very short time in the well, a fraction of a picosecond (shown in More detail as the level's lifetime), and the device is small with a tiny capacitance. RTD oscillators have reached about 2 THz.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>The conduction-band profile (barriers 0.33 eV high, effective mass 0.067 m<sub>0</sub> throughout) is cut into thin slices, with the applied voltage dropping linearly across the undoped region (the barriers, the well and 2 nm spacers). The transmission T(E, V) is calculated exactly with transfer matrices. The current is the Tsu–Esaki integral J ∝ ∫ T(E, V) N(E, V) dE, where N(E, V) = k<sub>B</sub>T ln[(1 + e<sup>(E<sub>F</sub>−E)/k<sub>B</sub>T</sup>)/(1 + e<sup>(E<sub>F</sub>−E−qV)/k<sub>B</sub>T</sup>)] counts the electrons available, with the emitter Fermi level 40 meV above its band edge. The level's lifetime is ħ/Γ, with Γ the width of the transmission peak.</p>
+<p class="caveat">Left out: charge building up in the well, scattering, band bending in the contacts and series resistance. Real devices show the same shape; their peak voltages are higher because part of the voltage drops elsewhere.</p></section>
+</main>
+<script>
+/*INCLUDE tun.js*/
+(() => {
+  const st = { V: 0.05, Lw: 5, Lb: 2, T: 300 };
+  const VB = 0.33, M = 0.067, EF = 0.04, SP = 2;
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "V", label: "Voltage", min: 0, max: 0.45, step: 0.005, value: st.V, unit: "V", dp: 3, on: v => { st.V = v; atV(); } });
+  NX.slider(ctl, { id: "Lw", label: "Well width", min: 3, max: 8, step: 0.25, value: st.Lw, unit: "nm", dp: 2, on: v => { st.Lw = v; rebuild(); } });
+  NX.slider(ctl, { id: "Lb", label: "Barrier thickness", min: 1, max: 3, step: 0.1, value: st.Lb, unit: "nm", dp: 1, on: v => { st.Lb = v; rebuild(); } });
+  NX.seg(ctl, { label: "Temperature", value: st.T, options: [[300, "300 K (room)"], [77, "77 K (liquid nitrogen)"]], on: v => { st.T = v; rebuild(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 1.45, x: [0, 0.45], y: [0, 1.2], xlabel: "Voltage (V)", ylabel: "Current (relative to peak)" });
+  const iv2 = new NX.Plot(document.getElementById("iv2"), { aspect: 1.45, x: [0, 0.45], y: [0, 1.2], xlabel: "Voltage (V)", ylabel: "Current (relative)" });
+
+  // geometry: emitter | spacer | barrier | well | barrier | spacer | collector, x = 0 at the first barrier
+  function profile(V) {
+    const La = 2 * SP + 2 * st.Lb + st.Lw, x0 = -SP, n = Math.max(30, Math.round(La / 0.25));
+    const edges = [], Us = [0];
+    for (let i = 0; i <= n; i++) edges.push(x0 + La * i / n);
+    for (let i = 0; i < n; i++) {
+      const xm = x0 + La * (i + 0.5) / n, inB = (xm > 0 && xm < st.Lb) || (xm > st.Lb + st.Lw && xm < 2 * st.Lb + st.Lw);
+      Us.push(-V * (xm - x0) / La + (inB ? VB : 0));
+    }
+    Us.push(-V); return { edges, Us, La, x0 };
+  }
+  const Tof = (E, P) => TUN.solve(E, P.edges, P.Us, M).T;
+  function supply(E, V, T) { const kT = 8.617e-5 * T, a = (EF - E) / kT, b = (EF - E - V) / kT; const lp = x => x > 30 ? x : Math.log1p(Math.exp(x)); return kT * (lp(a) - lp(b)); }
+  function currentAt(V, T) {
+    const P = profile(V), Emax = EF + 12 * 8.617e-5 * T, n = 180; let s = 0;
+    for (let i = 0; i < n; i++) { const E = (i + 0.5) * Emax / n; s += Tof(E, P) * supply(E, V, T) * Emax / n; }
+    return s;
+  }
+  let IV = null, IV77 = null, IV300 = null, P = null, Tline = null, lev = null;
+  function curveFor(T) { const xs = [], ys = []; for (let V = 0; V <= 0.4501; V += 0.01) { xs.push(V); ys.push(currentAt(V, T)); } return { xs, ys }; }
+  function peakValley(c) {
+    let ip = -1; for (let i = 1; i < c.ys.length - 1; i++) if (c.ys[i] > c.ys[i - 1] && c.ys[i] >= c.ys[i + 1]) { ip = i; break; }
+    if (ip < 0) return null; let iv = ip; for (let i = ip; i < c.ys.length - 1; i++) { if (c.ys[i] < c.ys[iv]) iv = i; if (c.ys[i + 1] > c.ys[i]) break; }
+    return { ip, iv };
+  }
+  function rebuild() {
+    zeroLevel(); G0 = NaN; IV = curveFor(st.T); IV.pv = peakValley(IV); IV.norm = IV.pv ? IV.ys[IV.pv.ip] : Math.max(...IV.ys);
+    IV77 = IV300 = null; atV();
+  }
+  // zero-bias level of the well (set once per geometry); under bias it moves down with the potential at the well centre
+  let E0 = 0.09;
+  function zeroLevel() {
+    const P0 = profile(0); let b = -1, e = NaN;
+    for (let i = 1; i <= 600; i++) { const E = VB * i / 601, T = Tof(E, P0); if (T > b) { b = T; e = E; } }
+    for (let r = 0; r < 30; r++) { const d = VB / 601 / Math.pow(1.6, r + 1), a = Tof(e - d, P0), c = Tof(e + d, P0); if (a > c) e -= d / 2; else e += d / 2; }
+    E0 = e;
+  }
+  let G0 = NaN;
+  function widthAt0() {      // full width at half maximum of the zero-bias resonance, from a fine scan
+    if (isFinite(G0)) return G0;
+    const P0 = profile(0), n = 800, span = 0.03, pts = [];
+    for (let i = 0; i <= n; i++) { const E = E0 - span + 2 * span * i / n; pts.push([E, Tof(E, P0)]); }
+    const pk = Math.max(...pts.map(q => q[1])), k = pts.findIndex(q => q[1] === pk); let a = k, b = k;
+    while (a > 0 && pts[a][1] > pk / 2) a--; while (b < n && pts[b][1] > pk / 2) b++;
+    G0 = pts[b][0] - pts[a][0]; return G0;
+  }
+  function findLevel(Pr, V) {
+    const La = 2 * SP + 2 * st.Lb + st.Lw, xc = st.Lb + st.Lw / 2, guess = E0 - V * (xc + SP) / La;
+    const n = 500, lo = Math.max(0.0005, -V + 0.0005), hi = VB + 0.05, Ts = [];
+    for (let i = 0; i <= n; i++) { const E = lo + (hi - lo) * i / n; Ts.push([E, Tof(E, Pr)]); }
+    let Elev = guess, Tpk = 0, G = NaN;
+    if (guess > lo) {        // refine: the transmission maximum near the expected position
+      let k = -1; Ts.forEach(([E, T], i) => { if (Math.abs(E - guess) < 0.03 && (k < 0 || T > Ts[k][1])) k = i; });
+      if (k >= 0) { Elev = Ts[k][0]; Tpk = Ts[k][1];
+        if (Tpk > 0.3) { const half = Tpk / 2; let a = k, b = k; while (a > 0 && Ts[a][1] > half) a--; while (b < n && Ts[b][1] > half) b++; G = Ts[b][0] - Ts[a][0]; } }
+    }
+    return { E: Elev, Tpk, G, Ts };
+  }
+  function atV() {
+    P = profile(st.V); lev = findLevel(P, st.V);
+    const Iv = currentAt(st.V, st.T) / IV.norm, pv = IV.pv;
+    const Vp = pv ? IV.xs[pv.ip] : NaN, PVCR = pv ? IV.ys[pv.ip] / IV.ys[pv.iv] : NaN;
+    const L0 = { E: E0, G: widthAt0() };
+    ro.innerHTML = `<dt>Current (relative to peak)</dt><dd>${Iv.toFixed(2)}</dd>
+      <dt>Level above the emitter's band edge</dt><dd>${(lev.E * 1e3).toFixed(0)} meV</dd>
+      <dt>Peak at</dt><dd>${pv ? (Vp * 1e3).toFixed(0) + " mV" : "—"}</dd>
+      <dt class="adv">Peak-to-valley ratio</dt><dd class="adv">${pv ? PVCR.toFixed(1) : "—"}</dd>
+      <dt class="adv">Level at zero voltage</dt><dd class="adv">${(L0.E * 1e3).toFixed(0)} meV</dd>
+      <dt class="adv">Level width Γ (at 0 V)</dt><dd class="adv">${isFinite(L0.G) ? (L0.G * 1e3).toFixed(2) + " meV" : "—"}</dd>
+      <dt class="adv">Time in the well ħ/Γ</dt><dd class="adv">${isFinite(L0.G) ? (TUN.HBAR / L0.G).toFixed(0) + " fs" : "—"}</dd>`;
+    const below = lev.E < 0, near = lev.E >= 0 && lev.E <= EF + 0.01;
+    status.className = "status " + (below ? "bad" : "good");
+    status.textContent = below ? "The level has dropped below the emitter's electrons: nothing has the right energy, so the current falls (negative differential resistance)." :
+      near ? "The level lines up with the electrons in the emitter: they pass straight through. This is resonance, near the current peak." :
+      "The level is above the electrons waiting in the emitter: few have the right energy, so little current flows.";
+    drawIV(); drawIV2();
+  }
+  // ----- band picture -----
+  let dots = [];
+  function drawBand() {
+    const cv = document.getElementById("band"), t = NX.tok, narrow = (cv.clientWidth || 700) < 560;
+    const { g, w, h } = NX.fitCanvas(cv, narrow ? 1.25 : 2.2);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const La = 2 * SP + 2 * st.Lb + st.Lw, xL = -SP - 8, xR = La - SP + 8, split = narrow ? 0.66 : 0.72;
+    const Elo = -0.5, Ehi = 0.42, pl = 40, pt = narrow ? 24 : 14, pb = 26, xw = (w - pl) * split;
+    const X = x => pl + (x - xL) / (xR - xL) * (xw - 10), Y = E => h - pb - (E - Elo) / (Ehi - Elo) * (h - pt - pb);
+    g.font = "11px system-ui"; g.textAlign = "right"; g.textBaseline = "middle";
+    for (let E = -0.4; E <= 0.401; E += 0.1) { g.strokeStyle = t.grid; g.beginPath(); g.moveTo(pl, Y(E)); g.lineTo(w - 6, Y(E)); g.stroke(); g.fillStyle = t.muted; g.fillText(E.toFixed(1), pl - 4, Y(E)); }
+    NX.label(g, "energy (eV)", 4, 8, { align: "left", size: 11, color: t.ink });
+    const U = x => x < -SP ? 0 : x > La - SP ? -st.V : -st.V * (x + SP) / La + (((x > 0 && x < st.Lb) || (x > st.Lb + st.Lw && x < 2 * st.Lb + st.Lw)) ? VB : 0);
+    // electrons in emitter and collector
+    g.fillStyle = t.nplus; g.fillRect(X(xL), Y(EF), X(-SP) - X(xL), Y(0) - Y(EF)); g.fillRect(X(La - SP), Y(-st.V + EF), X(xR) - X(La - SP), Y(-st.V) - Y(-st.V + EF));
+    g.strokeStyle = t.ink; g.lineWidth = 2; g.beginPath(); for (let i = 0; i <= 600; i++) { const x = xL + (xR - xL) * i / 600; i ? g.lineTo(X(x), Y(U(x))) : g.moveTo(X(x), Y(U(x))); } g.stroke();
+    // level in the well
+    const yl = Y(lev.E); g.strokeStyle = t.green; g.lineWidth = 3; g.beginPath(); g.moveTo(X(st.Lb + 0.2), yl); g.lineTo(X(st.Lb + st.Lw - 0.2), yl); g.stroke();
+    NX.label(g, "emitter", X(xL + 4), Y(-0.08), { size: 11, color: t.ink }); NX.label(g, "collector", X(xR - 4), Y(-st.V - 0.08), { size: 11, color: t.ink });
+    NX.label(g, "well", X(st.Lb + st.Lw / 2), Y(Math.min(0.39, VB + 0.05)), { size: 11, color: t.muted });
+    dots.forEach(p => NX.dot(g, X(p.x), Y(p.E), 3.4, p.go ? t.electron : t.muted));
+    // transmission side panel, log scale 1e-6..1
+    const x0 = pl + xw + 8, x1 = w - 8, TX = T => x0 + (Math.log10(Math.max(T, 1e-6)) + 6) / 6 * (x1 - x0);
+    g.strokeStyle = t.line; g.lineWidth = 1; g.strokeRect(x0, pt, x1 - x0, h - pt - pb);
+    g.fillStyle = t.muted; g.font = "10.5px system-ui"; g.textAlign = "center"; g.textBaseline = "top";
+    [[1e-6, "10⁻⁶"], [1e-3, "10⁻³"], [1, "1"]].forEach(([v, s]) => g.fillText(s, TX(v), h - pb + 3));
+    g.fillText("chance through", (x0 + x1) / 2, h - pb + 13);
+    g.save(); g.beginPath(); g.rect(x0, pt, x1 - x0, h - pt - pb); g.clip();
+    g.strokeStyle = t.blue; g.lineWidth = 2; g.beginPath(); let pen = false;
+    lev.Ts.forEach(([E, T]) => { if (!(T > 0)) { pen = false; return; } pen ? g.lineTo(TX(T), Y(E)) : g.moveTo(TX(T), Y(E)); pen = true; }); g.stroke(); g.restore();
+    g.strokeStyle = t.green; g.setLineDash([3, 3]); g.lineWidth = 1; g.beginPath(); g.moveTo(X(st.Lb + st.Lw), yl); g.lineTo(x1, yl); g.stroke(); g.setLineDash([]);
+  }
+  function step(dt) {
+    const rate = 7; if (Math.random() < rate * dt) {
+      const E = Math.random() * EF, T = Tof(Math.max(E, 1e-4), P), go = Math.random() < Math.min(1, T * 1.0);
+      dots.push({ x: -SP - 7, E, go, dir: 1, v: 5.5 });   // tunnelling is elastic: each electron keeps its energy
+    }
+    const La = 2 * SP + 2 * st.Lb + st.Lw;
+    dots.forEach(p => {
+      p.x += p.dir * p.v * dt;
+      if (!p.go && p.dir > 0 && p.x >= -0.05) p.dir = -1;
+    });
+    dots = dots.filter(p => p.x > -SP - 8.5 && p.x < La - SP + 8.5);
+  }
+  function drawIV() {
+    const t = NX.tok; iv.begin().axes();
+    if (IV.pv) iv.band(IV.xs[IV.pv.ip], IV.xs[IV.pv.iv], t.rust, 0.08);
+    iv.line(IV.xs, IV.ys.map(y => y / IV.norm), { color: t.ink, width: 2.4 });
+    iv.point(st.V, currentAt(st.V, st.T) / IV.norm, { color: t.rust });
+  }
+  function drawIV2() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; if (!IV77) { IV77 = curveFor(77); IV300 = curveFor(300); }
+    const nrm = Math.max(...IV300.ys.slice(0, 30), ...IV77.ys.slice(0, 30));
+    iv2.begin().axes(); iv2.line(IV300.xs, IV300.ys.map(y => y / nrm), { color: t.rust, width: 2.2 }); iv2.line(IV77.xs, IV77.ys.map(y => y / nrm), { color: t.blue, width: 2.2 });
+    iv2.text(0.44, 1.12, "red: 300 K · blue: 77 K", { align: "right", size: 11, color: t.muted }); iv2.vline(st.V, { color: t.muted });
+  }
+  NX.loop(dt => { step(dt); drawBand(); });
+  NX.onRedraw(() => { atV(); drawBand(); });
+  rebuild(); drawBand();
+})();
+</script>
