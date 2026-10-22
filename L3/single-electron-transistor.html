@@ -432,8 +432,8 @@ const NX = (() => {
     NX.label(g, "island", cx, cy - r - 12, { size: 12 }); NX.label(g, "gate", cx, h - 33, { size: 12, color: "#fff" });
     g.strokeStyle = t.muted; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(cx, cy + r + 4); g.lineTo(cx, h - 48); g.stroke(); g.setLineDash([]);
     // extra electrons on the island
-    const k = Math.max(0, Math.min(6, n)); for (let i = 0; i < k; i++) { const a = 2 * Math.PI * i / Math.max(k, 1) + 0.4; NX.dot(g, cx + 0.5 * r * Math.cos(a), cy + 0.5 * r * Math.sin(a), 5, t.electron, "-"); }
-    NX.label(g, `${n} extra`, cx, cy + r * 0.05 + (k ? 0 : 0), { size: 12, color: k ? t.muted : t.ink });
+    const k = Math.max(0, Math.min(6, n)); for (let i = 0; i < k; i++) { const a = 2 * Math.PI * i / Math.max(k, 1) + 0.4; NX.dot(g, cx + 0.38 * r * Math.cos(a), cy - 0.12 * r + 0.38 * r * Math.sin(a), 5, t.electron, "-"); }
+    NX.label(g, `${n} extra`, cx, k ? cy + r * 0.78 : cy, { size: 12, color: k ? t.muted : t.ink });
     // hopping electrons
     const xs = cx - r - jw - 20, xi = cx, xd = cx + r + jw + 20;
     hops.forEach(hh => {
