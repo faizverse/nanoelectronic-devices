@@ -1,0 +1,110 @@
+<!--META
+{"num":3,"slug":"sb-cntfet","title":"Schottky-barrier nanotube transistor","ref":"Document 2, Sections 2 and 4.4","blurb":"With metal source and drain, the gate does not lower a barrier: it thins the Schottky barriers at the contacts so that electrons, or holes, tunnel through. See why such transistors conduct both ways, why wide tubes leak, and what doped contacts change."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>Bands along the tube, from source metal to drain metal</h3><canvas id="band"></canvas></div>
+      <div class="fig"><h3>Drain current against gate voltage (log scale)</h3><canvas id="iv"></canvas></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--blue)"></i>conduction band</span><span><i style="background:var(--hole)"></i>valence band</span><span><i style="background:var(--metal)"></i>metal contacts (dashed: Fermi levels)</span><span><i class="dot" style="background:var(--electron)"></i>electrons</span><span><i class="dot" style="background:var(--hole)"></i>holes</span></div>
+    <div class="figs adv">
+      <div class="fig"><h3>Transfer curves for three tube diameters (same contacts)</h3><canvas id="dia"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Left.</b> At each metal contact the bands are pinned: the conduction band starts a Schottky-barrier height φ<sub>Bn</sub> above the metal's Fermi level. Inside the tube the gate moves the bands. The bands bend from the contact to the channel over a screening length λ, set by the gate insulator. A thin barrier can be tunnelled through.</p>
+<p><b>Ambipolar.</b> A high gate voltage pulls the conduction band down, thinning the barrier for <b>electrons</b> at the source. A low gate voltage pushes the bands up, thinning the barrier for <b>holes</b> at the drain. With midgap contacts both happen, and the transfer curve is V-shaped.</p>
+<p><b>Doped contacts</b> replace the metal–tube barrier by n⁺ extensions: the device becomes a MOSFET-like, one-way transistor whose gate lowers a barrier in the channel.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>With midgap contacts, sweep the gate from −1 to +1.2 V. Where is the current smallest? Why at about V<sub>D</sub>/2?</li>
+<li>Make the tube 2.0 nm wide, then 1.0 nm. How does the minimum current change? (More detail compares three diameters.)</li>
+<li>Increase λ (a thicker gate insulator). What happens to the slope of the curve?</li>
+<li>Choose Pd-like contacts. Which carrier now flows at V<sub>G</sub> = 0? Then choose doped contacts and compare the off-current.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>What does the gate change in a Schottky-barrier transistor?</summary>The width of the contact barriers, not their height. The height is set by the metal and the tube; the gate sets how quickly the bands bend away from the contact, and so how thin the barrier is.</details>
+<details><summary>Why do wide tubes leak more?</summary>The off-current is the smaller of the electron and hole tunnelling currents at the best gate voltage. Both barriers are about half the gap high, and the gap falls as 1/d, so the minimum current rises roughly as e<sup>−E<sub>g</sub>/2k<sub>B</sub>T</sup>.</details>
+<details><summary>Why does a thin, high-κ insulator help?</summary>It shortens λ, so a small change in gate voltage thins the barrier a lot: steeper switching and more on-current.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Midgap energy along a tube of length L = 20 nm: E<sub>mid</sub>(x) = E<sub>ch</sub> + (E<sub>S</sub> − E<sub>ch</sub>)e<sup>−x/λ</sup> + (E<sub>D</sub> − E<sub>ch</sub>)e<sup>−(L−x)/λ</sup>, with E<sub>ch</sub> = −qV<sub>G</sub> + flat-band offset (an ideal gate). Landauer current I = (4q/h)∫𝒯(E)[f<sub>S</sub> − f<sub>D</sub>]dE, with WKB transmission 𝒯 = exp(−2∫κ dx) and, inside the gap, κ = √(Δ² − (E − E<sub>mid</sub>)²)/ħv<sub>F</sub>, Δ = E<sub>g</sub>/2, which describes electrons near the conduction band and holes near the valence band with one formula. Doped contacts: thermionic ballistic current over a gate-controlled barrier with threshold 0.25 V.</p>
+<p class="caveat">Left out: charge in the tube (the electrostatics are fixed, not self-consistent), image-force lowering, phonon scattering, contact resistance beyond the barrier, and band-to-band tunnelling in the doped device.</p></section>
+</main>
+<script>
+/*INCLUDE l4.js*/
+(() => {
+  const st = { Vg: 0.6, Vd: 0.4, d: 1.5, lam: 2, contact: "mid", doped: false, T: 300 };
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "Vg", label: "Gate voltage", min: -1, max: 1.2, step: 0.01, value: st.Vg, unit: "V", dp: 2, on: v => { st.Vg = v; update(); } });
+  NX.slider(ctl, { id: "Vd", label: "Drain voltage", min: 0.05, max: 0.8, step: 0.01, value: st.Vd, unit: "V", dp: 2, on: v => { st.Vd = v; update(true); } });
+  NX.slider(ctl, { id: "d", label: "Tube diameter", min: 1.0, max: 2.2, step: 0.05, value: st.d, unit: "nm", dp: 2, on: v => { st.d = v; update(true); } });
+  NX.slider(ctl, { id: "lam", label: "Screening length λ", min: 1, max: 8, step: 0.25, value: st.lam, unit: "nm", dp: 2, hint: "Short for a thin high-κ wrap-around gate, long for a thick back gate.", on: v => { st.lam = v; update(true); } });
+  NX.seg(ctl, { label: "Contacts", value: "mid", options: [["pd", "Pd-like"], ["mid", "midgap"], ["sc", "Sc-like"], ["dop", "doped n⁺"]], hint: "Pd aligns with the valence band, Sc with the conduction band.", on: v => { st.contact = v; update(true); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 1.25, x: [-1, 1.2], y: [1e-13, 1e-4], ylog: true, xlabel: "Gate voltage (V)", ylabel: "Current per tube (A)" });
+  const dia = new NX.Plot(document.getElementById("dia"), { aspect: 2.0, x: [-1, 1.2], y: [1e-13, 1e-4], ylog: true, xlabel: "Gate voltage (V)", ylabel: "Current (A)" });
+  const Eg = () => 2 * L4.ACC * 2.7 / st.d;
+  function opt(d = st.d) {
+    const eg = 2 * L4.ACC * 2.7 / d, phiB = st.contact === "pd" ? 0.98 * eg : st.contact === "sc" ? 0.02 * eg : eg / 2;
+    return { L: 20, lam: st.lam, phiB, Eg: eg, T: st.T, g0: 2.7, VFB: phiB - eg / 2 + (st.contact === "mid" ? 0 : 0), Vth: 0.25 };
+  }
+  const I = (vg, o) => st.contact === "dop" ? { I: L4.mosCurrent(vg, st.Vd, o) + 1e-15, Ie: L4.mosCurrent(vg, st.Vd, o), Ih: 0 } : L4.sbSplit(vg, st.Vd, o);
+  let curve, cur;
+  function update(recurve) {
+    const o = opt();
+    if (recurve || !curve) { curve = { x: [], y: [] }; for (let v = -1; v <= 1.2001; v += 0.025) { curve.x.push(v); curve.y.push(I(v, o).I); } }
+    cur = I(st.Vg, o);
+    let imin = Infinity, vmin = 0; curve.y.forEach((y, i) => { if (y < imin) { imin = y; vmin = curve.x[i]; } });
+    const imax = Math.max(...curve.y);
+    const carrier = cur.Ie > 3 * cur.Ih ? "electrons" : cur.Ih > 3 * cur.Ie ? "holes" : "electrons and holes";
+    status.className = "status " + (cur.I < 10 * imin ? "bad" : "good");
+    status.textContent = st.contact === "dop" ? `Doped contacts: a one-way n-type transistor. Current at ${st.Vg.toFixed(2)} V: ${NX.si(cur.I, "A")}.` :
+      cur.I < 10 * imin ? `Near the minimum: both barriers are thick. This is the off-state, set by the band gap (${Eg().toFixed(2)} eV).` :
+      `Current carried mainly by ${carrier}, tunnelling through the ${carrier === "holes" ? "drain" : "source"} barrier.`;
+    ro.innerHTML = `<dt>Current per tube</dt><dd>${NX.si(cur.I, "A")}</dd>
+      <dt>Band gap</dt><dd>${Eg().toFixed(2)} eV</dd>
+      <dt>Barrier for electrons φ<sub>Bn</sub></dt><dd>${st.contact === "dop" ? "— (ohmic)" : o.phiB.toFixed(2) + " eV"}</dd>
+      <dt>Minimum current (at V<sub>G</sub>)</dt><dd>${NX.si(imin, "A")} (${vmin.toFixed(2)} V)</dd>
+      <dt>Maximum / minimum</dt><dd>${NX.fmt(imax / imin, 1)}</dd>
+      <dt class="adv">Electron / hole parts</dt><dd class="adv">${NX.si(cur.Ie, "A")} / ${NX.si(cur.Ih, "A")}</dd>`;
+    drawIV(); if (recurve) drawDia(); drawBand();
+  }
+  function drawIV() {
+    const t = NX.tok; iv.begin().axes(); iv.line(curve.x, curve.y, { color: st.contact === "dop" ? t.green : t.gold, width: 2.4 }); iv.point(st.Vg, cur.I, { color: t.rust });
+  }
+  function drawDia() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; dia.begin().axes();
+    [[1.0, t.blue], [1.5, t.green], [2.0, t.rust]].forEach(([d, c]) => { const o = opt(d), xs = [], ys = []; for (let v = -1; v <= 1.2001; v += 0.04) { xs.push(v); ys.push(I(v, o).I); } dia.line(xs, ys, { color: c, width: 2 }); dia.text(xs[xs.length - 1], ys[ys.length - 1], ` d = ${d}`, { color: c, size: 11, align: "right", dy: -10 }); });
+  }
+  let dots = [];
+  function drawBand() {
+    const cv = document.getElementById("band"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.25), o = opt();
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const L = 20, xm = 5, X = x => 14 + (x + xm) / (L + 2 * xm) * (w - 28), Y = E => 20 + (1.1 - E) / 2.6 * (h - 50);
+    const D1 = o.Eg / 2;
+    const prof = x => st.contact === "dop" ? (() => { const s = 0.5 * (1 + Math.tanh((x - 4) / 1.2)), dd = 0.5 * (1 + Math.tanh((x - 16) / 1.2)), ech = 0.25 - st.Vg; return (-0.05 + (ech + 0.05) * s + (-0.05 - st.Vd - ech) * dd) - D1; })() : L4.sbProfile(x, st.Vg, st.Vd, o);
+    // metals
+    g.fillStyle = t.metal; g.globalAlpha = .45; g.fillRect(X(-xm), Y(0), X(0) - X(-xm), Y(-1.5) - Y(0)); g.fillRect(X(L), Y(-st.Vd), X(L + xm) - X(L), Y(-1.5) - Y(-st.Vd)); g.globalAlpha = 1;
+    if (st.contact === "dop") { NX.label(g, "n⁺", X(2), Y(-1.3), { size: 11, color: t.muted }); NX.label(g, "n⁺", X(18), Y(-1.3), { size: 11, color: t.muted }); }
+    g.setLineDash([5, 4]); g.lineWidth = 1.2; g.strokeStyle = t.ink;
+    g.beginPath(); g.moveTo(X(-xm), Y(0)); g.lineTo(X(0), Y(0)); g.moveTo(X(L), Y(-st.Vd)); g.lineTo(X(L + xm), Y(-st.Vd)); g.stroke(); g.setLineDash([]);
+    [[1, t.blue], [-1, t.hole]].forEach(([s, c]) => { g.strokeStyle = c; g.lineWidth = 2.2; g.beginPath(); for (let i = 0; i <= 200; i++) { const x = L * i / 200, E = prof(x) + s * D1; i ? g.lineTo(X(x), Y(E)) : g.moveTo(X(x), Y(E)); } g.stroke(); });
+    NX.label(g, "source", X(-xm / 2), h - 10, { size: 11 }); NX.label(g, "drain", X(L + xm / 2), h - 10, { size: 11 }); NX.label(g, "tube under the gate", X(L / 2), h - 10, { size: 11 });
+    dots.forEach(p => NX.dot(g, X(p.x), Y(p.E), 3.2, p.h ? t.hole : t.electron));
+  }
+  NX.loop(dt => {
+    const rate = c => Math.max(0, Math.min(12, 2 * (Math.log10(c + 1e-20) + 11)));
+    if (Math.random() < rate(cur.Ie) * dt) dots.push({ x: -2, E: -0.06 * Math.random(), v: 9, h: false });
+    if (Math.random() < rate(cur.Ih) * dt) dots.push({ x: 22, E: -st.Vd + 0.06 * Math.random(), v: -9, h: true });
+    dots.forEach(p => p.x += p.v * dt); dots = dots.filter(p => p.x > -4.5 && p.x < 24.5);
+    drawBand();
+  });
+  NX.onRedraw(() => update(true));
+  update(true);
+})();
+</script>

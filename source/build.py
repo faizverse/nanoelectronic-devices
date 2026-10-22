@@ -19,6 +19,8 @@ LECTURES = [
      "Seven interactive models that go with the Lecture 2 notes: an electron in a box, how trapping electrons shares out their energies, quantum-well and cascade lasers, carbon nanotubes, quantum-dot colour, and how dots are grown. Each opens in a simple view; press More detail for the numbers and graphs."),
     ("L3", "L3pages", "Lecture 3", "Quantum tunnelling devices",
      "Six interactive models that go with the Lecture 3 notes: an electron tunnelling through a wall, the scanning tunnelling microscope, the tunnel diode, the resonant-tunnelling diode, the tunnel FET, and the single-electron transistor. Each opens in a simple view; press More detail for the numbers and graphs."),
+    ("L4", "L4pages", "Lecture 4", "Beyond planar silicon: nanotubes, FinFETs, SOI and compound semiconductors",
+     "Six interactive models that go with the Lecture 4 notes: the band structure of a carbon nanotube, the ballistic nanotube transistor, the Schottky-barrier nanotube transistor, FinFET and nanosheet design, partially and fully depleted SOI, and the speed and colour of compound semiconductors. Each opens in a simple view; press More detail for the numbers and graphs."),
 ]
 
 

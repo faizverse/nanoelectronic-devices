@@ -1,0 +1,116 @@
+<!--META
+{"num":4,"slug":"finfet-nanosheet","title":"FinFET and nanosheet: width and control","ref":"Document 3, Sections 1–2","blurb":"Design a FinFET or a stacked-nanosheet transistor. Change fin height, width and pitch, or the number and size of the sheets, and see how much channel width fits in each micrometre of layout, and how well the gate controls a short channel."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>Cross-section across the gate, to scale</h3><canvas id="xs"></canvas></div>
+      <div class="fig"><h3>Channel width per µm of layout</h3><canvas id="bar"></canvas></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--si)"></i>silicon</span><span><i style="background:var(--green)"></i>high-κ dielectric</span><span><i style="background:var(--violet)"></i>metal gate</span><span><i style="background:var(--oxide)"></i>isolation oxide</span></div>
+    <div class="figs adv">
+      <div class="fig"><h3>Subthreshold swing against gate length (natural-length model of Lecture 1)</h3><canvas id="ss"></canvas></div>
+      <div class="fig"><h3>DIBL against gate length</h3><canvas id="dibl"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>FinFET.</b> Each fin conducts along both sidewalls and its top, so its effective width is 2H<sub>fin</sub> + W<sub>fin</sub>. Fins sit on a pitch P, so the width packed into each µm of layout is (2H<sub>fin</sub> + W<sub>fin</sub>)/P, which exceeds 1 when fins are tall and close together. Width comes only in whole fins.</p>
+<p><b>Nanosheet.</b> Each sheet is surrounded by the gate, so it conducts on all four faces: 2W + 2T per sheet. The sheet width W is a free design choice, so there is no "whole fin" restriction, and stacking three or four sheets gives a lot of width from one footprint.</p>
+<p><b>Control.</b> A thin fin or sheet, gated from two or four sides, has a short natural length λ, so short gates still switch steeply. More detail shows the swing and DIBL from the same model as Lecture 1.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Load the three Intel presets in turn. Watch the width per µm of layout rise from 22 nm to 10 nm. What changed most: height, width or pitch?</li>
+<li>For a FinFET, try to reach 3 µm/µm. What fin height do you need at a 30 nm pitch?</li>
+<li>Switch to a nanosheet and vary the sheet width. Why is this freedom useful for designers?</li>
+<li>With More detail on, make the fin 12 nm wide at a 14 nm gate. What happens to the swing? Then thin it to 6 nm.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>How can a FinFET have more width per µm than a planar transistor?</summary>Because its channel is vertical: each fin contributes 2H<sub>fin</sub> + W<sub>fin</sub> of width but occupies only one fin pitch of layout. With H = 46 nm, W = 7 nm and P = 34 nm, that is 99/34 ≈ 2.9 µm per µm.</details>
+<details><summary>Why does a thinner fin give better short-channel control?</summary>The natural length λ ∝ √(t<sub>Si</sub>·EOT/N) falls as the body thins, so the drain's field dies away faster along the channel. Keeping L ≳ 5λ keeps the swing near 60 mV/dec and the DIBL small.</details>
+<details><summary>What problem of FinFETs does the nanosheet solve?</summary>Fin quantisation: width comes only in whole fins. A nanosheet's width can be chosen continuously, and the gate surrounds the channel completely.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Effective width: FinFET N<sub>fin</sub>(2H<sub>fin</sub> + W<sub>fin</sub>), footprint N<sub>fin</sub>·P; nanosheet N<sub>sheet</sub>(2W + 2T), footprint W + stack spacing. Electrostatics: the Lecture 1 natural-length model, λ = √((ε<sub>Si</sub>/ε<sub>ox</sub>)·t<sub>Si</sub>·EOT/N), with t<sub>Si</sub> = W<sub>fin</sub> and N = 2 for the fin, t<sub>Si</sub> = T and N = 4 for the sheet; swing and DIBL from the quasi-two-dimensional potential along the channel. Intel fin dimensions are from the IEDM papers for the 22, 14 and 10 nm processes.</p>
+<p class="caveat">Left out: corner rounding, quantum confinement (which raises V<sub>T</sub> in very thin bodies), the top gate of a tri-gate fin, parasitic resistance and capacitance, and self-heating.</p></section>
+</main>
+<script>
+/*INCLUDE sce.js*/
+(() => {
+  const st = { dev: "fin", H: 46, Wf: 7, P: 34, Nf: 2, Ns: 3, Ws: 30, Ts: 5, sp: 25, Lg: 16, eot: 0.9 };
+  const ctl = document.getElementById("ctl");
+  const sDev = NX.seg(ctl, { label: "Device", value: "fin", options: [["fin", "FinFET"], ["ns", "Nanosheet"]], on: v => { st.dev = v; show(); update(); } });
+  const finBox = document.createElement("div"); finBox.style.display = "contents"; ctl.appendChild(finBox);
+  const nsBox = document.createElement("div"); nsBox.style.display = "contents"; ctl.appendChild(nsBox);
+  const S = {};
+  S.H = NX.slider(finBox, { id: "H", label: "Fin height H", min: 20, max: 60, step: 1, value: st.H, unit: "nm", dp: 0, on: v => { st.H = v; update(); } });
+  S.Wf = NX.slider(finBox, { id: "Wf", label: "Fin width W", min: 4, max: 16, step: 0.5, value: st.Wf, unit: "nm", dp: 1, on: v => { st.Wf = v; update(); } });
+  S.P = NX.slider(finBox, { id: "P", label: "Fin pitch P", min: 24, max: 70, step: 1, value: st.P, unit: "nm", dp: 0, on: v => { st.P = v; update(); } });
+  S.Nf = NX.slider(finBox, { id: "Nf", label: "Number of fins", min: 1, max: 4, step: 1, value: st.Nf, dp: 0, on: v => { st.Nf = v; update(); } });
+  S.Ns = NX.slider(nsBox, { id: "Ns", label: "Number of sheets", min: 1, max: 4, step: 1, value: st.Ns, dp: 0, on: v => { st.Ns = v; update(); } });
+  S.Ws = NX.slider(nsBox, { id: "Ws", label: "Sheet width W", min: 10, max: 60, step: 1, value: st.Ws, unit: "nm", dp: 0, on: v => { st.Ws = v; update(); } });
+  S.Ts = NX.slider(nsBox, { id: "Ts", label: "Sheet thickness T", min: 4, max: 10, step: 0.5, value: st.Ts, unit: "nm", dp: 1, on: v => { st.Ts = v; update(); } });
+  S.sp = NX.slider(nsBox, { id: "sp", label: "Space to the next stack", min: 15, max: 50, step: 1, value: st.sp, unit: "nm", dp: 0, on: v => { st.sp = v; update(); } });
+  NX.slider(ctl, { id: "Lg", label: "Gate length", min: 8, max: 40, step: 1, value: st.Lg, unit: "nm", dp: 0, on: v => { st.Lg = v; update(); } });
+  NX.slider(ctl, { id: "eot", label: "EOT", min: 0.6, max: 1.5, step: 0.05, value: st.eot, unit: "nm", dp: 2, on: v => { st.eot = v; update(); } });
+  const br = document.createElement("div"); br.className = "btnrow"; ctl.appendChild(br);
+  const presets = { "Intel 22 nm": { dev: "fin", H: 34, Wf: 8, P: 60, Nf: 3, Lg: 26 }, "Intel 14 nm": { dev: "fin", H: 42, Wf: 8, P: 42, Nf: 3, Lg: 20 }, "Intel 10 nm": { dev: "fin", H: 46, Wf: 7, P: 34, Nf: 2, Lg: 18 },
+    "2 nm-class sheet": { dev: "ns", Ns: 3, Ws: 30, Ts: 5, sp: 25, Lg: 12 } };
+  Object.entries(presets).forEach(([k, p]) => { const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = k; b.onclick = () => { Object.assign(st, p); sDev.value = st.dev; Object.keys(S).forEach(id => S[id].value = st[id]); document.getElementById("s_Lg").value = st.Lg; document.getElementById("s_Lg").dispatchEvent(new Event("input")); show(); update(); }; br.appendChild(b); });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  function show() { finBox.querySelectorAll(".ctl").forEach(e => e.style.display = st.dev === "fin" ? "" : "none"); nsBox.querySelectorAll(".ctl").forEach(e => e.style.display = st.dev === "ns" ? "" : "none"); }
+  const ssP = new NX.Plot(document.getElementById("ss"), { aspect: 1.35, x: [8, 40], y: [55, 140], xlabel: "Gate length (nm)", ylabel: "Swing (mV/dec)" });
+  const dP = new NX.Plot(document.getElementById("dibl"), { aspect: 1.35, x: [8, 40], y: [0, 250], xlabel: "Gate length (nm)", ylabel: "DIBL (mV/V)" });
+  const barP = new NX.Plot(document.getElementById("bar"), { aspect: 1.25, x: [0, 5], y: [0, 5], noxt: true, ylabel: "µm of channel per µm of layout" });
+  const geom = () => st.dev === "fin" ? { tSi: st.Wf, N: 2, weff: st.Nf * (2 * st.H + st.Wf), foot: st.Nf * st.P } : { tSi: st.Ts, N: 4, weff: st.Ns * (2 * st.Ws + 2 * st.Ts), foot: st.Ws + st.sp };
+  const elec = (L, VD) => { const gm = geom(); return SCE.device({ L, VD, tSi: gm.tSi, eot: st.eot, N: gm.N }); };
+  const dibl = L => (elec(L, 0.05).VT - elec(L, 0.7).VT) / 0.65 * 1000;
+  function update() {
+    const gm = geom(), dv = elec(st.Lg, 0.05), lam = dv.lam, ss = dv.SS, dl = dibl(st.Lg), perfoot = gm.weff / gm.foot;
+    status.className = "status " + (st.Lg >= 5 * lam ? "good" : "bad");
+    status.textContent = st.Lg >= 5 * lam ? `L = ${(st.Lg / lam).toFixed(1)}λ: good electrostatics (swing ${ss.toFixed(0)} mV/dec).` : `L = ${(st.Lg / lam).toFixed(1)}λ, below 5λ: the drain is starting to control the channel. Thin the ${st.dev === "fin" ? "fin" : "sheets"} or the EOT.`;
+    ro.innerHTML = `<dt>Effective width</dt><dd>${gm.weff.toFixed(0)} nm</dd><dt>Footprint width</dt><dd>${gm.foot.toFixed(0)} nm</dd>
+      <dt>Width per µm of layout</dt><dd>${perfoot.toFixed(2)} µm/µm</dd>
+      <dt>Natural length λ</dt><dd>${lam.toFixed(2)} nm</dd><dt>L<sub>g</sub>/λ</dt><dd>${(st.Lg / lam).toFixed(1)}</dd>
+      <dt class="adv">Swing</dt><dd class="adv">${ss.toFixed(0)} mV/dec</dd><dt class="adv">DIBL</dt><dd class="adv">${dl.toFixed(0)} mV/V</dd>`;
+    drawXS(); drawBar(); drawSS();
+  }
+  function drawXS() {
+    const cv = document.getElementById("xs"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.25);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const gm = geom(), spanX = Math.max(gm.foot + 30, 120), spanY = 130, sc = Math.min((w - 20) / spanX, (h - 40) / spanY);
+    const X = x => w / 2 + x * sc, Y = y => h - 28 - y * sc, R = (x, y, ww, hh, c) => { g.fillStyle = c; g.fillRect(X(x), Y(y + hh), ww * sc, hh * sc); };
+    R(-spanX / 2, 0, spanX, 14, t.si); R(-spanX / 2, 14, spanX, 12, t.oxide);
+    const k = 1.5;
+    if (st.dev === "fin") {
+      const x0 = -(st.Nf - 1) * st.P / 2, top = 26 + st.H;
+      R(-gm.foot / 2 - 6, 26, gm.foot + 12, st.H + 18, t.violet);
+      for (let i = 0; i < st.Nf; i++) { const xc = x0 + i * st.P; R(xc - st.Wf / 2 - k, 26, st.Wf + 2 * k, st.H + k, t.green); R(xc - st.Wf / 2, 0, st.Wf, top, t.si); }
+      NX.label(g, `H = ${st.H} nm`, X(x0 + st.Wf / 2) + 34, Y(26 + st.H / 2), { size: 11, color: "#fff", bold: true });
+      if (st.Nf > 1) { NX.arrow(g, X(x0), Y(8), X(x0 + st.P), Y(8), t.ink, 1.2, 6); NX.label(g, `P = ${st.P} nm`, X(x0 + st.P / 2), Y(8) - 9, { size: 11 }); }
+    } else {
+      const gap = 10, hh = st.Ns * st.Ts + (st.Ns + 1) * gap;
+      R(-st.Ws / 2 - 10, 26, st.Ws + 20, hh + 8, t.violet);
+      for (let i = 0; i < st.Ns; i++) { const y = 26 + gap + i * (st.Ts + gap); R(-st.Ws / 2 - k, y - k, st.Ws + 2 * k, st.Ts + 2 * k, t.green); R(-st.Ws / 2, y, st.Ws, st.Ts, t.si); }
+      NX.arrow(g, X(st.Ws / 2 + 2), Y(10), X(st.Ws / 2 + st.sp - 2), Y(10), t.ink, 1.2, 6); NX.label(g, `space ${st.sp} nm`, X(st.Ws / 2 + st.sp / 2), Y(10) - 9, { size: 11 });
+      NX.label(g, `${st.Ns} × (${st.Ws} × ${st.Ts} nm)`, X(0), Y(26 + hh + 8) - 10, { size: 11, bold: true });
+    }
+    NX.label(g, "50 nm", X(-spanX / 2 + 30), h - 8, { size: 10, color: t.muted }); g.strokeStyle = t.muted; g.lineWidth = 2; g.beginPath(); g.moveTo(X(-spanX / 2 + 5), h - 18); g.lineTo(X(-spanX / 2 + 55), h - 18); g.stroke();
+  }
+  function drawBar() {
+    const t = NX.tok, gm = geom(); barP.begin().axes();
+    const items = [["planar", 1, t.muted], ["Intel 22", 76 / 60, t.blue], ["Intel 10", 99 / 34, t.blue], ["yours", gm.weff / gm.foot, t.rust]];
+    barP.clip(g => items.forEach(([n, v, c], i) => { g.fillStyle = c; const x0 = barP.tx(0.4 + i * 1.15), x1 = barP.tx(1.2 + i * 1.15); g.fillRect(x0, barP.ty(Math.min(v, 5)), x1 - x0, barP.ty(0) - barP.ty(Math.min(v, 5))); }));
+    items.forEach(([n, v, c], i) => { barP.text(0.8 + i * 1.15, Math.min(v, 4.7) + 0.22, v.toFixed(2), { align: "center", size: 11, bold: true, color: c }); barP.text(0.8 + i * 1.15, 0, n, { align: "center", size: 11, dy: 10, base: "top" }); });
+  }
+  function drawSS() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; ssP.begin().axes(); dP.begin().axes();
+    const xs = [], s1 = [], d1 = []; for (let L = 8; L <= 40; L += 1) { xs.push(L); s1.push(elec(L, 0.05).SS); d1.push(dibl(L)); }
+    ssP.line(xs, s1, { color: st.dev === "fin" ? t.blue : t.green, width: 2.2 }); ssP.hline(Math.LN10 * NX.C.Vt * 1000, { color: t.rust, label: "60 mV/dec" }); ssP.point(st.Lg, elec(st.Lg, 0.05).SS);
+    dP.line(xs, d1, { color: st.dev === "fin" ? t.blue : t.green, width: 2.2 }); dP.point(st.Lg, dibl(st.Lg));
+  }
+  NX.onRedraw(update); show(); update();
+})();
+</script>

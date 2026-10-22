@@ -1,0 +1,145 @@
+<!--META
+{"num":1,"slug":"cnt-band-structure","title":"Nanotube band structure: zone folding","ref":"Document 1, Sections 4–5","blurb":"Choose how the graphene sheet is rolled, (n, m), and watch the allowed states cut through the Dirac cone of graphene. See why one tube in three is metallic, how the band gap scales as 1/d, and where the sharp peaks in the density of states come from."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>Allowed states (red lines) near the K and K′ points of graphene</h3><canvas id="bz"></canvas></div>
+      <div class="fig"><h3>The tube's subbands, E against k along the tube axis</h3><canvas id="bands"></canvas></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--blue)"></i>contours of graphene's |E|: darkest at the Dirac point</span><span><i style="background:var(--rust)"></i>allowed cutting lines, 2/d apart</span><span><i class="dot" style="background:var(--gold)"></i>K or K′</span></div>
+    <div class="figs adv">
+      <div class="fig"><h3>Density of states (van Hove peaks at each subband edge)</h3><canvas id="dos"></canvas></div>
+      <div class="fig"><h3>Gap E₁₁ against diameter for every tube (your tube highlighted)</h3><canvas id="gap"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Left.</b> Near each corner of graphene's Brillouin zone (K and K′) the π bands form a cone, drawn here as contours: the darker the blue, the closer to zero energy. Rolling the sheet into a tube makes the wavefunction repeat around the circumference, so only wavevectors on parallel <b>cutting lines</b> survive, 2/d apart.</p>
+<p><b>Right.</b> Each cutting line is one subband of the tube. If a line passes exactly through K, two subbands cross at E = 0 and the tube is <b>metallic</b>. Otherwise the nearest line misses K by one third of the spacing, and a gap opens: E<sub>g</sub> = 2a<sub>cc</sub>γ<sub>0</sub>/d.</p>
+<p><b>More detail</b> adds the density of states, whose sharp van Hove peaks sit at each subband edge, and the gap of every tube between 0.6 and 2.5 nm.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Compare (9,0), (10,0) and (11,0). Predict which is metallic from n − m before you look.</li>
+<li>Keep n − m fixed, say (10,1), (11,2), (12,3). How does the gap change, and why?</li>
+<li>Try (6,6), (8,4) and (10,0): almost the same diameter. Compare the number of atoms in the unit cell.</li>
+<li>With More detail on, read E₂₂/E₁₁ for a semiconducting tube. Explain the ratio of about 2 from the cutting-line picture.</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does a cutting line through K make the tube metallic?</summary>At K the π and π* bands of graphene touch. A subband that passes through K therefore contains states at E = 0 with no gap: two linear bands cross at the Fermi level.</details>
+<details><summary>Why does the gap of a semiconducting tube scale as 1/d?</summary>The lines are 2/d apart, so the nearest one misses K by 2/(3d). On the cone E = ħv<sub>F</sub>κ, so the band edge is at ħv<sub>F</sub>·2/(3d), and the gap is twice that: 4ħv<sub>F</sub>/3d = 2a<sub>cc</sub>γ<sub>0</sub>/d.</details>
+<details><summary>Why is the density of states of a metallic tube flat and non-zero at E = 0?</summary>Its two linear subbands have a constant slope, so dk/dE is constant: D = 8/hv<sub>F</sub> ≈ 2.2 states per eV per nm, including spin and the two valleys.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Nearest-neighbour tight binding for graphene, E = ±γ<sub>0</sub>|1 + e<sup>i<b>k</b>·<b>a</b>₁</sup> + e<sup>i<b>k</b>·<b>a</b>₂</sup>|, with a<sub>cc</sub> = 0.142 nm and γ<sub>0</sub> adjustable (2.7 eV by default). Zone folding: the allowed <b>k</b> = μ<b>K</b>₁ + k<b>K</b>₂/|<b>K</b>₂|, μ = 0 … N − 1, with <b>K</b>₁ and <b>K</b>₂ from Saito, Dresselhaus and Dresselhaus. The density of states is a histogram of all subband energies, lightly smoothed.</p>
+<p class="caveat">Left out: curvature (which opens a small gap in non-armchair "metallic" tubes and changes the thinnest tubes), the overlap integral (which makes the bands slightly asymmetric) and excitons, which shift measured optical gaps.</p></section>
+</main>
+<script>
+/*INCLUDE l4.js*/
+(() => {
+  const st = { n: 10, m: 0, g0: 2.7 };
+  const ctl = document.getElementById("ctl");
+  const sn = NX.slider(ctl, { id: "n", label: "n", min: 4, max: 20, step: 1, value: st.n, dp: 0, on: v => { st.n = v; if (st.m > v) { st.m = v; sm.value = v; } update(); } });
+  const sm = NX.slider(ctl, { id: "m", label: "m (0 to n)", min: 0, max: 20, step: 1, value: st.m, dp: 0, on: v => { st.m = Math.min(v, st.n); sm.value = st.m; update(); } });
+  const br = document.createElement("div"); br.className = "btnrow"; ctl.appendChild(br);
+  [[9, 0], [10, 0], [6, 6], [8, 4], [13, 7], [17, 0]].forEach(([n, m]) => { const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = `(${n},${m})`; b.onclick = () => { st.n = n; st.m = m; sn.value = n; sm.value = m; update(); }; br.appendChild(b); });
+  const sg = NX.slider(ctl, { id: "g0", label: "Hopping energy γ₀", min: 2.5, max: 3.1, step: 0.05, value: st.g0, unit: "eV", dp: 2, hint: "Fitted to experiment; the literature uses 2.5–3.1 eV.", on: v => { st.g0 = v; update(); } });
+  sg.el.classList.add("adv");
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const bandsP = new NX.Plot(document.getElementById("bands"), { aspect: 1.1, x: [-1, 1], y: [-3, 3], xlabel: "k along the axis (π/T)", ylabel: "Energy (eV)" });
+  const dosP = new NX.Plot(document.getElementById("dos"), { aspect: 1.25, x: [0, 10], y: [-2.5, 2.5], xlabel: "states per eV per nm", ylabel: "Energy (eV)" });
+  const gapP = new NX.Plot(document.getElementById("gap"), { aspect: 1.25, x: [0.5, 2.6], y: [0, 2.2], xlabel: "Diameter (nm)", ylabel: "E₁₁ (eV)" });
+  let T, sb, ed;
+  // gap of every tube (cached per gamma0)
+  let allCache = { g0: null, pts: [] };
+  function allTubes() {
+    if (allCache.g0 === st.g0) return allCache.pts;
+    const pts = [];
+    for (let n = 4; n <= 32; n++) for (let m = 0; m <= n; m++) { const t = L4.tube(n, m); if (t.d < 0.5 || t.d > 2.6) continue; pts.push([t.d, t.metallic ? 0 : 2 * L4.ACC * st.g0 / t.d * 1, t.metallic, n, m]); }
+    allCache = { g0: st.g0, pts }; return pts;
+  }
+  function update() {
+    T = L4.tube(st.n, st.m); sb = L4.subbands(T, st.g0, 161); ed = L4.edges(T, st.g0);
+    const Eg = 2 * ed[0], formula = 2 * L4.ACC * st.g0 / T.d, met = T.metallic;
+    const distinct = ed.filter((v, i) => i === 0 || v - ed[i - 1] > 0.01);
+    const E22 = met ? NaN : 2 * (distinct.find(v => v > 1.4 * ed[0]) ?? NaN);
+    const vF = 1.5 * L4.ACC * st.g0 / 6.582e-16 * 1e-9, mstar = (Eg / 2) * 1.602e-19 / (vF * vF) / 9.109e-31;
+    status.className = "status " + (met ? "bad" : "good");
+    status.innerHTML = met ? `(${st.n},${st.m}): n − m = ${st.n - st.m}, divisible by 3, so a cutting line passes through K. Metallic: no use as a transistor channel.` :
+      `(${st.n},${st.m}): n − m = ${st.n - st.m}, not divisible by 3. The nearest line misses K by one third of the spacing: semiconducting, E<sub>g</sub> = ${Eg.toFixed(2)} eV.`;
+    ro.innerHTML = `<dt>Diameter d</dt><dd>${T.d.toFixed(3)} nm</dd><dt>Chiral angle</dt><dd>${T.theta.toFixed(1)}°</dd>
+      <dt>Type</dt><dd>${st.m === 0 ? "zigzag" : st.m === st.n ? "armchair" : "chiral"}, ${met ? "metallic" : "semiconducting"}</dd>
+      <dt>Band gap (tight binding)</dt><dd>${met ? "0 (≈ meV with curvature)" : Eg.toFixed(3) + " eV"}</dd>
+      <dt>2a<sub>cc</sub>γ₀/d</dt><dd>${met ? "—" : formula.toFixed(3) + " eV"}</dd>
+      <dt class="adv">Atoms in the unit cell</dt><dd class="adv">${T.atoms}</dd>
+      <dt class="adv">Unit-cell length |T|</dt><dd class="adv">${T.Tl.toFixed(3)} nm</dd>
+      <dt class="adv">E₂₂ and E₂₂/E₁₁</dt><dd class="adv">${met ? "—" : E22.toFixed(2) + " eV, " + (E22 / Eg).toFixed(2)}</dd>
+      <dt class="adv">Effective mass at the band edge</dt><dd class="adv">${met ? "—" : mstar.toFixed(3) + " m₀"}</dd>`;
+    drawBZ(); drawBands(); drawDos(); drawGap();
+  }
+  function drawBZ() {
+    const cv = document.getElementById("bz"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 2.0);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const Ky = 4 * Math.PI / (3 * L4.A), R = 3.6, pw = (w - 30) / 2, ph = Math.min(h - 30, pw);
+    [[1, "K"], [-1, "K′"]].forEach(([s, name], p) => {
+      const ox = 10 + p * (pw + 10) + (pw - ph) / 2, oy = 8, S = ph / (2 * R);
+      const X = kx => ox + (kx + R) * S, Y = ky => oy + (R - ky) * S;
+      // contour field
+      const nc = 46, cell = ph / nc;
+      for (let i = 0; i < nc; i++) for (let j = 0; j < nc; j++) {
+        const kx = -R + (i + 0.5) * 2 * R / nc, ky = R - (j + 0.5) * 2 * R / nc;
+        const e = L4.eg(kx, s * Ky + ky, st.g0), f = Math.min(1, e / 2.4);
+        const lv = Math.floor(f * 8) / 8; g.fillStyle = t.blue; g.globalAlpha = 0.85 * (1 - lv) * (1 - lv) + 0.03;
+        g.fillRect(ox + i * cell, oy + j * cell, cell + 0.6, cell + 0.6);
+      }
+      g.globalAlpha = 1;
+      g.save(); g.beginPath(); g.rect(ox, oy, ph, ph); g.clip();
+      g.strokeStyle = t.rust; g.lineWidth = 1.6;
+      const K = [0, s * Ky];
+      for (let mu = 0; mu < T.N; mu++) for (let i = -4; i <= 4; i++) for (let j = -4; j <= 4; j++) {
+        const qx = mu * T.K1[0] + i * L4.b1[0] + j * L4.b2[0] - K[0], qy = mu * T.K1[1] + i * L4.b1[1] + j * L4.b2[1] - K[1];
+        const along = qx * T.K2u[0] + qy * T.K2u[1], px = qx - along * T.K2u[0], py = qy - along * T.K2u[1];
+        if (Math.hypot(px, py) > R * 1.5) continue;
+        g.beginPath(); g.moveTo(X(px - 8 * T.K2u[0]), Y(py - 8 * T.K2u[1])); g.lineTo(X(px + 8 * T.K2u[0]), Y(py + 8 * T.K2u[1])); g.stroke();
+      }
+      g.restore();
+      g.strokeStyle = t.line; g.lineWidth = 1; g.strokeRect(ox + .5, oy + .5, ph - 1, ph - 1);
+      NX.dot(g, X(0), Y(0), 5, t.gold); NX.label(g, name, X(0) + 14, Y(0) - 12, { size: 12, bold: true });
+    });
+    NX.label(g, `cutting-line spacing 2/d = ${(2 / T.d).toFixed(2)} nm⁻¹; window ±${R} nm⁻¹ around each point`, w / 2, h - 10, { size: 11, color: t.muted });
+  }
+  function drawBands() {
+    const t = NX.tok; bandsP.begin().axes();
+    const ks = sb.k.map(k => k * T.Tl / Math.PI);
+    const lim = sb.E.length > 400 ? 400 : sb.E.length;
+    for (let mu = 0; mu < sb.E.length; mu++) {
+      const row = sb.E[mu]; let mn = 1e9; for (const v of row) mn = Math.min(mn, v); if (mn > 3) continue;
+      const col = mn < 0.03 ? t.rust : t.blue;
+      bandsP.line(ks, Array.from(row), { color: col, width: 1.4 }); bandsP.line(ks, Array.from(row, v => -v), { color: col, width: 1.4 });
+    }
+    bandsP.hline(0, { color: t.muted, label: "E = 0 (Fermi level, undoped)" });
+    if (!T.metallic) { const e = ed[0]; bandsP.text(0.55, 0, `gap ${(2 * e).toFixed(2)} eV`, { color: t.green, bold: true }); }
+  }
+  function drawDos() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok, d = L4.dos(T, st.g0, 2.5, 220, Math.min(3000, Math.max(800, 24000 / Math.sqrt(T.N))));
+    let mx = 0; d.e.forEach((e, i) => { if (Math.abs(e) < 2.35) mx = Math.max(mx, d.D[i]); }); dosP.setX(0, Math.max(3, mx * 1.05));
+    dosP.begin().axes();
+    dosP.clip(g => { g.fillStyle = T.metallic ? t.rust : t.blue; g.globalAlpha = .3; g.beginPath(); g.moveTo(dosP.tx(0), dosP.ty(-2.5)); d.e.forEach((e, i) => g.lineTo(dosP.tx(d.D[i]), dosP.ty(e))); g.lineTo(dosP.tx(0), dosP.ty(2.5)); g.closePath(); g.fill(); g.globalAlpha = 1; });
+    dosP.line(Array.from(d.D), d.e, { color: T.metallic ? t.rust : t.blue, width: 1.5 });
+    dosP.hline(0, { color: t.muted });
+    if (T.metallic) dosP.vline(8 / (6.626e-34 * 1.5 * L4.ACC * st.g0 / 6.582e-16 * 1e-9) * 1.602e-19 * 1e-9, { color: t.green, label: "8/hv_F" });
+  }
+  function drawGap() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; gapP.begin().axes();
+    allTubes().forEach(([d, e, met]) => gapP.point(d, met ? 0.02 : e, { color: met ? t.rust : t.blue, r: 2.6 }));
+    gapP.fn(d => 2 * L4.ACC * st.g0 / d, { color: t.muted, dash: [5, 4], width: 1.2 });
+    gapP.point(T.d, T.metallic ? 0.02 : 2 * ed[0], { color: t.gold, r: 7 });
+    gapP.text(1.6, 1.6, "E₁₁ = 2a_cc γ₀ / d", { color: t.muted });
+  }
+  NX.onRedraw(update);
+  update();
+})();
+</script>
