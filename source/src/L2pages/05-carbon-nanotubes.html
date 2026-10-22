@@ -1,43 +1,42 @@
 <!--META
-{"num":6,"slug":"carbon-nanotubes","title":"Carbon nanotubes: roll your own","ref":"Document 2, Section 5","blurb":"Choose how to roll a sheet of graphene and the nanotube you get is either a metal or a semiconductor. Pick the chiral indices (n, m), see the tube, its diameter and band gap, and whether it could make a transistor."}
+{"num":5,"slug":"carbon-nanotubes","title":"Carbon nanotubes: roll your own","ref":"Document 2, Section 6","blurb":"Roll a sheet of graphene into a tube and the way you roll it decides whether the tube is a metal or a semiconductor. Choose the roll, see the tube, and find out whether it could make a transistor."}
 -->
 <div class="lab">
   <div class="card stage">
     <div class="figs">
-      <div class="fig"><h3>Graphene sheet: chiral vector C and the strip that rolls up</h3><canvas id="sheet"></canvas></div>
-      <div class="fig"><h3>The rolled tube (front atoms dark, back atoms faint)</h3><canvas id="tube"></canvas></div>
+      <div class="fig"><h3>The graphene sheet: the arrow shows how the sheet is rolled</h3><canvas id="sheet"></canvas></div>
+      <div class="fig"><h3>The tube you get (front atoms dark, back atoms faint)</h3><canvas id="tube"></canvas></div>
     </div>
-    <div class="fig"><h3>Band gap against diameter for every semiconducting tube; your tube is highlighted</h3><canvas id="gap"></canvas></div>
+    <div class="fig adv"><h3>Band gap against diameter for every semiconducting tube; your tube is highlighted</h3><canvas id="gap"></canvas></div>
   </div>
   <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
 </div>
 <main class="notes">
 <section class="card"><h2>What you are seeing</h2>
-<p><b>The chiral vector.</b> A single-walled nanotube is a sheet of graphene rolled into a seamless cylinder. The roll is fixed by the lattice vector that wraps once around the circumference, <b>C</b> = n<b>a</b><sub>1</sub> + m<b>a</b><sub>2</sub>. The pair of integers (n, m) determines everything: diameter, twist and electronic character. Tubes with m = 0 are <b>zigzag</b>, those with n = m <b>armchair</b>, the rest <b>chiral</b>.</p>
-<span class="eq">d = (a/π)√(n² + nm + m²), &nbsp; a = 0.246 nm</span>
-<p><b>Metal or semiconductor.</b> Rolling makes the electron's wave periodic around the circumference, which allows only certain lines of states through graphene's band structure. If n − m is divisible by 3, one of those lines passes through the point where graphene's bands touch and the tube is a metal. Otherwise it is a semiconductor with a band gap that falls as 1/d — about 0.8 eV·nm / d.</p>
-<p>Two-thirds of all possible tubes are semiconducting. A transistor needs a semiconducting tube; a metallic one cannot be switched off. Growth produces a mixture, which is why sorting tubes is the central problem of nanotube electronics.</p></section>
-<section class="card"><h2>Try this in class</h2><ol>
-<li>Start at (10, 0), a zigzag tube. Semiconductor or metal? Predict from n − m, then check. Now try (9, 0).</li>
-<li>Set (10, 10), armchair. Every armchair tube is metallic. What is its diameter (1.36 nm) and its ballistic resistance?</li>
-<li>Find two semiconducting tubes with nearly the same diameter but different (n, m). Do their gaps agree with the 0.8/d rule?</li>
-<li>Pick tubes at random (the Random button) and count how many would make a working transistor out of ten.</li></ol></section>
+<p><b>Rolling up graphene.</b> Graphene is a single sheet of carbon atoms in hexagons, like chicken wire. Roll it into a seamless tube about a nanometre across and you have a carbon nanotube. The arrow on the sheet shows which two points are joined when it is rolled. Two whole numbers, (n, m), describe the arrow, and so the tube.</p>
+<p><b>Metal or semiconductor.</b> How the sheet is rolled decides how the electron waves fit around the tube. If n − m can be divided by 3, the tube conducts like a metal. Otherwise it is a semiconductor, and the thinner the tube, the bigger its band gap. About one tube in three is metallic.</p>
+<p><b>Why it matters.</b> A transistor must be able to switch off, which needs a semiconducting tube. A metallic tube cannot be switched off and would short the transistor. Every growth method makes a mix, so tubes have to be sorted (Document 3, Section 5).</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Start with the zigzag tube (10, 0). Predict from n − m whether it is a metal or a semiconductor, then check. Now try (9, 0).</li>
+<li>Try the armchair tube (10, 10). Every armchair tube is metallic. Why, from the rule?</li>
+<li>Press Random ten times and count how many tubes could make a working transistor. Is it close to two in three?</li></ol></section>
 <section class="card"><h2>Check yourself</h2>
-<details><summary>Why does the gap fall as the tube gets wider?</summary>The allowed lines through graphene's band structure are spaced by 2/d in wavevector. In a wider tube they lie closer together, so the nearest line passes closer to the point where the bands touch, and the gap shrinks in proportion to 1/d.</details>
-<details><summary>A metallic tube is ballistic over a micrometre. Is its resistance zero?</summary>No. With two conducting modes, each spin-degenerate, a perfect ballistic tube still has h/4e² ≈ 6.45 kΩ, set by the contacts. Ballistic means no resistance that grows with length.</details>
-<details><summary>Why is a chip of a billion CNTFETs so hard to make?</summary>One metallic tube shorts a transistor, so semiconducting purity must exceed about 99.9999%. Tubes must also be placed, aligned and contacted at uniform density — problems of manufacturing, not of physics.</details></section>
-<section class="card"><h2>The model behind it</h2>
-<p>Lattice vectors <b>a</b><sub>1</sub>, <b>a</b><sub>2</sub> of length a = 0.246 nm at 60°, carbon–carbon distance a<sub>cc</sub> = 0.142 nm. Chiral angle θ = arctan[√3m/(2n + m)]. Translational vector <b>T</b> = [(2m + n)<b>a</b><sub>1</sub> − (2n + m)<b>a</b><sub>2</sub>]/d<sub>R</sub>, d<sub>R</sub> = gcd(2n + m, 2m + n). Semiconducting gap from the zone-folding tight-binding model:</p>
-<span class="eq">E<sub>g</sub> ≈ 2a<sub>cc</sub>γ<sub>0</sub>/d, &nbsp; γ<sub>0</sub> ≈ 2.9 eV</span>
-<p class="caveat">Left out: curvature effects, which open a small gap (tens of meV) in non-armchair "metallic" tubes and shift the gaps of the smallest tubes; and excitonic effects in optical spectra. Diameters below about 0.6 nm are strained and unstable.</p></section>
+<details><summary>What decides whether a nanotube is a metal or a semiconductor?</summary>How the sheet is rolled, described by (n, m). If n − m is divisible by 3 it is metallic; otherwise it is a semiconductor.</details>
+<details><summary>Does a perfect metallic nanotube have zero resistance?</summary>No. Even with no collisions at all, it has about 6.5 kΩ, which comes from the contacts at its ends (Document 2, Section 5).</details>
+<details><summary>Why are nanotube chips so hard to make?</summary>One metallic tube can short a transistor, so almost every tube must be semiconducting. The tubes must also be lined up, in the right places, with good contacts.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>The roll is the chiral vector <b>C</b> = n<b>a</b><sub>1</sub> + m<b>a</b><sub>2</sub>, with |<b>a</b>| = 0.246 nm. Diameter d = (a/π)√(n² + nm + m²). Tubes with m = 0 are zigzag, those with n = m armchair, the rest chiral. The semiconducting gap, from the zone-folding model, is</p>
+<span class="eq">E<sub>g</sub> ≈ 2a<sub>cc</sub>γ<sub>0</sub>/d ≈ 0.8 eV·nm / d, &nbsp; a<sub>cc</sub> = 0.142 nm, γ<sub>0</sub> ≈ 2.9 eV</span>
+<p>"More detail" shows the gap of every semiconducting tube against diameter, the chiral angle and the size of the repeating unit.</p>
+<p class="caveat">Left out: curvature, which opens a tiny gap in non-armchair "metallic" tubes and shifts the gaps of the thinnest tubes. Tubes thinner than about 0.6 nm are too strained to be stable.</p></section>
 </main>
 <script>
 (() => {
   const a = 0.246, acc = a / Math.sqrt(3), g0 = 2.9;
   const st = { n: 10, m: 0 };
   const ctl = document.getElementById("ctl");
-  const sn = NX.slider(ctl, { id: "n", label: "n", min: 1, max: 20, step: 1, value: st.n, dp: 0, on: v => { st.n = v; if (st.m > v) { st.m = v; sm.value = v; } update(); } });
-  const sm = NX.slider(ctl, { id: "m", label: "m (0 ≤ m ≤ n)", min: 0, max: 20, step: 1, value: st.m, dp: 0, on: v => { st.m = Math.min(v, st.n); sm.value = st.m; update(); } });
+  const sn = NX.slider(ctl, { id: "n", label: "How it is rolled: n", min: 1, max: 20, step: 1, value: st.n, dp: 0, on: v => { st.n = v; if (st.m > v) { st.m = v; sm.value = v; } update(); } });
+  const sm = NX.slider(ctl, { id: "m", label: "How it is rolled: m (0 to n)", min: 0, max: 20, step: 1, value: st.m, dp: 0, on: v => { st.m = Math.min(v, st.n); sm.value = st.m; update(); } });
   const br = document.createElement("div"); br.className = "btnrow";
   br.innerHTML = '<button class="btn ghost" type="button" data-p="10,0">Zigzag (10,0)</button><button class="btn ghost" type="button" data-p="10,10">Armchair (10,10)</button><button class="btn ghost" type="button" data-p="10,5">Chiral (10,5)</button><button class="btn" type="button" id="rnd">Random</button>';
   ctl.appendChild(br);
@@ -46,6 +45,7 @@
   function set(n, m) { st.n = n; st.m = m; sn.value = n; sm.value = m; update(); }
   const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
   const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
   const gp = new NX.Plot(document.getElementById("gap"), { aspect: 3.0, x: [0.3, 2.8], y: [0, 2.6], xlabel: "Tube diameter d (nm)", ylabel: "Band gap (eV)", m: [10, 16, 40, 52] });
   const gcd = (x, y) => y ? gcd(y, x % y) : x;
   const A1 = [Math.sqrt(3) / 2 * a, a / 2], A2 = [Math.sqrt(3) / 2 * a, -a / 2], DB = [acc, 0];
@@ -59,14 +59,14 @@
     const kind = m === 0 ? "zigzag" : n === m ? "armchair" : "chiral";
     M = { n, m, Cl, d, metal, th, t1, t2, Tl, Nat, Eg, kind };
     status.className = "status " + (metal ? "bad" : "good");
-    status.textContent = metal ? `(${n},${m}) is metallic: n − m = ${n - m} is divisible by 3. As a transistor channel it could not be switched off.` :
-      `(${n},${m}) is a semiconductor with a ${Eg.toFixed(2)} eV gap: it can switch, like silicon (1.12 eV).`;
+    status.textContent = metal ? `(${n},${m}) is a metal: n − m = ${n - m} can be divided by 3. As a transistor it could not be switched off.` :
+      `(${n},${m}) is a semiconductor: n − m = ${n - m} cannot be divided by 3. Its ${Eg.toFixed(2)} eV gap lets it switch, like silicon (1.12 eV).`;
     ro.innerHTML = `<dt>Type</dt><dd>${kind}, ${metal ? "metallic" : "semiconducting"}</dd>
-      <dt>Diameter</dt><dd>${d.toFixed(3)} nm</dd><dt>Chiral angle</dt><dd>${th.toFixed(1)}°</dd>
+      <dt>Diameter</dt><dd>${d.toFixed(3)} nm</dd><dt class="adv">Chiral angle</dt><dd class="adv">${th.toFixed(1)}°</dd>
       <dt>Band gap</dt><dd>${metal ? (n === m ? "0 (exactly)" : "≈ 0 (tiny curvature gap)") : Eg.toFixed(2) + " eV"}</dd>
-      <dt>Unit cell length |T|</dt><dd>${Tl.toFixed(2)} nm</dd><dt>Atoms per unit cell</dt><dd>${Nat}</dd>
-      <dt>Ballistic resistance</dt><dd>${metal ? "h/4e² = 6.45 kΩ" : "6.45 kΩ when switched on"}</dd>
-      <dt>Max current, one tube</dt><dd>≈ 25 µA</dd>`;
+      <dt class="adv">Unit cell length |T|</dt><dd class="adv">${Tl.toFixed(2)} nm</dd><dt class="adv">Atoms per unit cell</dt><dd class="adv">${Nat}</dd>
+      <dt class="adv">Ballistic resistance</dt><dd class="adv">${metal ? "h/4e² = 6.45 kΩ" : "6.45 kΩ when switched on"}</dd>
+      <dt class="adv">Max current, one tube</dt><dd class="adv">≈ 25 µA</dd>`;
     drawSheet(); drawTube(); drawGap();
   }
   function drawSheet() {
@@ -94,9 +94,9 @@
     NX.arrow(g, X(0), Y(0), X(Ts[0]), Y(Ts[1]), t.blue, 2, 9);
     NX.arrow(g, X(0), Y(0), X(A1[0]), Y(A1[1]), t.ink, 1.6, 6); NX.arrow(g, X(0), Y(0), X(A2[0]), Y(A2[1]), t.ink, 1.6, 6);
     NX.label(g, `C = (${M.n}, ${M.m})`, X(C[0] / 2), Y(C[1] / 2) - 14, { color: t.rust, bold: true, size: 13 });
-    NX.label(g, Tshow < 1 ? "T (axis, cut short)" : "T (tube axis)", X(Ts[0] * 0.6) + 8, Y(Ts[1] * 0.6), { color: t.blue, size: 11.5, align: "left" });
+    NX.label(g, Tshow < 1 ? "along the tube (cut short)" : "along the tube", X(Ts[0] * 0.6) + 8, Y(Ts[1] * 0.6), { color: t.blue, size: 11.5, align: "left" });
     NX.label(g, "a₁", X(A1[0]) + 8, Y(A1[1]) - 6, { size: 11 }); NX.label(g, "a₂", X(A2[0]) + 8, Y(A2[1]) + 8, { size: 11 });
-    NX.label(g, "roll the shaded strip so that C closes on itself", w / 2, h - 8, { size: 11, color: t.muted });
+    NX.label(g, "roll the shaded strip so the two ends of the arrow meet", w / 2, h - 8, { size: 11, color: t.muted });
   }
   function drawTube() {
     const t = NX.tok, { g, w, h } = NX.fitCanvas(document.getElementById("tube"), 1.15);

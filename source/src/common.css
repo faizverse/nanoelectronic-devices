@@ -92,3 +92,7 @@ footer.nav small{display:block;color:var(--muted);font-weight:400}
 .foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+body:not(.more) .adv{display:none!important}
+.more-btn{font:inherit;font-size:.86rem;padding:.45rem .6rem;border-radius:6px;border:1px dashed var(--muted);background:transparent;color:var(--navy);cursor:pointer;text-align:left}
+.more-btn:hover{border-color:var(--rust);color:var(--rust)}
+body:not(.more) .fig.solo{max-width:400px;width:100%;justify-self:center}

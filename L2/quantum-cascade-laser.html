@@ -2,13 +2,13 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quantum cascade laser · KKKC6353 Lecture 2</title>
-<meta name="description" content="Electrons tumble down a staircase of quantum wells, emitting a photon at every step and tunnelling on to the next. Tune the bias until the steps line up, and choose the well width that sets the infrared colour. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="description" content="Electrons run down a staircase of quantum wells, giving out a photon at every step. Turn up the voltage until the steps line up and the laser switches on, and change the step size to change the colour. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta name="author" content="Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
 <link rel="canonical" href="https://faizverse.github.io/nanoelectronic-devices/L2/quantum-cascade-laser.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KKKC6353 Nanoelectronic Devices · Universiti Kebangsaan Malaysia">
 <meta property="og:title" content="Quantum cascade laser · KKKC6353 Lecture 2">
-<meta property="og:description" content="Electrons tumble down a staircase of quantum wells, emitting a photon at every step and tunnelling on to the next. Tune the bias until the steps line up, and choose the well width that sets the infrared colour. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta property="og:description" content="Electrons run down a staircase of quantum wells, giving out a photon at every step. Turn up the voltage until the steps line up and the laser switches on, and change the step size to change the colour. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta property="og:url" content="https://faizverse.github.io/nanoelectronic-devices/L2/quantum-cascade-laser.html">
 <meta property="og:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
 <meta property="og:image:secure_url" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
@@ -18,7 +18,7 @@
 <meta property="og:image:alt" content="KKKC6353 Nanoelectronic Devices: Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Quantum cascade laser · KKKC6353 Lecture 2">
-<meta name="twitter:description" content="Electrons tumble down a staircase of quantum wells, emitting a photon at every step and tunnelling on to the next. Tune the bias until the steps line up, and choose the well width that sets the infrared colour. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="twitter:description" content="Electrons run down a staircase of quantum wells, giving out a photon at every step. Turn up the voltage until the steps line up and the laser switches on, and change the step size to change the colour. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta name="twitter:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
 <style>:root{
@@ -115,6 +115,10 @@ footer.nav small{display:block;color:var(--muted);font-weight:400}
 .foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+body:not(.more) .adv{display:none!important}
+.more-btn{font:inherit;font-size:.86rem;padding:.45rem .6rem;border-radius:6px;border:1px dashed var(--muted);background:transparent;color:var(--navy);cursor:pointer;text-align:left}
+.more-btn:hover{border-color:var(--rust);color:var(--rust)}
+body:not(.more) .fig.solo{max-width:400px;width:100%;justify-self:center}
 </style>
 <script>/* Shared helpers for the KKKC6353 animations: theme tokens, controls, plots, animation loop. */
 const NX = (() => {
@@ -179,6 +183,14 @@ const NX = (() => {
     function set(v) { val = v; btns.forEach(([k, b]) => b.setAttribute("aria-pressed", k === v)); }
     host.appendChild(w);
     return { get value() { return val; }, set value(v) { set(v); }, el: w };
+  }
+
+  /* ---------- "More detail" toggle: shows every element marked .adv ---------- */
+  function more(host, o = {}) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "more-btn";
+    const set = on => { document.body.classList.toggle("more", on); b.setAttribute("aria-expanded", on); b.textContent = on ? "Show less detail" : "More detail: numbers and graphs"; };
+    b.onclick = () => { set(!document.body.classList.contains("more")); redrawAll(); o.on && o.on(); };
+    set(false); host.appendChild(b); return b;
   }
 
   /* ---------- canvas with DPR handling ---------- */
@@ -294,7 +306,7 @@ const NX = (() => {
   const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
   C.Vt = C.k * C.T / C.q;
 
-  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, more, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
 })();
 </script></head>
 <body>
@@ -303,13 +315,13 @@ const NX = (() => {
 <div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
 <button id="ttheme" type="button" title="Switch light/dark">Theme</button><button id="tfs" type="button" title="Show the animation full screen">Full screen</button></div></div></div>
 <div class="wrap"><header class="hero">
-    <p class="kicker">Animation 4 of 7 · Document 3, Section 6.4</p>
-    <h1>Quantum cascade laser</h1><p class="lede">Electrons tumble down a staircase of quantum wells, emitting a photon at every step and tunnelling on to the next. Tune the bias until the steps line up, and choose the well width that sets the infrared colour.</p></header>
+    <p class="kicker">Animation 4 of 7 · Document 2, Section 4</p>
+    <h1>Quantum cascade laser</h1><p class="lede">Electrons run down a staircase of quantum wells, giving out a photon at every step. Turn up the voltage until the steps line up and the laser switches on, and change the step size to change the colour.</p></header>
 <div class="lab">
   <div class="card stage">
-    <div class="fig"><h3>Conduction band of three stages under bias</h3><canvas id="band"></canvas>
-      <div class="legend"><span><i style="background:var(--ink)"></i>conduction-band edge</span><span><i style="background:var(--rust)"></i>upper laser level</span><span><i style="background:var(--blue)"></i>lower laser level</span><span><i style="background:var(--green)"></i>injector level</span><span><i class="dot" style="background:var(--electron)"></i>electrons</span></div></div>
-    <div class="figs">
+    <div class="fig"><h3>Three steps of the staircase, tilted by the applied voltage</h3><canvas id="band"></canvas>
+      <div class="legend"><span><i style="background:var(--ink)"></i>the wells and walls</span><span><i style="background:var(--rust)"></i>top of each step</span><span><i style="background:var(--blue)"></i>bottom of each step</span><span><i style="background:var(--green)"></i>the way into the next step</span><span><i class="dot" style="background:var(--electron)"></i>electrons</span></div></div>
+    <div class="figs adv">
       <div class="fig"><h3>Current and light output against voltage</h3><canvas id="liv"></canvas></div>
       <div class="fig"><h3>Alignment of the injector with the next upper level</h3><canvas id="al"></canvas></div>
     </div>
@@ -318,23 +330,22 @@ const NX = (() => {
 </div>
 <main class="notes">
 <section class="card"><h2>What you are seeing</h2>
-<p><b>Transitions inside one band.</b> An ordinary laser diode emits when an electron falls across the band gap into a hole. A quantum cascade laser uses electrons only. In each stage the electron drops from an upper to a lower <b>subband</b> of the same conduction band, and the photon energy is set by the well width, not by the material's band gap.</p>
-<p><b>Then it moves on.</b> From the lower level the electron loses energy to the lattice (an optical phonon, about 34 meV) and passes through an <b>injector</b> region. If the bias is right, the injector level lines up with the upper level of the next stage and the electron <b>tunnels</b> straight into it, ready to emit again. One electron crossing N stages can emit up to N photons.</p>
-<p><b>Alignment is everything.</b> Too little bias and the injector sits below the next upper level; too much and it sits above. Either way tunnelling is blocked, the current falls, and lasing stops. The voltage across each stage must equal the photon energy plus the energy lost in relaxation and in the injector.</p></section>
-<section class="card"><h2>Try this in class</h2><ol>
-<li>Set the bias to zero, then raise it slowly. Watch the electrons stall at the injector until the green and rust levels line up; the current then jumps and the laser turns on.</li>
-<li>Overshoot the bias. The levels pass each other, the current drops — negative differential resistance — and the light goes out.</li>
-<li>Widen the active well from 6 to 10 nm. Predict: does the wavelength get longer or shorter? Where does the operating voltage move?</li>
-<li>Double the number of stages. The design voltage doubles, but so does the light per electron. Why is that a good trade?</li></ol></section>
+<p><b>A staircase instead of a cliff.</b> In an ordinary laser an electron makes one big drop, meets a hole, gives out one photon and is gone. A quantum cascade laser uses only electrons. It is a stack of many thin quantum wells, and the applied voltage tilts the stack into a staircase.</p>
+<p><b>A photon at every step.</b> At each step the electron drops from a higher trapped level (rust) to a lower one (blue) and gives out a photon. It is not destroyed: it moves on through a thin wall, by tunnelling, into the top of the next step, and drops again. One electron can give out a photon at every step.</p>
+<p><b>The steps must line up.</b> With too little voltage the way into the next step (green) sits too low; with too much it sits too high. Only when it lines up with the top of the next step do electrons flow and the laser switch on. The step size, set by the thickness of the wells, sets the colour: infrared light, used for sensing tiny traces of gases.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Start at zero voltage and raise it slowly. Watch the electrons stall, then flow once the green and rust levels line up.</li>
+<li>Keep raising the voltage. What happens to the laser when the levels pass each other?</li>
+<li>Make the active well wider. Does the light's wavelength get longer or shorter? You will need a different voltage to line the steps up again.</li></ol></section>
 <section class="card"><h2>Check yourself</h2>
-<details><summary>Why can the same InGaAs/AlInAs materials make a 4 µm laser and a 9 µm laser?</summary>The photon energy is the spacing of two subbands, set by the well width. Changing layer thicknesses changes the wavelength without changing the materials.</details>
-<details><summary>Does "one electron, many photons" make QCLs very efficient?</summary>Not overall. Each photon is low in energy and the upper level empties quickly by phonon emission, so a high current is needed. Wall-plug efficiencies are typically 10–20%. The cascade raises the light per electron; the real advantage is the mid-infrared wavelength.</details>
-<details><summary>Why must the lower laser level empty quickly?</summary>Lasing needs more electrons in the upper level than in the lower one (population inversion). The design places the lower level one optical-phonon energy above another state, so electrons leave it within a fraction of a picosecond.</details></section>
-<section class="card"><h2>The model behind it</h2>
-<p>Each stage's active region is a single finite well (In<sub>0.53</sub>Ga<sub>0.47</sub>As in Al<sub>0.48</sub>In<sub>0.52</sub>As: <var>m</var>* = 0.043 m<sub>0</sub>, V<sub>0</sub> = 0.52 eV). The photon energy is E<sub>2</sub> − E<sub>1</sub>. The injector level sits 34 meV (one LO phonon) plus 60 meV below E<sub>1</sub>, so the stage aligns when the voltage per stage is</p>
+<details><summary>Why is a quantum cascade laser called unipolar?</summary>It uses only electrons. No holes are needed, because every drop happens between two levels that electrons occupy.</details>
+<details><summary>What sets the colour of its light?</summary>The size of each step, which is set by the thickness of the wells, not by the band gap of the material.</details>
+<details><summary>Does "one electron, many photons" make it very powerful?</summary>It gives more light for each electron, but each photon carries little energy and the laser needs a large current, so it runs hot. Its real strength is the infrared wavelengths it reaches.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Each step's active region is one finite well (In<sub>0.53</sub>Ga<sub>0.47</sub>As in Al<sub>0.48</sub>In<sub>0.52</sub>As: <var>m</var>* = 0.043 m<sub>0</sub>, V<sub>0</sub> = 0.52 eV). The photon energy is E<sub>2</sub> − E<sub>1</sub>. The electron then loses one optical-phonon energy (34 meV) plus 60 meV in the injector, so the steps line up when the voltage per stage is</p>
 <span class="eq">V<sub>stage</sub> = (E<sub>2</sub> − E<sub>1</sub>) + 0.034 + 0.060 eV</span>
-<p>Tunnelling current is a resonance of width 20 meV around alignment plus a small leakage; lasing starts when the current passes a threshold, and output above threshold is proportional to N(J − J<sub>th</sub>)(E<sub>2</sub> − E<sub>1</sub>).</p>
-<p class="caveat">Left out: real active regions use two or three coupled wells and a graded superlattice injector, so their levels and alignment field differ. Currents and output are in relative units. The staircase is drawn to scale in energy, not in layer thickness.</p></section>
+<p>The tunnelling current is a resonance 20 meV wide around alignment; the laser turns on above a threshold current. "More detail" shows the current and light against voltage, the alignment, and the number of stages.</p>
+<p class="caveat">Left out: real designs use two or three coupled wells per step and a graded injector. Currents and light are in relative units.</p></section>
 </main>
 <script>
 /* Quantum-mechanics helpers for the Lecture 2 animations (all energies in eV, lengths in nm). */
@@ -432,11 +443,13 @@ const QM = (() => {
   const st = { Lw: 7, N: 30, V: 0 };
   const m = 0.043, V0 = 0.52, ELO = 0.034, DINJ = 0.060, W = 0.020, LEAK = 0.04, JTH = 0.42;
   const ctl = document.getElementById("ctl");
-  NX.slider(ctl, { id: "Lw", label: "Active well width", min: 5, max: 13, step: 0.1, value: st.Lw, unit: "nm", dp: 1, on: v => { st.Lw = v; update(); } });
-  NX.slider(ctl, { id: "N", label: "Number of stages", min: 10, max: 60, step: 1, value: st.N, dp: 0, on: v => { st.N = v; vS.input.max = (v * 0.55).toFixed(1); update(); } });
+  NX.slider(ctl, { id: "Lw", label: "Step size: active well width", min: 5, max: 13, step: 0.1, value: st.Lw, unit: "nm", dp: 1, on: v => { st.Lw = v; update(); } });
+  const nS = NX.slider(ctl, { id: "N", label: "Number of steps (stages)", min: 10, max: 60, step: 1, value: st.N, dp: 0, on: v => { st.N = v; vS.input.max = (v * 0.55).toFixed(1); update(); } });
+  nS.el.classList.add("adv");
   const vS = NX.slider(ctl, { id: "V", label: "Applied voltage", min: 0, max: 16.5, step: 0.05, value: st.V, unit: "V", dp: 2, on: v => { st.V = v; update(); } });
   const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
   const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
   const liv = new NX.Plot(document.getElementById("liv"), { aspect: 1.25, x: [0, 16.5], y: [0, 1.2], xlabel: "Voltage (V)", ylabel: "relative units" });
   const alp = new NX.Plot(document.getElementById("al"), { aspect: 1.25, x: [0, 0.55], y: [0, 1.1], xlabel: "Voltage per stage (V)", ylabel: "Tunnelling into next stage" });
   let M = {};
@@ -451,14 +464,14 @@ const QM = (() => {
     M = { E1, E2, Eph, D, Vs, a, j, lout };
     const lasing = a > JTH;
     status.className = "status " + (lasing ? "good" : "bad");
-    status.textContent = lasing ? "Aligned: electrons tunnel into the next upper level and the cascade lases." :
-      Vs < D ? "Under-biased: the injector sits below the next upper level, so electrons stall." : "Over-biased: the injector has passed the next upper level; current falls and lasing stops.";
-    ro.innerHTML = `<dt>Photon energy E<sub>2</sub> − E<sub>1</sub></dt><dd>${(Eph * 1e3).toFixed(0)} meV</dd>
-      <dt>Wavelength</dt><dd>${(QM.h_c / Eph / 1000).toFixed(2)} µm</dd>
-      <dt>Design voltage per stage</dt><dd>${D.toFixed(3)} V</dd>
-      <dt>Design voltage, all stages</dt><dd>${(D * st.N).toFixed(2)} V</dd>
-      <dt>Voltage per stage now</dt><dd>${Vs.toFixed(3)} V</dd>
-      <dt>Alignment</dt><dd>${(100 * a).toFixed(0)} %</dd>
+    status.textContent = lasing ? "Lined up: electrons tunnel into the next step and the laser is on." :
+      Vs < D ? "Too little voltage: the way into the next step sits too low, so electrons stall." : "Too much voltage: the steps have passed each other, so the current falls and the laser goes off.";
+    ro.innerHTML = `<dt class="adv">Photon energy E<sub>2</sub> − E<sub>1</sub></dt><dd class="adv">${(Eph * 1e3).toFixed(0)} meV</dd>
+      <dt>Wavelength of the light</dt><dd>${(QM.h_c / Eph / 1000).toFixed(2)} µm (infrared)</dd>
+      <dt class="adv">Design voltage per stage</dt><dd class="adv">${D.toFixed(3)} V</dd>
+      <dt>Voltage needed to line up</dt><dd>${(D * st.N).toFixed(2)} V</dd>
+      <dt class="adv">Voltage per stage now</dt><dd class="adv">${Vs.toFixed(3)} V</dd>
+      <dt class="adv">Alignment</dt><dd class="adv">${(100 * a).toFixed(0)} %</dd>
       <dt>Photons per electron</dt><dd>${lasing ? "≈ " + (st.N * 0.7 * (1 - JTH / a)).toFixed(1) : "0"}</dd>`;
     drawPlots();
   }
@@ -538,5 +551,5 @@ const QM = (() => {
   NX.onRedraw(() => { update(); frame(0); }); update(); frame(0); NX.loop(frame);
 })();
 </script>
-<footer class="nav wrap"><a href="quantum-well-emission.html" rel="prev"><small>← Previous</small>Quantum-well emission</a><a href="quantum-dot-colour.html" rel="next" style="text-align:right"><small>Next →</small>Quantum-dot colour</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
+<footer class="nav wrap"><a href="quantum-well-emission.html" rel="prev"><small>← Previous</small>Quantum-well emission</a><a href="carbon-nanotubes.html" rel="next" style="text-align:right"><small>Next →</small>Carbon nanotubes: roll your own</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
 </body></html>

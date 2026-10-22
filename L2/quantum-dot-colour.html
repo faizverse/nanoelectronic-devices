@@ -2,13 +2,13 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quantum-dot colour · KKKC6353 Lecture 2</title>
-<meta name="description" content="The same material glows a different colour depending only on the size of the crystal. Grow the dot, change the material, and compare the Brus equation&#x27;s prediction with what is actually measured. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="description" content="Dots of the same material glow different colours depending only on their size. Grow the dot, change the material, and watch the colour of its light change. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta name="author" content="Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
 <link rel="canonical" href="https://faizverse.github.io/nanoelectronic-devices/L2/quantum-dot-colour.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KKKC6353 Nanoelectronic Devices · Universiti Kebangsaan Malaysia">
 <meta property="og:title" content="Quantum-dot colour · KKKC6353 Lecture 2">
-<meta property="og:description" content="The same material glows a different colour depending only on the size of the crystal. Grow the dot, change the material, and compare the Brus equation&#x27;s prediction with what is actually measured. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta property="og:description" content="Dots of the same material glow different colours depending only on their size. Grow the dot, change the material, and watch the colour of its light change. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta property="og:url" content="https://faizverse.github.io/nanoelectronic-devices/L2/quantum-dot-colour.html">
 <meta property="og:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
 <meta property="og:image:secure_url" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
@@ -18,7 +18,7 @@
 <meta property="og:image:alt" content="KKKC6353 Nanoelectronic Devices: Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Quantum-dot colour · KKKC6353 Lecture 2">
-<meta name="twitter:description" content="The same material glows a different colour depending only on the size of the crystal. Grow the dot, change the material, and compare the Brus equation&#x27;s prediction with what is actually measured. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="twitter:description" content="Dots of the same material glow different colours depending only on their size. Grow the dot, change the material, and watch the colour of its light change. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta name="twitter:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
 <style>:root{
@@ -115,6 +115,10 @@ footer.nav small{display:block;color:var(--muted);font-weight:400}
 .foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+body:not(.more) .adv{display:none!important}
+.more-btn{font:inherit;font-size:.86rem;padding:.45rem .6rem;border-radius:6px;border:1px dashed var(--muted);background:transparent;color:var(--navy);cursor:pointer;text-align:left}
+.more-btn:hover{border-color:var(--rust);color:var(--rust)}
+body:not(.more) .fig.solo{max-width:400px;width:100%;justify-self:center}
 </style>
 <script>/* Shared helpers for the KKKC6353 animations: theme tokens, controls, plots, animation loop. */
 const NX = (() => {
@@ -179,6 +183,14 @@ const NX = (() => {
     function set(v) { val = v; btns.forEach(([k, b]) => b.setAttribute("aria-pressed", k === v)); }
     host.appendChild(w);
     return { get value() { return val; }, set value(v) { set(v); }, el: w };
+  }
+
+  /* ---------- "More detail" toggle: shows every element marked .adv ---------- */
+  function more(host, o = {}) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "more-btn";
+    const set = on => { document.body.classList.toggle("more", on); b.setAttribute("aria-expanded", on); b.textContent = on ? "Show less detail" : "More detail: numbers and graphs"; };
+    b.onclick = () => { set(!document.body.classList.contains("more")); redrawAll(); o.on && o.on(); };
+    set(false); host.appendChild(b); return b;
   }
 
   /* ---------- canvas with DPR handling ---------- */
@@ -294,7 +306,7 @@ const NX = (() => {
   const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
   C.Vt = C.k * C.T / C.q;
 
-  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, more, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
 })();
 </script></head>
 <body>
@@ -303,37 +315,38 @@ const NX = (() => {
 <div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
 <button id="ttheme" type="button" title="Switch light/dark">Theme</button><button id="tfs" type="button" title="Show the animation full screen">Full screen</button></div></div></div>
 <div class="wrap"><header class="hero">
-    <p class="kicker">Animation 5 of 7 · Document 2, Section 6</p>
-    <h1>Quantum-dot colour</h1><p class="lede">The same material glows a different colour depending only on the size of the crystal. Grow the dot, change the material, and compare the Brus equation's prediction with what is actually measured.</p></header>
+    <p class="kicker">Animation 6 of 7 · Document 2, Section 7</p>
+    <h1>Quantum-dot colour</h1><p class="lede">Dots of the same material glow different colours depending only on their size. Grow the dot, change the material, and watch the colour of its light change.</p></header>
 <div class="lab">
   <div class="card stage">
     <div class="figs">
-      <div class="fig"><h3>The nanocrystal under ultraviolet light</h3><canvas id="dot"></canvas></div>
-      <div class="fig"><h3>Lowest exciton energy against diameter</h3><canvas id="ed"></canvas></div>
+      <div class="fig solo"><h3>The dot under ultraviolet light</h3><canvas id="dot"></canvas></div>
+      <div class="fig adv"><h3>Energy of the light against diameter</h3><canvas id="ed"></canvas></div>
     </div>
-    <div class="fig"><h3>Emission spectrum (the shaded strip is the visible range)</h3><canvas id="sp"></canvas></div>
+    <div class="fig"><h3>The light it gives out (the coloured strip is what the eye can see)</h3><canvas id="sp"></canvas></div>
   </div>
   <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
 </div>
 <main class="notes">
 <section class="card"><h2>What you are seeing</h2>
-<p><b>Size sets the colour.</b> When a dot absorbs light it makes an electron and a hole. In a crystal smaller than the natural size of their bound pair (the exciton Bohr radius), both are squeezed by the walls and gain confinement energy that grows as 1/R². Their Coulomb attraction pulls the energy down, but only as 1/R. The <b>Brus equation</b> adds the two to the bulk band gap:</p>
-<span class="eq">E(R) = E<sub>g</sub> + (ħ²π²/2R²)(1/m<sub>e</sub>* + 1/m<sub>h</sub>*) − 1.8e²/(4πε<sub>0</sub>ε<sub>r</sub>R)</span>
-<p>Small dots therefore glow blue and large dots red — <em>within one material</em>. The material's band gap is the floor: no dot can emit below it. CdSe covers the visible; PbS dots of the same size glow in the infrared.</p>
-<p><b>The Brus equation overshoots.</b> For dots a few nanometres across, the effective-mass picture breaks down: the bands are not parabolic so far from their edges and the walls are not infinitely high. The solid curve is the measured "sizing curve" used in laboratories; the dashed curve is Brus. They agree for large dots and part company below about 5 nm.</p></section>
-<section class="card"><h2>Try this in class</h2><ol>
-<li>CdSe, measured curve. Slide from 2 nm to 7 nm and call out the colours. Which size gives the green of a display (530 nm)?</li>
-<li>Switch to the Brus equation. At 3 nm it predicts violet-ultraviolet; the measured dot is green. How large is the error in eV?</li>
-<li>Change to PbS at the same 3 nm. The light is now infrared. Why, if the size is the same?</li>
-<li>Raise the size spread from 3% to 10%. The emission line broadens: why display makers care about uniform dots.</li></ol></section>
+<p><b>Size sets the colour.</b> When a dot absorbs ultraviolet light, an electron is lifted up and leaves a hole behind. The pair, called an exciton, then recombines and gives out light. In a small dot the electron and hole are squeezed tightly, like a particle in a small box, so their energies are pushed up and the light is bluer. In a large dot they are squeezed less and the light is redder.</p>
+<p><b>The material sets the range.</b> Each material has its own band gap, and no dot can glow below it. CdSe dots cover the visible colours. PbS dots of the same size glow in the infrared, which the eye cannot see.</p>
+<p><b>Why it matters.</b> Dots give pure colours in a narrow band, set by their size. That is why they are used in "QLED" and "QD-OLED" television screens, and to tag cells in different colours under a microscope.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>CdSe. Slide the diameter from 2 nm to 7 nm and call out the colours as they change.</li>
+<li>Which size gives the green of a screen, about 530 nm?</li>
+<li>Switch to PbS at the same size. Where has the light gone? Why, if the size is the same?</li>
+<li>Try InP, the cadmium-free material now used in screens. Can it make the same colours as CdSe?</li></ol></section>
 <section class="card"><h2>Check yourself</h2>
-<details><summary>Why does the confinement term win over the Coulomb term in small dots?</summary>Confinement grows as 1/R² and Coulomb attraction as 1/R. Halving the radius quadruples the first but only doubles the second, so in small enough dots confinement dominates and the energy rises.</details>
-<details><summary>Why are PbS dots in strong confinement even at 8 nm?</summary>PbS has a very light electron and hole and a large dielectric constant, so its exciton Bohr radius is about 18–20 nm. Any dot smaller than that is strongly confined.</details>
-<details><summary>Why is the emission slightly redder than the absorption peak?</summary>The emitting state relaxes slightly after absorption (the Stokes shift, a few tens of meV), so emission sits just below the first absorption peak.</details></section>
-<section class="card"><h2>The model behind it</h2>
-<p>Brus (1984) with the parameters below; "measured" curves are empirical sizing curves: CdSe and CdTe from Yu et al., <em>Chem. Mater.</em> 15, 2854 (2003); PbS from Moreels et al., <em>ACS Nano</em> 3, 3023 (2009). Emission is drawn 30 meV below the first exciton, with a width set by the size spread through dE/dd.</p>
+<details><summary>Why does a smaller dot glow bluer?</summary>The smaller box squeezes the electron and hole more, pushing their energies up. More energy means bluer light.</details>
+<details><summary>Why does a 3 nm PbS dot glow in the infrared when a 3 nm CdSe dot glows green?</summary>PbS has a much smaller band gap. Size only sets the colour within the range the material allows.</details>
+<details><summary>Why do display makers want all their dots the same size?</summary>Dots of different sizes glow different colours, so a mix of sizes blurs the colour. "More detail" has a slider for the size spread.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>The <b>Brus equation</b> (1984) adds the trapping energy of the electron and hole, which grows as 1/R², and subtracts their attraction, which grows as 1/R:</p>
+<span class="eq">E(R) = E<sub>g</sub> + (ħ²π²/2R²)(1/m<sub>e</sub>* + 1/m<sub>h</sub>*) − 1.8e²/(4πε<sub>0</sub>ε<sub>r</sub>R)</span>
+<p>It gets the trend right but overestimates the energy of small dots, so by default the page uses measured "sizing curves": CdSe and CdTe from Yu et al., <em>Chem. Mater.</em> 15, 2854 (2003); PbS from Moreels et al., <em>ACS Nano</em> 3, 3023 (2009). "More detail" lets you switch to Brus and compare. The light is drawn 30 meV below the first absorption.</p>
 <p>CdSe: E<sub>g</sub> 1.74 eV, m<sub>e</sub>* 0.13, m<sub>h</sub>* 0.45, ε<sub>r</sub> 10.6. CdTe: 1.50, 0.10, 0.40, 10.2. InP: 1.34, 0.077, 0.60, 12.5. PbS: 0.41, 0.085, 0.085, 17.2.</p>
-<p class="caveat">Left out: fine structure, surface and ligand effects, and non-parabolic bands (which is why Brus overshoots). InP has no simple published sizing curve, so only Brus is shown for it. Colours on screen are approximate.</p></section>
+<p class="caveat">Left out: surface and ligand effects and fine structure. InP has no simple published sizing curve, so only Brus is used for it. Colours on screen are approximate.</p></section>
 </main>
 <script>
 /* Quantum-mechanics helpers for the Lecture 2 animations (all energies in eV, lengths in nm). */
@@ -442,11 +455,12 @@ const QM = (() => {
   const st = { mat: "CdSe", d: 3.0, model: "meas", spread: 0.05 };
   const ctl = document.getElementById("ctl");
   NX.seg(ctl, { label: "Material", value: st.mat, options: Object.keys(MAT).map(k => [k, k]), on: v => { st.mat = v; if (!MAT[v].meas) { st.model = "brus"; mS.value = "brus"; } update(); } });
-  NX.slider(ctl, { id: "d", label: "Dot diameter", min: 1.8, max: 10, step: 0.05, value: st.d, unit: "nm", dp: 2, on: v => { st.d = v; update(); } });
-  const mS = NX.seg(ctl, { label: "Energy from", value: st.model, options: [["meas", "Measured curve"], ["brus", "Brus equation"]], on: v => { st.model = v; update(); } });
-  NX.slider(ctl, { id: "sp", label: "Size spread (1σ)", min: 0.02, max: 0.15, step: 0.005, value: st.spread, fmt: v => (v * 100).toFixed(1) + " %", on: v => { st.spread = v; update(); } });
+  NX.slider(ctl, { id: "d", label: "Dot size (diameter)", min: 1.8, max: 10, step: 0.05, value: st.d, unit: "nm", dp: 2, on: v => { st.d = v; update(); } });
+  const mS = NX.seg(ctl, { label: "Colour from", value: st.model, options: [["meas", "Measurements"], ["brus", "Brus equation"]], on: v => { st.model = v; update(); } }); mS.el.classList.add("adv");
+  NX.slider(ctl, { id: "sp", label: "Spread in dot sizes", min: 0.02, max: 0.15, step: 0.005, value: st.spread, fmt: v => (v * 100).toFixed(1) + " %", on: v => { st.spread = v; update(); } }).el.classList.add("adv");
   const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
   const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
   const ed = new NX.Plot(document.getElementById("ed"), { aspect: 1.15, x: [1.5, 10], y: [0.3, 3.6], xlabel: "Diameter (nm)", ylabel: "Exciton energy (eV)" });
   const sp = new NX.Plot(document.getElementById("sp"), { aspect: 3.2, x: [350, 2200], y: [0, 1.15], xlabel: "Wavelength (nm)", ylabel: "", m: [10, 16, 40, 30] });
   const parts = (mt, d) => { const R = d / 2, conf = QM.HB2_2M0 * Math.PI * Math.PI / (R * R) * (1 / mt.me + 1 / mt.mh), coul = 1.8 * 1.44 / (mt.er * R); return { conf, coul, brus: mt.Eg + conf - coul }; };
@@ -462,16 +476,16 @@ const QM = (() => {
     const mu = 1 / (1 / mt.me + 1 / mt.mh), aB = mt.er / mu * 0.0529;
     M = { mt, P, E, Eem, wl, sigE, aB, meas, outOfRange };
     status.className = "status " + (outOfRange ? "bad" : "");
-    status.innerHTML = outOfRange ? "This size is outside the measured curve; showing the Brus estimate." :
-      `<span style="display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;background:${QM.wlColor(wl)}"></span>Emits ${QM.band(wl)} light at about ${wl.toFixed(0)} nm.`;
-    ro.innerHTML = `<dt>Bulk band gap</dt><dd>${mt.Eg.toFixed(2)} eV</dd>
-      <dt>+ Confinement</dt><dd>${P.conf.toFixed(3)} eV</dd>
-      <dt>− Coulomb</dt><dd>${P.coul.toFixed(3)} eV</dd>
-      <dt>Brus total</dt><dd>${P.brus.toFixed(3)} eV</dd>
-      <dt>Measured</dt><dd>${isFinite(meas) ? meas.toFixed(3) + " eV" : "—"}</dd>
-      <dt>Emission peak</dt><dd>${wl.toFixed(0)} nm</dd>
-      <dt>Linewidth (FWHM)</dt><dd>${(2.355 * M.sigE * 1e3).toFixed(0)} meV</dd>
-      <dt>Bohr radius a<sub>B</sub></dt><dd>${aB.toFixed(1)} nm</dd><dt>Regime</dt><dd>${st.d / 2 < aB ? "strong" : "weak"} confinement</dd>`;
+    status.innerHTML = outOfRange ? "This size is outside the measured range; showing the Brus estimate." :
+      `<span style="display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;background:${QM.wlColor(wl)}"></span>Glows ${QM.band(wl)} at about ${wl.toFixed(0)} nm.`;
+    ro.innerHTML = `<dt>Colour of the light</dt><dd>${wl.toFixed(0)} nm</dd>
+      <dt>Band gap of the material</dt><dd>${mt.Eg.toFixed(2)} eV</dd>
+      <dt class="adv">+ Confinement</dt><dd class="adv">${P.conf.toFixed(3)} eV</dd>
+      <dt class="adv">− Coulomb</dt><dd class="adv">${P.coul.toFixed(3)} eV</dd>
+      <dt class="adv">Brus total</dt><dd class="adv">${P.brus.toFixed(3)} eV</dd>
+      <dt class="adv">Measured</dt><dd class="adv">${isFinite(meas) ? meas.toFixed(3) + " eV" : "—"}</dd>
+      <dt class="adv">Linewidth (FWHM)</dt><dd class="adv">${(2.355 * M.sigE * 1e3).toFixed(0)} meV</dd>
+      <dt class="adv">Bohr radius a<sub>B</sub></dt><dd class="adv">${aB.toFixed(1)} nm</dd><dt class="adv">Regime</dt><dd class="adv">${st.d / 2 < aB ? "strong" : "weak"} confinement</dd>`;
     draw();
   }
   function draw() {
@@ -509,5 +523,5 @@ const QM = (() => {
   NX.onRedraw(update); update();
 })();
 </script>
-<footer class="nav wrap"><a href="quantum-cascade-laser.html" rel="prev"><small>← Previous</small>Quantum cascade laser</a><a href="carbon-nanotubes.html" rel="next" style="text-align:right"><small>Next →</small>Carbon nanotubes: roll your own</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
+<footer class="nav wrap"><a href="carbon-nanotubes.html" rel="prev"><small>← Previous</small>Carbon nanotubes: roll your own</a><a href="quantum-dot-growth.html" rel="next" style="text-align:right"><small>Next →</small>Growing quantum dots</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
 </body></html>

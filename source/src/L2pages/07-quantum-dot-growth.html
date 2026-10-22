@@ -1,10 +1,10 @@
 <!--META
-{"num":7,"slug":"quantum-dot-growth","title":"Growing quantum dots","ref":"Document 3, Sections 3–4","blurb":"Two ways nature builds quantum dots for us: a strained film that breaks up into islands, and nanocrystals that nucleate and grow in a hot flask. Deposit, inject, watch and quench."}
+{"num":7,"slug":"quantum-dot-growth","title":"Growing quantum dots","ref":"Document 3, Sections 3–4","blurb":"Two ways quantum dots build themselves: a squeezed film that breaks up into islands, and tiny crystals that seed and grow in a hot flask. Add material, inject, watch the dots grow, and stop them at the colour you want."}
 -->
 <div class="lab">
   <div class="card stage">
     <div class="fig"><h3 id="t0">Growth</h3><canvas id="pic"></canvas></div>
-    <div class="figs">
+    <div class="figs adv">
       <div class="fig"><h3 id="t1"></h3><canvas id="pa"></canvas></div>
       <div class="fig"><h3 id="t2"></h3><canvas id="pb"></canvas></div>
     </div>
@@ -13,22 +13,22 @@
 </div>
 <main class="notes">
 <section class="card"><h2>What you are seeing</h2>
-<p><b>Self-assembled (Stranski–Krastanov) dots.</b> Deposit InAs on GaAs, atom layer by atom layer. InAs's natural lattice is 7% larger, so the film grows compressed to fit the substrate. Strain energy builds with each layer. At a critical thickness — about <b>1.7 monolayers</b> for InAs on GaAs — it becomes cheaper for further material to gather into islands whose tops can relax. The islands, a few nanometres tall, are quantum dots; the thin film left underneath is the <b>wetting layer</b>. A smaller mismatch postpones the transition: Ge on Si (4%) needs about 3 monolayers.</p>
-<p><b>Colloidal (hot-injection) dots.</b> Inject precursors into a hot solvent and the dissolved "monomer" is suddenly far above its solubility. Once it passes a threshold, nuclei form in a burst, consuming monomer so fast that the concentration falls back below the threshold within moments: no new nuclei form after that, so all the dots are born together (LaMer). They then grow. While monomer is plentiful, small dots grow faster than large ones and the sizes <b>focus</b>. When monomer runs low, small dots dissolve to feed large ones (<b>Ostwald ripening</b>) and the sizes spread again — so growth is stopped by cooling, or quenching, at the right moment.</p></section>
-<section class="card"><h2>Try this in class</h2><ol>
-<li>Self-assembled, InAs/GaAs. Slowly raise the coverage. Ask the class to call out when islands appear (1.7 ML). What happens to the wetting layer after that?</li>
-<li>Switch to Ge/Si and repeat. Why does the transition come later?</li>
-<li>Colloidal. Press Inject and watch the concentration plot: a sharp burst of nucleation, then growth only. Watch the spread readout fall, then rise. Quench when it is smallest.</li>
-<li>Inject again with more precursor. Do you get more dots or bigger dots? Then raise the growth temperature: what changes?</li></ol></section>
+<p><b>Self-assembled dots.</b> Atoms of InAs land on a GaAs crystal, one layer at a time. InAs atoms are naturally a little further apart (about 7%), so the film is squeezed to fit, like a carpet slightly too big for its room. The first layer lies flat: the <b>wetting layer</b>. After about 1.7 layers of atoms the squeeze is too much, and new material bunches into small islands where it can spread out. The islands are quantum dots. No pattern is drawn: the dots build themselves.</p>
+<p><b>Dots from a flask.</b> Inject the ingredients into a hot liquid and a sudden burst of tiny seed crystals forms, all at the same moment. After that no new seeds form; the existing ones just grow. Because they all started together, they stay nearly the same size, and as they grow their colour moves from blue towards red. Cooling the flask ("Quench") stops the growth at the colour you want.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Self-assembled. Slowly add material. Call out when the islands appear (about 1.7 layers).</li>
+<li>Keep adding. Does the wetting layer get any thicker after the islands appear?</li>
+<li>Switch to the flask and press Inject. Watch the dots grow and change colour.</li>
+<li>Press Quench when the dots glow green. Then inject again and stop at red. Which took longer?</li></ol></section>
 <section class="card"><h2>Check yourself</h2>
-<details><summary>Is Stranski–Krastanov growth top-down or bottom-up?</summary>Bottom-up. Nothing is patterned or removed; the atoms arrange themselves into islands because that lowers the strain energy.</details>
-<details><summary>Why must nucleation be short for uniform colloidal dots?</summary>Dots that nucleate later have less time to grow and end up smaller. A single short burst gives every dot the same start, and the growth stage can then narrow the distribution further.</details>
-<details><summary>Why do small dots dissolve during Ostwald ripening?</summary>Atoms on a strongly curved surface are less tightly bound, so a small dot's equilibrium solubility is higher (the Gibbs–Thomson effect). When the monomer concentration falls below that, small dots lose atoms to the solution while larger ones still gain them.</details></section>
-<section class="card"><h2>The model behind it</h2>
-<p><b>SK:</b> the wetting layer grows to a critical thickness h<sub>c</sub> ≈ 12.2/ε ML (ε, the mismatch in per cent; this gives 1.7 ML for InAs/GaAs, 2.9 ML for Ge/Si); further material goes into islands with a fixed aspect ratio. <b>Colloidal:</b> nucleation rate J ∝ exp(−B/ln²S) for supersaturation S; diffusion-limited growth with the Gibbs–Thomson correction,</p>
-<span class="eq">dr/dt = G (S − e<sup>α/r</sup>) / r, &nbsp; with S falling as monomer is consumed</span>
-<p>Colours use the CdSe sizing curve of Animation 5.</p>
-<p class="caveat">Both models are qualitative. Island density, size and shape depend on temperature and growth rate in ways not modelled, and the colloidal time scale is illustrative: real syntheses take seconds to tens of minutes.</p></section>
+<details><summary>Is self-assembled (Stranski–Krastanov) growth top-down or bottom-up?</summary>Bottom-up. Nothing is drawn or removed: the atoms gather into islands by themselves, because that relieves the squeeze.</details>
+<details><summary>Why do the flask-grown dots come out nearly the same size?</summary>They are all seeded in one short burst and then grow together, so they all have the same time to grow.</details>
+<details><summary>How do you get red dots instead of green from the same recipe?</summary>Let them grow longer before stopping the growth. Bigger dots glow redder.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p><b>Self-assembled:</b> the wetting layer grows to a critical thickness h<sub>c</sub> ≈ 12.2/ε layers (ε, the mismatch in per cent), which gives 1.7 for InAs/GaAs and 2.9 for Ge/Si; further material goes into islands. <b>Flask:</b> seeds form at a rate J ∝ exp(−B/ln²S), where S is how far the dissolved building blocks exceed their saturation level, and each dot grows as</p>
+<span class="eq">dr/dt = G (S − e<sup>α/r</sup>) / r, &nbsp; with S falling as material is used up</span>
+<p>Small dots dissolve when S runs low (Ostwald ripening), so the size spread first narrows, then widens. "More detail" shows the materials, the ingredient amount and temperature, and graphs of where the material goes, the supersaturation and the size distribution. Colours use the CdSe sizing curve of Animation 6.</p>
+<p class="caveat">Both models are qualitative. Island size and density depend on temperature and growth rate in ways not modelled, and the flask time scale is illustrative.</p></section>
 </main>
 <script>
 /*INCLUDE qm.js*/
@@ -37,26 +37,27 @@
   const st = { mode: "sk", sys: "InAs/GaAs", cov: 1.0, C0: 5, T: 280 };
   const ctl = document.getElementById("ctl");
   const skBox = document.createElement("div"), coBox = document.createElement("div");
-  NX.seg(ctl, { label: "Method", value: st.mode, options: [["sk", "Self-assembled (SK)"], ["col", "Colloidal"]], on: v => { st.mode = v; layout(); } });
+  NX.seg(ctl, { label: "Method", value: st.mode, options: [["sk", "Self-assembled on a crystal"], ["col", "In a hot flask"]], on: v => { st.mode = v; layout(); } });
   ctl.appendChild(skBox); ctl.appendChild(coBox);
-  NX.seg(skBox, { label: "Materials", value: st.sys, options: Object.keys(SYS).map(k => [k, k]), on: v => { st.sys = v; draw(); } });
-  const sCov = NX.slider(skBox, { id: "cov", label: "Material deposited", min: 0, max: 4, step: 0.02, value: st.cov, unit: "ML", dp: 2, on: v => { st.cov = v; draw(); } });
-  NX.slider(coBox, { id: "C0", label: "Precursor amount", min: 4.5, max: 7, step: 0.1, value: st.C0, dp: 1, hint: "initial supersaturation S₀ at injection", on: v => { st.C0 = v; } });
-  NX.slider(coBox, { id: "T", label: "Growth temperature", min: 240, max: 320, step: 1, value: st.T, unit: "°C", dp: 0, on: v => { st.T = v; } });
-  const bb = document.createElement("div"); bb.className = "btnrow"; bb.innerHTML = '<button class="btn" type="button" id="inj">Inject</button><button class="btn ghost" type="button" id="qn">Quench</button>'; coBox.appendChild(bb);
+  NX.seg(skBox, { label: "Materials", value: st.sys, options: Object.keys(SYS).map(k => [k, k]), on: v => { st.sys = v; draw(); } }).el.classList.add("adv");
+  const sCov = NX.slider(skBox, { id: "cov", label: "Material added", min: 0, max: 4, step: 0.02, value: st.cov, fmt: v => v.toFixed(2) + " layers", on: v => { st.cov = v; draw(); } });
+  NX.slider(coBox, { id: "C0", label: "Amount of ingredients", min: 4.5, max: 7, step: 0.1, value: st.C0, dp: 1, hint: "initial supersaturation S₀ at injection", on: v => { st.C0 = v; } }).el.classList.add("adv");
+  NX.slider(coBox, { id: "T", label: "Growth temperature", min: 240, max: 320, step: 1, value: st.T, unit: "°C", dp: 0, on: v => { st.T = v; } }).el.classList.add("adv");
+  const bb = document.createElement("div"); bb.className = "btnrow"; bb.innerHTML = '<button class="btn" type="button" id="inj">Inject</button><button class="btn ghost" type="button" id="qn">Quench (stop growth)</button>'; coBox.appendChild(bb);
   const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
   const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
   const pa = new NX.Plot(document.getElementById("pa"), { aspect: 1.25, x: [0, 4], y: [0, 4], xlabel: "", ylabel: "" });
   const pb = new NX.Plot(document.getElementById("pb"), { aspect: 1.25, x: [0, 4], y: [0, 4], xlabel: "", ylabel: "" });
   const T0 = document.getElementById("t0"), T1 = document.getElementById("t1"), T2 = document.getElementById("t2");
   function layout() {
     skBox.hidden = st.mode !== "sk"; coBox.hidden = st.mode !== "col";
     if (st.mode === "sk") {
-      T0.textContent = "Side view of the growing surface (one ball = one atomic site)"; T1.textContent = "Where the deposited material goes"; T2.textContent = "Critical thickness against lattice mismatch";
+      T0.textContent = "Side view of the growing surface (each ball is one atom)"; T1.textContent = "Where the deposited material goes"; T2.textContent = "Critical thickness against lattice mismatch";
       pa.o.x = [0, 4]; pa.o.y = [0, 4]; pa.o.xlabel = "Deposited (ML)"; pa.o.ylabel = "Thickness (ML equivalent)"; pa.o.ylog = false;
       pb.o.x = [1, 8]; pb.o.y = [0, 8]; pb.o.xlabel = "Lattice mismatch (%)"; pb.o.ylabel = "Critical thickness (ML)";
     } else {
-      T0.textContent = "Nanocrystals in the flask (size and colour to scale with each other)"; T1.textContent = "Monomer supersaturation S against time"; T2.textContent = "Size distribution";
+      T0.textContent = "Dots in the flask, drawn with their size and the colour they glow"; T1.textContent = "Monomer supersaturation S against time"; T2.textContent = "Size distribution";
       pa.o.x = [0, 30]; pa.o.y = [0, 8.5]; pa.o.xlabel = "Time (min, illustrative)"; pa.o.ylabel = "Supersaturation S";
       pb.o.x = [1, 9]; pb.o.y = [0, 1.1]; pb.o.xlabel = "Diameter (nm)"; pb.o.ylabel = "Fraction (normalised)";
       if (!sim.parts.length && sim.t === 0) inject();
@@ -89,10 +90,10 @@
     if (wl > 0) NX.label(g, "wetting layer", w - 58, y0 - 4 * r, { size: 11, color: t.ink });
     if (isl > 0) NX.label(g, "islands = quantum dots", w / 2, 14, { size: 12, color: s.isl, bold: true });
     status.className = "status " + (isl > 0 ? "good" : "");
-    status.textContent = isl > 0 ? `Past the critical thickness (${hc.toFixed(1)} ML): new material gathers into strained islands.` : `Below the critical thickness (${hc.toFixed(1)} ML): the film grows flat, strained to fit the substrate.`;
-    ro.innerHTML = `<dt>Lattice mismatch</dt><dd>${s.eps.toFixed(1)} %</dd><dt>Critical thickness</dt><dd>${hc.toFixed(2)} ML</dd>
-      <dt>Wetting layer</dt><dd>${wl.toFixed(2)} ML (${(wl * 0.30).toFixed(2)} nm)</dd><dt>In islands</dt><dd>${isl.toFixed(2)} ML equivalent</dd>
-      <dt>Typical InAs dot</dt><dd>≈ 20 nm wide, 5 nm tall</dd><dt>Typical density</dt><dd>10⁹–10¹¹ cm⁻²</dd>`;
+    status.textContent = isl > 0 ? `Past ${hc.toFixed(1)} layers: new material bunches up into islands, the quantum dots.` : `Below ${hc.toFixed(1)} layers: the film grows flat, squeezed to fit the crystal underneath.`;
+    ro.innerHTML = `<dt class="adv">Lattice mismatch</dt><dd class="adv">${s.eps.toFixed(1)} %</dd><dt>Islands appear after</dt><dd>${hc.toFixed(2)} layers</dd>
+      <dt>Wetting layer</dt><dd>${wl.toFixed(2)} layers (${(wl * 0.30).toFixed(2)} nm)</dd><dt>In islands</dt><dd>${isl.toFixed(2)} layers' worth</dd>
+      <dt>Typical InAs dot</dt><dd>≈ 20 nm wide, 5 nm tall</dd><dt class="adv">Typical density</dt><dd class="adv">10⁹–10¹¹ cm⁻²</dd>`;
     pa.begin().axes();
     pa.fn(c => Math.min(c, hc), { color: t.gold, width: 2.4 }); pa.fn(c => Math.max(0, c - hc), { color: t.rust, width: 2.4 });
     pa.vline(hc, { label: "h_c", color: t.muted }); pa.point(st.cov, wl, { color: t.gold }); pa.point(st.cov, isl, { color: t.rust });
@@ -132,13 +133,13 @@
     show.forEach(p => { const x = p.x * (w - 24) + 12, y = 26 + p.y * (h - 40); g.fillStyle = QM.wlColor(lamY(2 * p.r)); g.beginPath(); g.arc(x, y, Math.max(1.2, p.r * sc), 0, 7); g.fill(); });
     const ds = P.map(p => 2 * p.r), mean = n ? ds.reduce((a, b) => a + b, 0) / n : NaN, sd = n ? Math.sqrt(ds.reduce((a, b) => a + (b - mean) ** 2, 0) / n) : NaN;
     NX.label(g, sim.running ? `growing · t = ${sim.t.toFixed(1)} min` : sim.quenched ? `quenched at ${sim.t.toFixed(1)} min` : n ? "finished" : "press Inject", w / 2, 14, { color: "#e6ebf1", size: 12.5, bold: true });
-    const stage = !n ? "" : sim.J > 5 ? "Nucleation burst: new dots are forming." : (sd / mean < (sim.minSpread || 1) + 0.002 ? "Growth with size focusing: the spread is narrowing." : "Ripening: monomer is scarce, small dots dissolve and the spread grows.");
+    const stage = !n ? "" : sim.J > 5 ? "Seeding: a burst of new dots is forming." : (sd / mean < (sim.minSpread || 1) + 0.002 ? "Growing together: the dots are getting bigger and more even in size." : "Growing too long: ingredients are running out, small dots dissolve and the sizes spread out. Quench soon.");
     if (n && sim.J <= 5 && sim.running) sim.minSpread = Math.min(sim.minSpread || 1, sd / mean);
     status.className = "status " + (sim.J > 5 ? "" : sd / mean <= (sim.minSpread || 1) + 0.002 ? "good" : "bad");
-    status.textContent = sim.quenched ? `Quenched: growth stopped with a ${(100 * sd / mean).toFixed(1)} % size spread.` : (stage || "Press Inject to start a synthesis.");
-    ro.innerHTML = `<dt>Supersaturation S</dt><dd>${sim.S.toFixed(2)}</dd><dt>Dots formed (simulated)</dt><dd>${n}</dd>
-      <dt>Mean diameter</dt><dd>${isFinite(mean) ? mean.toFixed(2) + " nm" : "—"}</dd><dt>Size spread σ/d</dt><dd>${isFinite(sd) ? (100 * sd / mean).toFixed(1) + " %" : "—"}</dd>
-      <dt>Emission (CdSe)</dt><dd>${isFinite(mean) ? lamY(mean).toFixed(0) + " nm" : "—"}</dd>`;
+    status.textContent = sim.quenched ? `Stopped: the dots are about ${mean.toFixed(1)} nm across, within ${(100 * sd / mean).toFixed(0)} % of each other.` : (stage || "Press Inject to start.");
+    ro.innerHTML = `<dt class="adv">Supersaturation S</dt><dd class="adv">${sim.S.toFixed(2)}</dd><dt class="adv">Dots formed (simulated)</dt><dd class="adv">${n}</dd>
+      <dt>Average size</dt><dd>${isFinite(mean) ? mean.toFixed(2) + " nm" : "—"}</dd><dt class="adv">Size spread σ/d</dt><dd class="adv">${isFinite(sd) ? (100 * sd / mean).toFixed(1) + " %" : "—"}</dd>
+      <dt>Colour of the light (CdSe)</dt><dd>${isFinite(mean) ? lamY(mean).toFixed(0) + " nm" : "—"}</dd>`;
     pa.begin().axes();
     pa.hline(4.1, { label: "nucleation threshold", color: t.rust }); pa.hline(1, { label: "solubility", color: t.muted });
     if (sim.hist.length > 1) pa.line(sim.hist.map(q => q[0]), sim.hist.map(q => q[1]), { color: t.ink, width: 2.2 });
