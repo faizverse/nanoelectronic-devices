@@ -18,7 +18,7 @@
 <p><b>Smaller box, bigger energies.</b> Squeeze the box and every wave must wiggle more tightly, so every energy goes up: halve the width and the energies go up four times. A lighter particle also has more widely spaced energies.</p>
 <p><b>It never sits still.</b> There is no n = 0, so the lowest energy is never zero.</p>
 <p><b>Watch it move.</b> In "the wave" view each wave vibrates up and down like a plucked string, and higher energies vibrate faster. In the "where it is likely" view nothing moves: the chance of finding the electron at each place stays the same. The energy scale and the 40 nm window are fixed, so as you move the box width you see the box itself narrow or widen and the energies climb or fall.</p>
-<p><b>Real walls leak.</b> Choose "Real (leaky)" walls and the wave spills a little way into the walls. The energies drop slightly, and a shallow box can only hold a few of them.</p></section>
+<p><b>Real walls leak.</b> Choose "Real (leaky)" walls and the wave spills a little way into the walls. The energies drop (a 10 nm GaAs box goes from 56 to 32 meV), and a shallow box can only hold a few of them.</p></section>
 <section class="card"><h2>Try this</h2><ol>
 <li>Start with perfect walls and a 10 nm box. Note the lowest energy. Predict what happens if you halve the width to 5 nm, then try it (it goes up four times).</li>
 <li>Switch from "the wave" to "where it is likely". In the n = 2 state, where is the electron never found?</li>
@@ -114,7 +114,7 @@
       path(); g.strokeStyle = col; g.lineWidth = 2; g.stroke();
       if (Math.abs(lastY - Ey) >= 14) { NX.label(g, `n=${j + 1}  ${eLab(s.E)}`, X(xR) + 6, Ey, { align: "left", size: 12, color: col, bold: true }); lastY = Ey; }
     });
-    if (above.length && !fin) NX.label(g, narrow ? `n ≥ ${vis.length + 1}: above the view` : `n = ${vis.length + 1} and higher are above the top of this view`, X(xR) - 6, pt + 9, { align: "right", size: 11, color: t.muted });
+    if (above.length && !fin) NX.label(g, `n ≥ ${vis.length + 1}: above the view`, X(xR) - 6, pt + 9, { align: "right", size: 11, color: t.muted });
     if (fin) NX.label(g, st.V0 < Etop ? `top of the walls: ${(st.V0 * 1e3).toFixed(0)} meV` : `walls continue up to ${(st.V0 * 1e3).toFixed(0)} meV`, X(xL) + 6, Math.max(pt + 8, Yw - 9), { align: "left", size: 11.5, color: t.muted });
     if (fin && S.length > vis.length) NX.label(g, `${S.length - vis.length} more allowed energies not drawn`, X(xR) - 6, pt + 9, { align: "right", size: 11, color: t.muted });
     // box width marker
