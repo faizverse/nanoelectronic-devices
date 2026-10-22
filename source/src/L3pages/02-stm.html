@@ -1,0 +1,187 @@
+<!--META
+{"num":2,"slug":"scanning-tunnelling-microscope","title":"Scanning tunnelling microscope","ref":"Document 1, Section 5","blurb":"A sharp tip scans a nanometre above a surface while electrons tunnel across the gap. Because the current changes about ten times for every tenth of a nanometre, the tip can trace single atoms. Try both scanning modes, and crash the tip into a step."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Side view, drawn to scale: the tip, the gap and the surface atoms</h3><canvas id="side"></canvas>
+      <div class="legend"><span><i style="background:#8a6d3b"></i>tip</span><span><i class="dot" style="background:var(--electron)"></i>tunnelling electrons</span><span><i style="background:var(--violet)"></i>surface atoms (their electron clouds)</span><span><i style="background:var(--rust)"></i>path of the tip</span></div></div>
+    <div class="fig"><h3 id="trh">What the microscope records along this line</h3><canvas id="trace"></canvas></div>
+    <div class="figs adv">
+      <div class="fig"><h3>The image, built up line by line</h3><canvas id="img"></canvas></div>
+      <div class="fig"><h3>Tunnelling current against gap</h3><canvas id="ig"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>A gap electrons cannot cross, except by tunnelling.</b> The tip hovers about a nanometre above the surface. Electrons tunnel across the gap (blue dots), giving a current of about a nanoampere.</p>
+<p><b>Extremely sensitive to distance.</b> The tunnelling current falls by about ten times for every tenth of a nanometre the gap widens. So the current "feels" every bump of the surface, even single atoms only a few hundredths of a nanometre high.</p>
+<p><b>Constant current</b> (the usual mode): a feedback circuit moves the tip up and down to keep the current fixed, so the tip follows the bumps. Its height is the image. <b>Constant height</b>: the tip stays level and the current itself is recorded. It is faster, but the tip can crash into a step.</p>
+<p><b>Scan too fast</b> and the feedback cannot keep up: the image smears.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>In constant-current mode, watch the tip follow each atom. How high are the bumps it traces?</li>
+<li>Change the gap setting from 0.7 to 0.6 nm. By how much does the current change? (Open More detail.)</li>
+<li>Choose the surface with a step and switch to constant height. Let the tip reach the step: how much does the current jump? Now set the gap to 0.45 nm and try again.</li>
+<li>Turn the scan speed up to the maximum in constant-current mode. What happens to the traced atoms?</li>
+<li>In More detail, watch the image build up. Can you find the missing atom and the extra atom?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why can an STM see bumps only a few hundredths of a nanometre high?</summary>The tunnelling current depends exponentially on the gap: about ten times per 0.1 nm. A bump of 0.03 nm changes the current by roughly a factor of two, which is easy to measure, so the feedback reacts to it.</details>
+<details><summary>Why is constant-current mode safer than constant-height mode?</summary>In constant-current mode the tip backs away whenever the surface rises, so it never touches it. In constant-height mode the tip stays level, and a raised step or a large particle can hit it.</details>
+<details><summary>Why does an STM need a conducting surface?</summary>It measures a current of electrons tunnelling between tip and surface. An insulator has no free electrons to supply or receive that current. The atomic force microscope, which senses force instead, can image insulators.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Current I = I<sub>0</sub> e<sup>−2κd</sup>, with κ = √(2mφ)/ħ set by the work function φ and d the local gap. I<sub>0</sub> is chosen so that 1 nA flows at the set gap over the average surface. The surface is a hexagonal lattice with the spacing of graphite (0.246 nm) and a corrugation of 0.04 nm, with an optional atomic step (0.2 nm), a missing atom and an extra atom. In constant-current mode the tip height follows the gap set-point through a feedback loop with a 0.08 s response time. In constant-height mode the tip is taken to touch the surface when the gap falls below 0.3 nm, where the electron clouds of tip and surface atoms overlap.</p>
+<p class="caveat">Left out: the shape of the tip, the detailed electron states of the surface (real STM images map electron density, not just atom positions), thermal drift and vibration. The time scale is slowed down for viewing.</p></section>
+</main>
+<script>
+/*INCLUDE tun.js*/
+(() => {
+  const st = { mode: "cc", gap: 0.7, phi: 4.5, speed: 2, surf: "step" };
+  const ctl = document.getElementById("ctl");
+  NX.seg(ctl, { label: "Mode", value: st.mode, options: [["cc", "constant current"], ["ch", "constant height"]], on: v => { st.mode = v; restartLine(); } });
+  NX.slider(ctl, { id: "gap", label: "Gap setting", min: 0.4, max: 1.0, step: 0.01, value: st.gap, unit: "nm", dp: 2, hint: "tip-to-surface distance the microscope aims for", on: v => { st.gap = v; restartLine(); } });
+  NX.slider(ctl, { id: "phi", label: "Work function", min: 3, max: 5.5, step: 0.1, value: st.phi, unit: "eV", dp: 1, hint: "sets the height of the energy wall in the gap", on: v => { st.phi = v; update(); } });
+  NX.slider(ctl, { id: "speed", label: "Scan speed", min: 0.5, max: 12, step: 0.5, value: st.speed, unit: "nm/s", dp: 1, on: v => { st.speed = v; } });
+  NX.seg(ctl, { label: "Surface", value: st.surf, options: [["flat", "flat crystal"], ["step", "with a step"], ["defects", "missing + extra atom"]], on: v => { st.surf = v; resetImage(); } });
+  const row = document.createElement("div"); row.className = "btnrow"; ctl.appendChild(row);
+  const bP = document.createElement("button"); bP.className = "btn ghost"; bP.type = "button"; bP.textContent = "Pause"; row.appendChild(bP);
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const ig = new NX.Plot(document.getElementById("ig"), { aspect: 1.3, x: [0.3, 1.3], y: [1e-3, 1e3], ylog: true, xlabel: "Gap (nm)", ylabel: "Current (nA)" });
+
+  const CONTACT = 0.3, L = 8, YW = 3, a0 = 0.246, G = 4 * Math.PI / (Math.sqrt(3) * a0), corr = 0.04, STEPX = 4.6, STEPH = 0.2;
+  const dirs = [Math.PI / 2, Math.PI / 2 + 2 * Math.PI / 3, Math.PI / 2 + 4 * Math.PI / 3].map(t => [Math.cos(t), Math.sin(t)]);
+  function zs(x, y) {
+    let s = 0; for (const [cx, cy] of dirs) s += Math.cos(G * (x * cx + y * cy));
+    let z = corr * (s + 1.5) / 4.5;
+    if (st.surf === "step") z += STEPH * 0.5 * (1 + Math.tanh((x - STEPX) / 0.05));
+    if (st.surf === "defects") { z -= 0.06 * Math.exp(-((x - 2.4) ** 2 + (y - 1.5) ** 2) / 0.012); z += 0.14 * Math.exp(-((x - 5.6) ** 2 + (y - 1.1) ** 2) / 0.02); }
+    return z;
+  }
+  const kap = () => TUN.kappa(st.phi);                     // nm^-1
+  const I0 = () => 1 * Math.exp(2 * kap() * st.gap);        // nA, so that I = 1 nA at the set gap
+  const current = d => I0() * Math.exp(-2 * kap() * Math.max(d, 0.02));
+  // scanning state
+  const NI = 160, NJ = 60, img = new Float32Array(NI * NJ).fill(NaN);
+  let line = 0, x = 0, tipZ = 0, trace = [], crashed = false, paused = false, dots = [];
+  function yOf(j) { return (j + 0.5) / NJ * YW; }
+  function restartLine() { x = 0; trace = []; crashed = false; crashT = 0; tipZ = (st.mode === "cc" ? zs(0, yOf(line)) : 0.02) + st.gap; update(); }
+  function resetImage() { img.fill(NaN); prefill(); }
+  function prefill() {
+    for (let j = 0; j < NJ / 2; j++) { line = j; restartLine(); let n = 0; while (line === j && n++ < 5000) step(0.02); }
+    crashT = 0;
+    dots = []; line = Math.floor(NJ / 2); restartLine();
+  }
+  function update() {
+    const k = kap(), d = Math.max(tipZ - zs(x, yOf(line)), 0), I = current(d);
+    ro.innerHTML = `<dt>Tunnelling current</dt><dd>${crashed ? "tip crashed" : NX.si(I * 1e-9, "A")}</dd>
+      <dt>Gap under the tip</dt><dd>${crashed ? "0" : d.toFixed(3)} nm</dd>
+      <dt>Current change for 0.1 nm closer</dt><dd>× ${Math.exp(2 * k * 0.1).toFixed(1)}</dd>
+      <dt class="adv">κ = √(2mφ)/ħ</dt><dd class="adv">${k.toFixed(2)} nm⁻¹</dd>
+      <dt class="adv">Scan line</dt><dd class="adv">${line + 1} of ${NJ}</dd>`;
+    status.className = "status " + (crashed ? "bad" : "good");
+    status.textContent = crashed ? "The tip has crashed into the surface! In constant-height mode nothing moves the tip away from a raised step." :
+      st.mode === "cc" ? "Constant current: the feedback raises and lowers the tip to keep 1 nA flowing. The tip's height traces the atoms." :
+      "Constant height: the tip stays level and the current rises over each atom and falls between them.";
+    document.getElementById("trh").textContent = st.mode === "cc" ? "What the microscope records along this line: the tip's height" : "What the microscope records along this line: the current";
+  }
+  let crashT = 0;
+  function step(dt) {
+    if (crashed) { crashT += dt; dots = []; if (crashT > 3) { crashT = 0; line = (line + 1) % NJ; restartLine(); } return; }
+    const y = yOf(line), xn = x + st.speed * dt;
+    const target = zs(Math.min(xn, L), y) + st.gap;
+    if (st.mode === "cc") tipZ += (target - tipZ) * (1 - Math.exp(-dt / 0.08));
+    else tipZ = 0.02 + st.gap;
+    x = xn;
+    const d = tipZ - zs(x, y);
+    if (st.mode === "ch" && d < CONTACT) crashed = true;
+    const I = current(crashed ? 0.02 : d);
+    trace.push([x, st.mode === "cc" ? tipZ - st.gap : I]);
+    const i = Math.min(NI - 1, Math.floor(x / L * NI)); if (i >= 0 && !crashed) img[line * NI + i] = st.mode === "cc" ? tipZ : Math.log10(I);
+    // tunnelling electrons: rate grows with log current
+    const rate = crashed ? 0 : Math.max(0, 6 + 4 * Math.log10(I));
+    if (Math.random() < rate * dt) dots.push({ x, y0: tipZ, y1: zs(x, y), t: 0 });
+    dots.forEach(p => p.t += dt * 2.5); dots = dots.filter(p => p.t < 1);
+    if (x >= L) { line = (line + 1) % NJ; restartLine(); }
+  }
+  function drawSide() {
+    const cv = document.getElementById("side"), t = NX.tok, narrow = (cv.clientWidth || 700) < 560;
+    const { g, w, h } = NX.fitCanvas(cv, narrow ? 1.25 : 2.6);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const VL = narrow ? 3.5 : L, vx0 = Math.max(0, Math.min(L - VL, x - VL / 2));            // on phones, follow the tip with a 3.5 nm window
+    const zLo = -0.35, zHi = zLo + (VL * (h - 20) / (w - 20)), X = v => 10 + (v - vx0) / VL * (w - 20), Z = z => h - 10 - (z - zLo) / (zHi - zLo) * (h - 20);
+    const y = yOf(line);
+    // surface electron cloud
+    g.save(); g.beginPath(); g.rect(10, 0, w - 20, h); g.clip(); g.beginPath(); g.moveTo(X(0), Z(zLo)); for (let i = 0; i <= 400; i++) { const xx = L * i / 400; g.lineTo(X(xx), Z(zs(xx, y))); } g.lineTo(X(L), Z(zLo)); g.closePath();
+    g.fillStyle = t.violet; g.globalAlpha = .28; g.fill(); g.globalAlpha = 1; g.strokeStyle = t.violet; g.lineWidth = 1.5; g.stroke();
+    // tip path
+    if (trace.length > 1 && st.mode === "cc") { g.strokeStyle = t.rust; g.lineWidth = 1.5; g.setLineDash([4, 3]); g.beginPath(); trace.forEach(([xx, z], k) => { const Y = Z(z + st.gap); k ? g.lineTo(X(xx), Y) : g.moveTo(X(xx), Y); }); g.stroke(); g.setLineDash([]); }
+    if (st.mode === "ch") { g.strokeStyle = t.rust; g.lineWidth = 1.2; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(X(0), Z(0.02 + st.gap)); g.lineTo(X(L), Z(0.02 + st.gap)); g.stroke(); g.setLineDash([]); }
+    // tip
+    const tx = X(Math.min(x, L)), tz = Z(crashed ? zs(x, y) : tipZ), wTip = (w - 20) / VL * 0.55;
+    g.fillStyle = "#8a6d3b"; g.beginPath(); g.moveTo(tx, tz); g.lineTo(tx - wTip, 4); g.lineTo(tx + wTip, 4); g.closePath(); g.fill();
+    g.beginPath(); g.arc(tx, tz - 3, 4, 0, 7); g.fill();
+    dots.forEach(p => { NX.dot(g, X(p.x) + (Math.sin(p.t * 9) * 2), Z(p.y0 + (p.y1 - p.y0) * p.t), 3, t.electron); });
+    g.restore();
+    // scale bar
+    g.strokeStyle = t.ink; g.lineWidth = 2; g.beginPath(); g.moveTo(w - 18 - (X(1) - X(0)), h - 14); g.lineTo(w - 18, h - 14); g.stroke();
+    NX.label(g, "1 nm", w - 18 - (X(1) - X(0)) / 2, h - 24, { size: 11, color: t.ink });
+    if (crashed) NX.label(g, "CRASH", tx, Math.max(16, tz - 30), { size: 14, color: t.rust, bold: true });
+  }
+  function drawTrace() {
+    const cv = document.getElementById("trace"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, (cv.clientWidth || 700) < 560 ? 2.4 : 4.2);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const pl = 52, pr = 10, pt = 8, pb = 20, X = v => pl + v / L * (w - pl - pr);
+    const cc = st.mode === "cc", lo = cc ? -0.03 : Math.log10(0.05), hi = cc ? (st.surf === "step" ? 0.28 : 0.18) : Math.log10(2000);
+    const Yv = v => h - pb - ((cc ? v : Math.log10(Math.max(v, 1e-6))) - lo) / (hi - lo) * (h - pt - pb);
+    g.strokeStyle = t.grid; g.lineWidth = 1; g.strokeRect(pl, pt, w - pl - pr, h - pt - pb);
+    g.font = "11px system-ui"; g.fillStyle = t.muted; g.textAlign = "right"; g.textBaseline = "middle";
+    if (cc) { [0, 0.1, 0.2].filter(v => v <= hi).forEach(v => g.fillText(v.toFixed(1) + " nm", pl - 4, Yv(v))); }
+    else { [0.1, 1, 10, 100, 1000].forEach(v => g.fillText(v + " nA", pl - 4, Yv(v))); }
+    g.textAlign = "center"; g.textBaseline = "top"; g.fillText("position along the line (nm)", (pl + w - pr) / 2, h - pb + 4);
+    g.save(); g.beginPath(); g.rect(pl, pt, w - pl - pr, h - pt - pb); g.clip();
+    g.strokeStyle = t.rust; g.lineWidth = 2; g.beginPath(); trace.forEach(([xx, v], k) => { const Y = Yv(v); k ? g.lineTo(X(xx), Y) : g.moveTo(X(xx), Y); }); g.stroke(); g.restore();
+  }
+  function heat(v) { // black -> rust -> gold -> white
+    const s = Math.max(0, Math.min(1, v)), c = [[20, 10, 5], [150, 50, 20], [230, 160, 60], [255, 250, 230]];
+    const f = s * 3, i = Math.min(2, Math.floor(f)), r = f - i;
+    return c[i].map((q, k) => Math.round(q + (c[i + 1][k] - q) * r));
+  }
+  function drawImg() {
+    if (!document.body.classList.contains("more")) return;
+    const cv = document.getElementById("img"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, L / YW * 0.95);
+    g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    // display like STM software: partly remove the slow background along each line so that atoms show on every terrace
+    const disp = new Float32Array(NI * NJ).fill(NaN);
+    for (let j = 0; j < NJ; j++) for (let i = 0; i < NI; i++) {
+      const v = img[j * NI + i]; if (!isFinite(v)) continue; let s = 0, n = 0;
+      for (let k = Math.max(0, i - 7); k <= Math.min(NI - 1, i + 7); k++) { const u = img[j * NI + k]; if (isFinite(u)) { s += u; n++; } }
+      disp[j * NI + i] = v - 0.8 * s / n;
+    }
+    let lo = Infinity, hi = -Infinity; for (const v of disp) if (isFinite(v)) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+    const im = g.createImageData(NI, NJ);
+    for (let j = 0; j < NJ; j++) for (let i = 0; i < NI; i++) {
+      const v = disp[j * NI + i], o = 4 * ((NJ - 1 - j) * NI + i);
+      if (isFinite(v)) { const [r, gg, b] = heat((v - lo) / (hi - lo || 1)); im.data[o] = r; im.data[o + 1] = gg; im.data[o + 2] = b; im.data[o + 3] = 255; }
+      else { im.data[o + 3] = 0; }
+    }
+    const off = document.createElement("canvas"); off.width = NI; off.height = NJ; off.getContext("2d").putImageData(im, 0, 0);
+    g.imageSmoothingEnabled = true; g.drawImage(off, 0, 0, w, h);
+    const yy = h - (line + 0.5) / NJ * h; g.strokeStyle = t.blue; g.lineWidth = 1; g.beginPath(); g.moveTo(0, yy); g.lineTo(w, yy); g.stroke();
+  }
+  function drawIG() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; ig.begin().axes(); ig.fn(d => current(d), { color: t.blue, width: 2.2 }, 120);
+    const d = Math.max(tipZ - zs(x, yOf(line)), 0.02); ig.point(d, current(d), { color: t.rust });
+    ig.hline(1, { label: "set-point 1 nA", color: t.muted });
+  }
+  bP.onclick = () => { paused = !paused; bP.textContent = paused ? "Play" : "Pause"; };
+  let acc = 0;
+  NX.loop(dt => { if (!paused) step(dt); drawSide(); drawTrace(); acc += dt; if (acc > 0.12) { acc = 0; update(); drawImg(); drawIG(); } });
+  NX.onRedraw(() => { update(); drawSide(); drawTrace(); drawImg(); drawIG(); });
+  // pre-fill half the image so that the picture is meaningful from the start
+  prefill();
+  drawSide(); drawTrace(); drawImg(); drawIG();
+})();
+</script>

@@ -1,0 +1,169 @@
+<!--META
+{"num":3,"slug":"tunnel-diode","title":"Tunnel diode","ref":"Document 2, Sections 1–3","blurb":"A p–n junction doped so heavily that electrons can tunnel straight across it. Slide the voltage and watch the filled states on one side line up with the empty states on the other, then slide past them: the current rises, falls, and rises again."}
+-->
+<div class="lab">
+  <div class="card stage">
+    <div class="figs">
+      <div class="fig"><h3>Energy bands across the junction</h3><canvas id="band"></canvas>
+        <div class="legend"><span><i style="background:var(--nplus)"></i>filled states</span><span><i class="dot" style="background:var(--electron)"></i>electrons tunnelling</span><span><i class="dot" style="background:var(--gold)"></i>electrons going over the step</span><span><i style="background:var(--rust)"></i>Fermi levels</span></div></div>
+      <div class="fig"><h3>Current against voltage</h3><canvas id="iv"></canvas></div>
+    </div>
+    <div class="figs adv">
+      <div class="fig"><h3>The three currents that add up</h3><canvas id="parts"></canvas></div>
+      <div class="fig"><h3>Overlap of filled and empty states</h3><canvas id="ov"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>Heavy doping, thin wall.</b> Both sides are doped so heavily that the junction is only about 10 nm wide, and the Fermi levels (red dashes) sit inside the bands: the n side has a strip of filled states in its conduction band, and the p side a strip of empty states at the top of its valence band.</p>
+<p><b>Filled must face empty.</b> An electron can only tunnel into an empty state at the same energy. A small forward voltage lifts the n side's filled strip opposite the p side's empty strip, and electrons tunnel across (blue): the current rises to a <b>peak</b>.</p>
+<p><b>Then it falls.</b> More voltage slides the filled strip past the empty one, until it faces only the band gap, where there are no states. Tunnelling stops and the current falls: <b>negative differential resistance</b>. At larger voltages, electrons go over the step as in an ordinary diode (gold), and the current rises again.</p>
+<p><b>Reverse.</b> With reverse voltage, the p side's filled valence band faces the n side's empty conduction band, and a large current flows straight away.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Start at 0 V. Raise the voltage slowly and stop at the peak. Which states face each other?</li>
+<li>Keep going until the current is at its lowest (the valley). What lies opposite the n side's filled strip now?</li>
+<li>Lower the doping. What happens to the peak current, and why? (Look at the junction width.)</li>
+<li>Switch from germanium to gallium arsenide. Why does the ordinary diode current start at a higher voltage?</li>
+<li>In More detail, turn the defect states off. What happens to the valley current?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>Why does the current fall between the peak and the valley?</summary>Tunnelling needs filled states on one side facing empty states at the same energy on the other. As the voltage rises, the n side's filled strip is lifted past the top of the p side's valence band, so it faces the band gap, where there are no states. Fewer electrons can tunnel, so the current falls even though the voltage rises.</details>
+<details><summary>Why does lower doping give a much smaller peak?</summary>Lighter doping widens the junction (the wall) and shrinks the strips of filled and empty states. The tunnelling chance falls exponentially with the wall's width, so the peak current drops steeply.</details>
+<details><summary>Is the diode a source of power in its falling region?</summary>No. Current and voltage are both positive, so it still absorbs power from the battery. Only the changes have opposite signs, which is what lets it cancel losses in a resonant circuit and make an oscillator.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Tunnelling current I<sub>t</sub> ∝ T<sub>W</sub>∫ g<sub>n</sub>(E) g<sub>p</sub>(E) [f<sub>n</sub>(E) − f<sub>p</sub>(E)] dE (Esaki's overlap picture), with square-root band densities of states, Fermi functions at 300 K, and a tunnelling factor T<sub>W</sub> = e<sup>−W/1.5 nm</sup> where the junction width W shrinks as 1/√N with the doping N. The Fermi levels sit inside the bands by an amount that grows with doping. The ordinary diode current is I<sub>s</sub>(e<sup>qV/k<sub>B</sub>T</sup> − 1) and the excess current through defect states is a small term that grows exponentially with voltage. Currents are scaled so that the most heavily doped germanium diode peaks near 10 mA.</p>
+<p class="caveat">Left out: the detailed shape of the band edges (band tails), the change of junction width with voltage, and series resistance. The shapes and trends are right; the numbers are typical, not those of a particular diode.</p></section>
+</main>
+<script>
+(() => {
+  const MAT = { Ge: { Eg: 0.66, Vd: 0.47, name: "germanium" }, GaAs: { Eg: 1.42, Vd: 0.95, name: "gallium arsenide" } };
+  const st = { V: 0.065, mat: "Ge", logN: 19.7, exc: true };
+  const ctl = document.getElementById("ctl"), kT = 0.02585;
+  const vS = NX.slider(ctl, { id: "V", label: "Voltage across the diode", min: -0.15, max: 0.55, step: 0.005, value: st.V, unit: "V", dp: 3, on: v => { st.V = v; update(); } });
+  NX.slider(ctl, { id: "N", label: "Doping (each side)", min: 19, max: 20, step: 0.05, value: st.logN, hint: "heavier doping → thinner junction, more overlap", fmt: v => (Math.pow(10, v - Math.floor(v))).toFixed(1) + "×10" + NX.sup(Math.floor(v)) + " cm⁻³", on: v => { st.logN = v; curve(); update(); } });
+  NX.seg(ctl, { label: "Semiconductor", value: st.mat, options: [["Ge", "germanium"], ["GaAs", "gallium arsenide"]], on: v => { st.mat = v; vS.input.max = (MAT[v].Vd + 0.08).toFixed(3); if (st.V > +vS.input.max) { st.V = +vS.input.max; vS.value = st.V; } curve(); update(); } });
+  const exS = NX.seg(ctl, { label: "Defect states in the gap", value: st.exc, options: [[true, "present"], [false, "none (ideal)"]], on: v => { st.exc = v; curve(); update(); } }); exS.el.classList.add("adv");
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 1.15, x: [-0.15, 0.55], y: [-5, 12], xlabel: "Voltage (V)", ylabel: "Current (mA)" });
+  const parts = new NX.Plot(document.getElementById("parts"), { aspect: 1.35, x: [-0.15, 0.55], y: [0, 12], xlabel: "Voltage (V)", ylabel: "Current (mA)" });
+  const ov = new NX.Plot(document.getElementById("ov"), { aspect: 1.35, x: [-0.4, 0.4], y: [0, 1], xlabel: "Energy (eV, from the n-side band edge)", ylabel: "States (relative)" });
+
+  // ----- physics -----
+  const fermi = (E, EF) => 1 / (1 + Math.exp(Math.max(-60, Math.min(60, (E - EF) / kT))));
+  const dF = () => 0.02 + 0.13 * (st.logN - 19);                         // Fermi level inside each band (eV)
+  const Wj = () => 20 * Math.pow(10, -(st.logN - 19) / 2);                // junction width (nm), ~1/sqrt(N)
+  const TW = () => Math.exp(-Wj() / 1.5);
+  const Tref = Math.exp(-20 * Math.pow(10, -0.5) / 1.5);                  // at 1e20
+  function overlap(V, d = dF()) {
+    const Evp = 2 * d - V, EFn = d, EFp = d - V; let s = 0; const n = 200;
+    if (Evp <= 0) return 0;
+    const dE = Evp / n;
+    for (let i = 0; i < n; i++) { const E = (i + 0.5) * dE; s += Math.sqrt(E) * Math.sqrt(Evp - E) * (fermi(E, EFn) - fermi(E, EFp)) * dE; }
+    return s;
+  }
+  const A = 10 / (Tref * Math.max(...Array.from({ length: 80 }, (_, i) => overlap(i * 0.005, 0.15))));   // 10 mA peak at 1e20 Ge
+  const It = V => A * TW() * overlap(V);
+  const Id = V => 10 * Math.exp((V - MAT[st.mat].Vd) / kT) - 10 * Math.exp(-MAT[st.mat].Vd / kT);
+  const Ix = V => st.exc ? 0.25 * (TW() / Tref) * Math.exp(4 * Math.max(V, -0.2)) * (V > 0 ? 1 : 0) * Math.min(1, V / 0.05) : 0;
+  const I = V => It(V) + Id(V) + Ix(V);
+  let C = null;
+  function curve() {
+    const vmax = MAT[st.mat].Vd + 0.08, xs = [], ys = [];
+    for (let i = 0; i <= 300; i++) { const v = -0.15 + (vmax + 0.15) * i / 300; xs.push(v); ys.push(I(v)); }
+    // the peak is the first local maximum at forward bias; with too little tunnelling there is none
+    let ip = -1; for (let i = 1; i < xs.length - 1; i++) if (xs[i] > 0 && ys[i] > ys[i - 1] && ys[i] >= ys[i + 1]) { ip = i; break; }
+    let iv2 = ip; if (ip >= 0) for (let i = ip; i < xs.length - 1; i++) { if (ys[i] < ys[iv2]) iv2 = i; if (ys[i + 1] > ys[i]) break; }
+    C = { xs, ys, ip, iv: iv2, vmax, none: ip < 0 };
+  }
+  function region(V) {
+    if (V < -0.005) return ["Reverse bias: the p side's filled states face the n side's empty states. A large tunnelling current flows backwards.", "good"];
+    if (Math.abs(V) <= 0.005) return ["No voltage: the Fermi levels line up and no net current flows.", "good"];
+    if (C.none) return [V < 0.2 ? "The junction is too wide: almost no electrons tunnel, so there is no peak. Increase the doping." : "Electrons go over the step, as in an ordinary diode.", V < 0.2 ? "bad" : "good"];
+    if (V <= C.xs[C.ip]) return ["Small forward voltage: the n side's filled strip faces the p side's empty strip, and electrons tunnel across. The current rises.", "good"];
+    if (V <= C.xs[C.iv]) return ["Negative differential resistance: the filled strip is sliding past the empty strip, so the current falls as the voltage rises.", "bad"];
+    if (Id(V) < 0.5 * I(V)) return ["Around the valley: the filled states face the band gap, so tunnelling has almost stopped, and the ordinary diode current has hardly begun. What flows is mostly the small excess current through defect states.", "good"];
+    return ["The filled states now face the band gap; tunnelling has stopped. Electrons go over the step instead, as in an ordinary diode.", "good"];
+  }
+  function update() {
+    const V = st.V, i = I(V), dV = 0.002, r = dV / ((I(V + dV) - I(V - dV)) / 2) * 1e3;
+    const [msg, cls] = region(V);
+    ro.innerHTML = `<dt>Current</dt><dd>${i.toFixed(Math.abs(i) < 1 ? 3 : 2)} mA</dd>
+      <dt>Junction width</dt><dd>${Wj().toFixed(1)} nm</dd>
+      <dt>Peak / valley</dt><dd>${C.none ? "no peak" : C.ys[C.ip].toFixed(2) + " / " + C.ys[C.iv].toFixed(2) + " mA"}</dd>
+      <dt class="adv">Peak voltage</dt><dd class="adv">${C.none ? "—" : (C.xs[C.ip] * 1e3).toFixed(0) + " mV"}</dd>
+      <dt class="adv">Valley voltage</dt><dd class="adv">${C.none ? "—" : (C.xs[C.iv] * 1e3).toFixed(0) + " mV"}</dd>
+      <dt class="adv">Peak-to-valley ratio</dt><dd class="adv">${C.none ? "—" : (C.ys[C.ip] / Math.max(C.ys[C.iv], 1e-9)).toFixed(1)}</dd>
+      <dt class="adv">Differential resistance here</dt><dd class="adv${r < 0 ? " warn" : ""}">${Math.abs(r) > 1e6 ? "very large" : r.toFixed(0) + " Ω"}</dd>
+      <dt class="adv">Fermi level inside each band</dt><dd class="adv">${(dF() * 1e3).toFixed(0)} meV</dd>`;
+    status.className = "status " + cls; status.textContent = msg;
+    drawIV(); drawAdv();
+  }
+  // ----- band picture with moving electrons -----
+  let dots = [];
+  function geom(w, h) {
+    const m = MAT[st.mat], d = dF(), Vbi = m.Eg + 2 * d;
+    const Elo = -m.Eg - 0.32, Ehi = m.Eg + 2 * 0.15 + 0.2 + 0.18;
+    return { m, d, Vbi, X: x => 12 + (x + 1) / 2 * (w - 24), Y: E => h - 20 - (E - Elo) / (Ehi - Elo) * (h - 40) };
+  }
+  function drawBand() {
+    const cv = document.getElementById("band"), t = NX.tok, { g, w, h } = NX.fitCanvas(cv, 1.15);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const { m, d, Vbi, X, Y } = geom(w, h), V = st.V, half = Math.max(0.05, Wj() / 15 * 0.22);
+    const s = x => 0.5 * (1 + Math.tanh(x / half * 2.2)), shift = x => (Vbi - V) * s(x);
+    const Ec = x => shift(x), Ev = x => shift(x) - m.Eg, EFn = d, EFp = d - V, xn = -half * 1.25, xp = half * 1.25;
+    const fill = (x0, x1, e0, e1) => { g.fillStyle = t.nplus; g.fillRect(X(x0), Y(e1), X(x1) - X(x0), Y(e0) - Y(e1)); };
+    fill(-1, xn, 0, EFn); fill(-1, xn, -m.Eg - 0.4, -m.Eg); fill(xp, 1, Vbi - V - m.Eg - 0.4, EFp);
+    g.strokeStyle = t.ink; g.lineWidth = 2;
+    [Ec, Ev].forEach(f => { g.beginPath(); for (let i = 0; i <= 200; i++) { const x = -1 + 2 * i / 200; i ? g.lineTo(X(x), Y(f(x))) : g.moveTo(X(x), Y(f(x))); } g.stroke(); });
+    g.strokeStyle = t.rust; g.setLineDash([5, 4]); g.lineWidth = 1.4;
+    g.beginPath(); g.moveTo(X(-1), Y(EFn)); g.lineTo(X(xn), Y(EFn)); g.moveTo(X(xp), Y(EFp)); g.lineTo(X(1), Y(EFp)); g.stroke(); g.setLineDash([]);
+    const lab = (txt, x, E, o = {}) => NX.label(g, txt, X(x), Y(E), Object.assign({ size: 11.5, color: t.muted }, o));
+    lab("n side", -0.75, -m.Eg - 0.2, { color: t.ink }); lab("p side", 0.75, Vbi - V + 0.12, { color: t.ink });
+    lab("conduction band", -0.62, 0.09 + Math.max(0, d), { size: 10.5 }); lab("valence band", 0.7, Vbi - V - m.Eg + 0.07, { size: 10.5 });
+    lab(`${Wj().toFixed(0)} nm`, 0, -m.Eg - 0.24, { size: 11 });
+    g.strokeStyle = t.muted; g.lineWidth = 1; g.beginPath(); g.moveTo(X(xn), Y(-m.Eg - 0.17)); g.lineTo(X(xp), Y(-m.Eg - 0.17)); g.stroke();
+    dots.forEach(p => NX.dot(g, X(p.x), Y(p.E + (p.arc ? p.arc * Math.sin(Math.PI * (p.x - p.x0) / (p.x1 - p.x0)) : 0)), 3.5, p.col));
+  }
+  function spawn(dt) {
+    const t = NX.tok, { d, Vbi } = geom(1, 1), V = st.V, EFn = d, EFp = d - V, Evp = 2 * d - V, half = Math.max(0.05, Wj() / 15 * 0.22);
+    const it = It(V), id = Id(V);
+    const rt = Math.min(14, 4 * Math.log10(1 + Math.abs(it) * 30)), rd = Math.min(14, 4 * Math.log10(1 + Math.max(0, id) * 30));
+    if (Math.random() < rt * dt) {
+      if (it > 0) { const lo = Math.max(0, EFp), hi = Math.min(EFn, Evp); if (hi > lo) dots.push({ x: -half * 2.2, x0: -half * 2.2, x1: half * 2.2, E: lo + Math.random() * (hi - lo), v: 0.9, col: t.electron }); }
+      else { const lo = Math.max(0, EFn), hi = Math.min(Evp, EFp); if (hi > lo) dots.push({ x: half * 2.2, x0: half * 2.2, x1: -half * 2.2, E: lo + Math.random() * (hi - lo), v: -0.9, col: t.electron }); }
+    }
+    if (Math.random() < rd * dt) { const E = Math.min(EFn, 0.02); dots.push({ x: -0.55, x0: -0.55, x1: 0.55, E, arc: Math.max(0.05, Vbi - V - E + 0.05), v: 0.9, col: t.gold }); }
+    dots.forEach(p => p.x += p.v * dt); dots = dots.filter(p => (p.v > 0 ? p.x < p.x1 : p.x > p.x1));
+  }
+  function drawIV() {
+    const t = NX.tok, ymax = C.none ? 1 : Math.max(0.2, C.ys[C.ip] * 2.0);
+    iv.setX(-0.15, C.vmax); iv.setY(-0.45 * ymax, ymax); iv.begin().axes();
+    if (!C.none) iv.band(C.xs[C.ip], C.xs[C.iv], t.rust, 0.08);
+    iv.hline(0, { color: t.muted, dash: [] }); iv.line(C.xs, C.ys, { color: t.ink, width: 2.4 });
+    iv.point(st.V, I(st.V), { color: t.rust });
+    if (!C.none) iv.text((C.xs[C.ip] + C.xs[C.iv]) / 2, 0.93 * ymax, "falling region", { align: "center", size: 11, color: t.rust });
+  }
+  function drawAdv() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok, ymax = C.none ? 1 : Math.max(0.2, C.ys[C.ip] * 1.6);
+    parts.setX(-0.05, C.vmax); parts.setY(0, ymax); parts.begin().axes();
+    parts.fn(It, { color: t.blue, width: 1.6, dash: [6, 4] }); parts.fn(v => Math.max(0, Id(v)), { color: t.gold, width: 1.6, dash: [6, 4] });
+    if (st.exc) parts.fn(Ix, { color: t.muted, width: 1.4, dash: [2, 3] });
+    parts.fn(v => I(v), { color: t.ink, width: 2.4 }); parts.vline(st.V, { color: t.rust });
+    parts.text(C.vmax - 0.01, 0.92 * ymax, "blue: tunnelling · gold: ordinary diode · grey: excess · black: total", { align: "right", size: 10.5, color: t.muted });
+    // states: filled conduction states on n side vs empty valence states on p side, against energy
+    const d = dF(), V = st.V, Evp = 2 * d - V;
+    ov.begin().axes();
+    const nF = E => E > 0 ? Math.sqrt(E) * fermi(E, d) * 2.2 : 0, pE = E => E < Evp ? Math.sqrt(Evp - E) * (1 - fermi(E, d - V)) * 2.2 : 0;
+    ov.fn(nF, { color: t.blue, width: 2 }, 300); ov.fn(pE, { color: t.rust, width: 2 }, 300);
+    ov.fn(E => Math.min(nF(E), pE(E)), { color: t.green, width: 3 }, 300);
+    ov.text(-0.38, 0.92, "blue: filled, n side · red: empty, p side · green: overlap", { size: 10.5, color: t.muted });
+  }
+  NX.loop(dt => { spawn(dt); drawBand(); });
+  NX.onRedraw(() => { update(); drawBand(); });
+  curve(); update(); drawBand();
+})();
+</script>

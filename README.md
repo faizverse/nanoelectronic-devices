@@ -33,10 +33,23 @@ Each Lecture 2 page opens in a simple view. **More detail** shows the numbers an
 | 6 | [Quantum-dot colour](https://faizverse.github.io/nanoelectronic-devices/L2/quantum-dot-colour.html) | Doc 2, §7 |
 | 7 | [Growing quantum dots](https://faizverse.github.io/nanoelectronic-devices/L2/quantum-dot-growth.html) | Doc 3, §3–4 |
 
+## Lecture 3
+
+Each Lecture 3 page opens in a simple view. **More detail** shows the numbers and graphs.
+
+| # | Animation | Notes section |
+|---|---|---|
+| 1 | [Tunnelling through a wall](https://faizverse.github.io/nanoelectronic-devices/L3/tunnelling.html) | Doc 1, §1–3 |
+| 2 | [Scanning tunnelling microscope](https://faizverse.github.io/nanoelectronic-devices/L3/scanning-tunnelling-microscope.html) | Doc 1, §5 |
+| 3 | [Tunnel diode](https://faizverse.github.io/nanoelectronic-devices/L3/tunnel-diode.html) | Doc 2, §1–3 |
+| 4 | [Resonant-tunnelling diode](https://faizverse.github.io/nanoelectronic-devices/L3/resonant-tunnelling-diode.html) | Doc 2, §4 |
+| 5 | [Tunnel FET versus MOSFET](https://faizverse.github.io/nanoelectronic-devices/L3/tunnel-fet.html) | Doc 2, §5 |
+| 6 | [Single-electron transistor](https://faizverse.github.io/nanoelectronic-devices/L3/single-electron-transistor.html) | Doc 3, §1–3 |
+
 Each page is a single self-contained HTML file (no external dependencies; it works offline).
 
 ## Editing
 
 The published pages are generated. Edit the files in `source/src/` and run `python3 build.py`
 from `source/`; it inlines the shared CSS/JS into each page and writes them to `source/site/`.
-Copy `source/site/index.html`, `source/site/L1/` and `source/site/L2/` to the repository root to publish.
+Copy `source/site/index.html` and the `source/site/L1/`, `L2/` and `L3/` folders to the repository root to publish.

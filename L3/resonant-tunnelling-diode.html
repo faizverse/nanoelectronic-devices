@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resonant-tunnelling diode · KKKC6353 Lecture 3</title>
+<meta name="description" content="Two thin walls with a quantum well between them let electrons through almost perfectly at one energy and hardly at all at others. Raise the voltage and watch the well&#x27;s level line up with the incoming electrons, then drop below them. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="author" content="Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
+<link rel="canonical" href="https://faizverse.github.io/nanoelectronic-devices/L3/resonant-tunnelling-diode.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KKKC6353 Nanoelectronic Devices · Universiti Kebangsaan Malaysia">
+<meta property="og:title" content="Resonant-tunnelling diode · KKKC6353 Lecture 3">
+<meta property="og:description" content="Two thin walls with a quantum well between them let electrons through almost perfectly at one energy and hardly at all at others. Raise the voltage and watch the well&#x27;s level line up with the incoming electrons, then drop below them. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta property="og:url" content="https://faizverse.github.io/nanoelectronic-devices/L3/resonant-tunnelling-diode.html">
+<meta property="og:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<meta property="og:image:secure_url" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KKKC6353 Nanoelectronic Devices: Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Resonant-tunnelling diode · KKKC6353 Lecture 3">
+<meta name="twitter:description" content="Two thin walls with a quantum well between them let electrons through almost perfectly at one energy and hardly at all at others. Raise the voltage and watch the well&#x27;s level line up with the incoming electrons, then drop below them. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="twitter:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
+<style>:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2430; --muted:#5b6876; --line:#d8dee6; --grid:#e7ebf0;
+  --navy:#1f3a5f; --blue:#2e75b6; --rust:#b4451f; --green:#2f8a5b; --gold:#c08a12; --violet:#7a4fb5;
+  --electron:#2e75b6; --hole:#c8402a; --oxide:#e9d9a6; --si:#dfe7ef; --nplus:#b9d3ee; --pbody:#f2dcd2;
+  --metal:#7d8794; --depl:#f6efe0; --chip:#eef3f9; --focus:#2e75b6;
+  --radius:10px; --shadow:0 1px 2px rgba(20,30,45,.06),0 4px 14px rgba(20,30,45,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --panel:#18202a; --ink:#e6ebf1; --muted:#9aa7b5; --line:#2c3846; --grid:#243040;
+  --navy:#8fb3dc; --blue:#6aa8e0; --rust:#e58a5f; --green:#5cc08c; --gold:#e3b54a; --violet:#b597e6;
+  --electron:#6aa8e0; --hole:#f07a62; --oxide:#6b5f3a; --si:#2a3644; --nplus:#2c4a6a; --pbody:#4a3530;
+  --metal:#8a94a1; --depl:#3a3528; --chip:#1d2733; --focus:#6aa8e0;
+  --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body.big{font-size:19px}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.top{background:#1f3a5f;color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:center;justify-content:space-between;padding:.6rem 16px}
+.top a{color:#fff;text-decoration:none;opacity:.9}
+.top a:hover{opacity:1;text-decoration:underline}
+.crumb{font-size:.85rem;letter-spacing:.02em;opacity:.92}
+.tools{display:flex;gap:.4rem}
+.tools button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:.25rem .6rem;font:inherit;font-size:.8rem;cursor:pointer}
+.tools button:hover{background:rgba(255,255,255,.22)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.hero{padding:1.4rem 0 .6rem}
+.kicker{color:var(--rust);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;margin:0 0 .25rem}
+h1{font-size:clamp(1.5rem,3.2vw,2.1rem);line-height:1.2;margin:0 0 .4rem;color:var(--navy);text-wrap:balance}
+.lede{color:var(--muted);max-width:70ch;margin:0}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;margin:1rem 0}
+.lab:fullscreen{background:var(--bg);padding:16px;align-content:center}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.stage{padding:10px;display:grid;gap:10px;min-width:0}
+.stage canvas{width:100%;display:block;border-radius:6px}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:10px}
+.fig{min-width:0}
+.fig h3{font-size:.82rem;font-weight:600;color:var(--muted);margin:.1rem .2rem .3rem;letter-spacing:.02em}
+.controls{padding:14px 14px 10px;display:flex;flex-direction:column;gap:12px;align-self:start}
+.controls h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0}
+.ctl label{display:flex;justify-content:space-between;gap:.5rem;font-size:.92rem;margin-bottom:2px}
+.ctl label b{font-weight:600}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--rust);font-weight:600;white-space:nowrap}
+.ctl input[type=range]{width:100%;accent-color:var(--rust);margin:2px 0}
+.ctl .hint{font-size:.78rem;color:var(--muted);margin-top:1px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{flex:1 1 auto;font:inherit;font-size:.84rem;padding:.35rem .5rem;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--panel)}
+.btn{font:inherit;font-size:.88rem;padding:.42rem .7rem;border-radius:6px;border:1px solid var(--rust);background:var(--rust);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--rust)}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px}
+.readout{display:grid;grid-template-columns:1fr auto;gap:4px 8px;font-size:.84rem;line-height:1.35;border-top:1px solid var(--line);padding-top:10px}
+.readout dt{color:var(--muted)}
+.readout dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.readout dd.warn{color:var(--rust)}
+.status{font-size:.86rem;padding:.45rem .6rem;border-radius:6px;background:var(--chip);border-left:3px solid var(--blue)}
+.status.bad{border-left-color:var(--rust)}
+.status.good{border-left-color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted);padding:0 .2rem}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+main.notes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin:0 0 1rem}
+@media (max-width:860px){main.notes{grid-template-columns:minmax(0,1fr)}}
+.notes section{padding:16px 18px}
+.notes section.wide{grid-column:1/-1}
+.notes h2{font-size:1.08rem;color:var(--navy);margin:0 0 .5rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+.notes p,.notes li{max-width:75ch}
+.notes ol,.notes ul{padding-left:1.25rem;margin:.4rem 0}
+.notes li{margin:.25rem 0}
+.eq{display:block;text-align:center;margin:.6rem 0;font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.12em;overflow-x:auto}
+var{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-style:italic}
+details{border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem;margin:.45rem 0;background:var(--bg)}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:.35rem}
+.pill{display:inline-block;font-size:.75rem;padding:.05rem .45rem;border-radius:99px;background:var(--chip);color:var(--muted);border:1px solid var(--line)}
+.caveat{font-size:.9rem;color:var(--muted)}
+footer.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1rem 0 2rem;border-top:1px solid var(--line);margin-top:.5rem}
+footer.nav a{text-decoration:none;font-weight:600}
+footer.nav small{display:block;color:var(--muted);font-weight:400}
+.foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+body:not(.more) .adv{display:none!important}
+.more-btn{font:inherit;font-size:.86rem;padding:.45rem .6rem;border-radius:6px;border:1px dashed var(--muted);background:transparent;color:var(--navy);cursor:pointer;text-align:left}
+.more-btn:hover{border-color:var(--rust);color:var(--rust)}
+body:not(.more) .fig.solo{max-width:400px;width:100%;justify-self:center}
+</style>
+<script>/* Shared helpers for the KKKC6353 animations: theme tokens, controls, plots, animation loop. */
+const NX = (() => {
+  const root = document.documentElement;
+  let tok = {};
+  function readTokens() {
+    const cs = getComputedStyle(root);
+    ["bg","panel","ink","muted","line","grid","navy","blue","rust","green","gold","violet","electron","hole",
+     "oxide","si","nplus","pbody","metal","depl","chip"].forEach(k => tok[k] = cs.getPropertyValue("--" + k).trim());
+    return tok;
+  }
+  readTokens();
+  const redrawers = new Set();
+  function onRedraw(fn) { redrawers.add(fn); }
+  function redrawAll() { readTokens(); redrawers.forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+  let rT; addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(redrawAll, 80); });
+
+  /* ---------- number formatting ---------- */
+  function fmt(v, d = 2) {
+    if (!isFinite(v)) return "—";
+    const a = Math.abs(v);
+    if (a !== 0 && (a < 1e-2 || a >= 1e4)) {
+      const e = Math.floor(Math.log10(a)), m = v / Math.pow(10, e);
+      return m.toFixed(1) + "×10" + sup(e);
+    }
+    return v.toFixed(d);
+  }
+  function sup(n) { const s = "⁰¹²³⁴⁵⁶⁷⁸⁹"; return String(n).replace("-", "⁻").replace(/\d/g, c => s[c]); }
+  function si(v, unit, d = 3) {
+    if (!isFinite(v) || v === 0) return (v === 0 ? "0 " : "— ") + unit;
+    if (Math.abs(v) < 1e-15) return "< 1 f" + unit;
+    const p = ["f","p","n","µ","m","","k","M","G"]; let e = Math.floor(Math.log10(Math.abs(v)) / 3);
+    e = Math.max(-5, Math.min(3, e));
+    const m = v / Math.pow(1000, e);
+    return (+m.toPrecision(d)) + " " + p[e + 5] + unit;
+  }
+
+  /* ---------- controls ---------- */
+  function slider(host, o) {
+    const id = "s_" + o.id;
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label for="${id}"><b>${o.label}</b><output id="${id}_o"></output></label>
+      <input type="range" id="${id}" min="${o.min}" max="${o.max}" step="${o.step}" value="${o.value}">
+      ${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    host.appendChild(w);
+    const inp = w.querySelector("input"), out = w.querySelector("output");
+    const show = () => { out.textContent = (o.fmt ? o.fmt(+inp.value) : (+inp.value).toFixed(o.dp ?? 2) + (o.unit ? " " + o.unit : "")); };
+    inp.addEventListener("input", () => { show(); o.on && o.on(+inp.value); });
+    show();
+    return { get value() { return +inp.value; }, set value(v) { inp.value = v; show(); }, input: inp, el: w };
+  }
+  function seg(host, o) {
+    const w = document.createElement("div"); w.className = "ctl";
+    w.innerHTML = `<label><b>${o.label}</b></label><div class="seg" role="group" aria-label="${o.label}"></div>${o.hint ? `<div class="hint">${o.hint}</div>` : ""}`;
+    const g = w.querySelector(".seg"); let val = o.value;
+    const btns = o.options.map(([v, t]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+      b.setAttribute("aria-pressed", v === val); b.onclick = () => { set(v); o.on && o.on(v); };
+      g.appendChild(b); return [v, b];
+    });
+    function set(v) { val = v; btns.forEach(([k, b]) => b.setAttribute("aria-pressed", k === v)); }
+    host.appendChild(w);
+    return { get value() { return val; }, set value(v) { set(v); }, el: w };
+  }
+
+  /* ---------- "More detail" toggle: shows every element marked .adv ---------- */
+  function more(host, o = {}) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "more-btn";
+    const set = on => { document.body.classList.toggle("more", on); b.setAttribute("aria-expanded", on); b.textContent = on ? "Show less detail" : "More detail: numbers and graphs"; };
+    b.onclick = () => { set(!document.body.classList.contains("more")); redrawAll(); o.on && o.on(); };
+    set(false); host.appendChild(b); return b;
+  }
+
+  /* ---------- canvas with DPR handling ---------- */
+  function fitCanvas(cv, aspect) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const w = Math.max(200, cv.clientWidth || cv.parentElement.clientWidth);
+    const h = Math.round(w / aspect);
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.height = h + "px";
+    }
+    const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { g, w, h };
+  }
+
+  /* ---------- 2-D plot ---------- */
+  function niceTicks(a, b, n = 5) {
+    const span = b - a, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const r = step0 / mag, step = (r < 1.5 ? 1 : r < 3.5 ? 2 : r < 7.5 ? 5 : 10) * mag;
+    const t = []; for (let v = Math.ceil(a / step - 1e-9) * step; v <= b + step * 1e-6; v += step) t.push(+v.toFixed(12));
+    return t;
+  }
+  class Plot {
+    constructor(cv, o) { this.cv = cv; this.o = Object.assign({ aspect: 1.45, m: [14, 16, 44, 58] }, o); }
+    setX(a, b) { this.o.x = [a, b]; } setY(a, b) { this.o.y = [a, b]; }
+    begin() {
+      const { g, w, h } = fitCanvas(this.cv, this.o.aspect); this.g = g; this.w = w; this.h = h;
+      const [mt, mr, mb, ml] = this.o.m; this.L = ml; this.R = w - mr; this.T = mt; this.B = h - mb;
+      g.clearRect(0, 0, w, h); g.fillStyle = tok.panel; g.fillRect(0, 0, w, h);
+      return this;
+    }
+    tx(v) { const [a, b] = this.o.x; const f = this.o.xlog ? (Math.log10(v) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.L + f * (this.R - this.L); }
+    ty(v) { const [a, b] = this.o.y; const f = this.o.ylog ? (Math.log10(Math.max(v, 1e-300)) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)) : (v - a) / (b - a); return this.B - f * (this.B - this.T); }
+    axes() {
+      const g = this.g, o = this.o; g.save();
+      g.font = "12px system-ui,sans-serif"; g.lineWidth = 1;
+      const ticks = (lo, hi, log) => log ? (() => { const t = []; for (let e = Math.ceil(Math.log10(lo) - 1e-9); e <= Math.floor(Math.log10(hi) + 1e-9); e++) t.push(Math.pow(10, e)); return t; })() : niceTicks(lo, hi, o.nt || 5);
+      const xt = ticks(o.x[0], o.x[1], o.xlog), yt0 = ticks(o.y[0], o.y[1], o.ylog);
+      const yt = o.ylog && yt0.length > 8 ? yt0.filter((v, i) => i % 2 === (yt0.length % 2 ? 0 : 1)) : yt0;
+      g.strokeStyle = tok.grid;
+      xt.forEach(v => { const X = this.tx(v); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); });
+      yt.forEach(v => { const Y = this.ty(v); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); });
+      g.strokeStyle = tok.muted; g.beginPath(); g.moveTo(this.L, this.T); g.lineTo(this.L, this.B); g.lineTo(this.R, this.B); g.stroke();
+      g.fillStyle = tok.muted; g.textAlign = "center"; g.textBaseline = "top";
+      const lab = (v, log) => log ? "10" + sup(Math.round(Math.log10(v))) : (o.tickfmt ? o.tickfmt(v) : (+v.toPrecision(6)).toString());
+      if (!o.noxt) xt.forEach(v => g.fillText(lab(v, o.xlog), this.tx(v), this.B + 5));
+      g.textAlign = "right"; g.textBaseline = "middle";
+      yt.forEach(v => g.fillText(lab(v, o.ylog), this.L - 6, this.ty(v)));
+      g.fillStyle = tok.ink; g.font = "12.5px system-ui,sans-serif";
+      if (o.xlabel) { g.textAlign = "center"; g.textBaseline = "bottom"; g.fillText(o.xlabel, (this.L + this.R) / 2, this.h - 4); }
+      if (o.ylabel) { g.save(); g.translate(13, (this.T + this.B) / 2); g.rotate(-Math.PI / 2); g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(o.ylabel, 0, 0); g.restore(); }
+      g.restore(); return this;
+    }
+    clip(fn) { const g = this.g; g.save(); g.beginPath(); g.rect(this.L, this.T, this.R - this.L, this.B - this.T); g.clip(); fn(g); g.restore(); return this; }
+    line(xs, ys, s = {}) {
+      return this.clip(g => {
+        g.strokeStyle = s.color || tok.ink; g.lineWidth = s.width || 2; g.setLineDash(s.dash || []); g.lineJoin = "round";
+        g.beginPath(); let pen = false;
+        for (let i = 0; i < xs.length; i++) {
+          const y = ys[i]; if (!isFinite(y) || (this.o.ylog && y <= 0)) { pen = false; continue; }
+          const X = this.tx(xs[i]), Y = Math.max(-1e4, Math.min(1e4, this.ty(y)));
+          pen ? g.lineTo(X, Y) : g.moveTo(X, Y); pen = true;
+        }
+        g.stroke();
+      });
+    }
+    fn(f, s = {}, n = 240) {
+      const [a, b] = this.o.x, xs = [], ys = [];
+      for (let i = 0; i <= n; i++) { const x = this.o.xlog ? a * Math.pow(b / a, i / n) : a + (b - a) * i / n; xs.push(x); ys.push(f(x)); }
+      return this.line(xs, ys, s);
+    }
+    point(x, y, s = {}) { return this.clip(g => { g.fillStyle = s.color || tok.rust; g.strokeStyle = tok.panel; g.lineWidth = 2; g.beginPath(); g.arc(this.tx(x), this.ty(y), s.r || 5, 0, 7); g.fill(); g.stroke(); }); }
+    vline(x, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const X = this.tx(x); g.beginPath(); g.moveTo(X, this.T); g.lineTo(X, this.B); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "left"; g.textBaseline = "top"; g.fillText(s.label, X + (s.align === "right" ? -4 : 4), this.T + 4 + (s.dy || 0)); } }); }
+    hline(y, s = {}) { return this.clip(g => { g.strokeStyle = s.color || tok.muted; g.lineWidth = s.width || 1.2; g.setLineDash(s.dash || [4, 4]); const Y = this.ty(y); g.beginPath(); g.moveTo(this.L, Y); g.lineTo(this.R, Y); g.stroke(); if (s.label) { g.setLineDash([]); g.fillStyle = s.color || tok.muted; g.font = "11.5px system-ui"; g.textAlign = s.align || "right"; g.textBaseline = "bottom"; g.fillText(s.label, s.align === "left" ? this.L + 4 : this.R - 4, Y - 3); } }); }
+    band(x0, x1, color, alpha = .12) { return this.clip(g => { g.globalAlpha = alpha; g.fillStyle = color; g.fillRect(this.tx(x0), this.T, this.tx(x1) - this.tx(x0), this.B - this.T); }); }
+    text(x, y, t, s = {}) { const g = this.g; g.save(); g.font = (s.bold ? "600 " : "") + (s.size || 12) + "px system-ui,sans-serif"; g.fillStyle = s.color || tok.ink; g.textAlign = s.align || "left"; g.textBaseline = s.base || "middle"; g.fillText(t, this.tx(x) + (s.dx || 0), this.ty(y) + (s.dy || 0)); g.restore(); return this; }
+  }
+
+  /* ---------- drawing utilities for device pictures ---------- */
+  function rect(g, x, y, w, h, fill, stroke) { g.fillStyle = fill; g.fillRect(x, y, w, h); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1; g.strokeRect(x + .5, y + .5, w - 1, h - 1); } }
+  function label(g, t, x, y, o = {}) { g.save(); g.font = (o.bold ? "600 " : "") + (o.size || 13) + "px system-ui,sans-serif"; g.fillStyle = o.color || tok.ink; g.textAlign = o.align || "center"; g.textBaseline = o.base || "middle"; g.fillText(t, x, y); g.restore(); }
+  function arrow(g, x0, y0, x1, y1, color, w = 2, head = 8) {
+    g.save(); g.strokeStyle = color; g.fillStyle = color; g.lineWidth = w; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+    const a = Math.atan2(y1 - y0, x1 - x0); g.beginPath(); g.moveTo(x1, y1);
+    g.lineTo(x1 - head * Math.cos(a - .4), y1 - head * Math.sin(a - .4)); g.lineTo(x1 - head * Math.cos(a + .4), y1 - head * Math.sin(a + .4)); g.closePath(); g.fill(); g.restore();
+  }
+  function dot(g, x, y, r, fill, sign) { g.fillStyle = fill; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); if (sign && r >= 4) { g.strokeStyle = "#fff"; g.lineWidth = 1.3; g.beginPath(); g.moveTo(x - r * .55, y); g.lineTo(x + r * .55, y); if (sign === "+") { g.moveTo(x, y - r * .55); g.lineTo(x, y + r * .55); } g.stroke(); } }
+
+  /* ---------- animation loop that pauses off-screen / when paused ---------- */
+  function loop(step) {
+    let last = 0, running = true, visible = true;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const st = { get running() { return running; }, set running(v) { running = v; } };
+    if (reduce) running = false;
+    function f(t) { const dt = Math.min(0.05, (t - last) / 1000 || 0); last = t; if (running && visible && !document.hidden) step(dt); requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+    return st;
+  }
+
+  /* ---------- page chrome: text size, theme, full screen ---------- */
+  function chrome() {
+    const big = document.getElementById("tbig"), th = document.getElementById("ttheme"), fs = document.getElementById("tfs");
+    try { if (localStorage.getItem("nx-big") === "1") document.body.classList.add("big"); const t = localStorage.getItem("nx-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+    big && (big.onclick = () => { const on = document.body.classList.toggle("big"); try { localStorage.setItem("nx-big", on ? "1" : "0"); } catch (e) {} redrawAll(); });
+    th && (th.onclick = () => { const dark = getComputedStyle(root).getPropertyValue("color-scheme").trim() === "dark"; root.dataset.theme = dark ? "light" : "dark"; try { localStorage.setItem("nx-theme", root.dataset.theme); } catch (e) {} redrawAll(); });
+    const lab = document.querySelector(".lab");
+    fs && lab && lab.requestFullscreen ? (fs.onclick = () => document.fullscreenElement ? document.exitFullscreen() : lab.requestFullscreen()) : fs && (fs.hidden = true);
+    document.addEventListener("fullscreenchange", () => setTimeout(redrawAll, 60));
+    readTokens();
+  }
+  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", chrome) : chrome();
+
+  /* ---------- physical constants (SI unless stated) ---------- */
+  const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
+  C.Vt = C.k * C.T / C.q;
+
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, more, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+})();
+</script></head>
+<body>
+<div class="top"><div class="wrap">
+<a class="crumb" href="index.html">KKKC6353 Nanoelectronic Devices · Lecture 3 animations</a>
+<div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
+<button id="ttheme" type="button" title="Switch light/dark">Theme</button><button id="tfs" type="button" title="Show the animation full screen">Full screen</button></div></div></div>
+<div class="wrap"><header class="hero">
+    <p class="kicker">Animation 4 of 6 · Document 2, Section 4</p>
+    <h1>Resonant-tunnelling diode</h1><p class="lede">Two thin walls with a quantum well between them let electrons through almost perfectly at one energy and hardly at all at others. Raise the voltage and watch the well's level line up with the incoming electrons, then drop below them.</p></header>
+<div class="lab">
+  <div class="card stage">
+    <div class="fig"><h3>Energy along the device, and the chance of getting through at each energy</h3><canvas id="band"></canvas>
+      <div class="legend"><span><i style="background:var(--ink)"></i>conduction-band edge (barriers and well)</span><span><i style="background:var(--green)"></i>the well's allowed level</span><span><i class="dot" style="background:var(--electron)"></i>electrons arriving</span><span><i style="background:var(--blue)"></i>chance of getting through (right, log scale)</span></div></div>
+    <div class="figs">
+      <div class="fig solo"><h3>Current against voltage</h3><canvas id="iv"></canvas></div>
+      <div class="fig adv"><h3>Current against voltage at two temperatures</h3><canvas id="iv2"></canvas></div>
+    </div>
+  </div>
+  <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
+</div>
+<main class="notes">
+<section class="card"><h2>What you are seeing</h2>
+<p><b>A sharp filter.</b> Two AlGaAs barriers a couple of nanometres thick enclose a GaAs quantum well with one allowed level (green). Electrons whose energy matches that level pass through both barriers almost every time; all others are almost always reflected. The blue curve on the right shows this: near 100% at the level's energy, tiny elsewhere.</p>
+<p><b>The voltage moves the level.</b> The voltage tilts the picture and pulls the level down. When it lines up with the electrons waiting in the emitter (left), they pour through: the current peaks. When it drops below the bottom of the emitter's band, no electron has the right energy and the current falls. That fall is negative differential resistance.</p>
+<p><b>Watch the electrons.</b> Electrons arrive at many energies. Those at the right energy go straight through; the rest bounce back.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Raise the voltage slowly from zero and stop at the peak. Where is the green level compared with the electrons on the left?</li>
+<li>Go past the peak. Why does the current fall?</li>
+<li>Make the well narrower. Does the peak move to a higher or lower voltage? Why? (Think of Lecture 2: smaller box, higher level.)</li>
+<li>Make the barriers thicker. What happens to the sharpness of the blue peak, and to the current?</li>
+<li>In More detail, compare 77 K and 300 K. Why is the valley lower when cold?</li></ol></section>
+<section class="card"><h2>Check yourself</h2>
+<details><summary>How can an electron cross two barriers almost perfectly, when it rarely crosses one?</summary>At the level's energy, the waves bouncing back and forth between the two barriers add up in step, like a string driven at its own note. The reflections from the two barriers cancel, so the wave passes through. At other energies they do not cancel and almost all of the wave is reflected.</details>
+<details><summary>Why does a narrower well move the peak to a higher voltage?</summary>A narrower well raises its allowed level (energy grows as 1/L²). The voltage must then pull it down further before it lines up with the emitter's electrons.</details>
+<details><summary>Why is a resonant-tunnelling diode so fast?</summary>An electron spends only a very short time in the well, a fraction of a picosecond (shown in More detail as the level's lifetime), and the device is small with a tiny capacitance. RTD oscillators have reached about 2 THz.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>The conduction-band profile (barriers 0.33 eV high, effective mass 0.067 m<sub>0</sub> throughout) is cut into thin slices, with the applied voltage dropping linearly across the undoped region (the barriers, the well and 2 nm spacers). The transmission T(E, V) is calculated exactly with transfer matrices. The current is the Tsu–Esaki integral J ∝ ∫ T(E, V) N(E, V) dE, where N(E, V) = k<sub>B</sub>T ln[(1 + e<sup>(E<sub>F</sub>−E)/k<sub>B</sub>T</sup>)/(1 + e<sup>(E<sub>F</sub>−E−qV)/k<sub>B</sub>T</sup>)] counts the electrons available, with the emitter Fermi level 40 meV above its band edge. The level's lifetime is ħ/Γ, with Γ the width of the transmission peak.</p>
+<p class="caveat">Left out: charge building up in the well, scattering, band bending in the contacts and series resistance. Real devices show the same shape; their peak voltages are higher because part of the voltage drops elsewhere.</p></section>
+</main>
+<script>
+/* Tunnelling helpers for the Lecture 3 animations: exact 1-D transmission through piecewise-constant
+   potentials (transfer matrices). Energies in eV, lengths in nm, mass in units of the free-electron mass. */
+const TUN = (() => {
+  const HB2M = 0.0380998;      // ħ²/2m0 in eV·nm²
+  const HBAR = 0.6582119;      // ħ in eV·fs
+  const kT300 = 0.025852;
+  // complex helpers on [re, im]
+  const cm = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
+  const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
+  const cdiv = (a, b) => { const d = b[0] * b[0] + b[1] * b[1]; return [(a[0] * b[0] + a[1] * b[1]) / d, (a[1] * b[0] - a[0] * b[1]) / d]; };
+  const cexp = z => { const e = Math.exp(z[0]); return [e * Math.cos(z[1]), e * Math.sin(z[1])]; };
+  // wave number k = sqrt((E-V) m / HB2M): real above the step, imaginary (decay) below it
+  function kOf(E, V, m) { const s = (E - V) * m / HB2M; return s >= 0 ? [Math.sqrt(Math.max(s, 1e-12)), 0] : [0, Math.sqrt(-s)]; }
+  // P(k, x) = [[e^{ikx}, e^{-ikx}], [ik e^{ikx}, -ik e^{-ikx}]]
+  function P(k, x) {
+    const ik = [-k[1], k[0]], ep = cexp([-k[1] * x, k[0] * x]), em = cexp([k[1] * x, -k[0] * x]);
+    return [[ep, em], [cm(ik, ep), cm([-ik[0], -ik[1]], em)]];
+  }
+  function inv(M) {
+    const det = cadd(cm(M[0][0], M[1][1]), cm([-M[0][1][0], -M[0][1][1]], M[1][0]));
+    return [[cdiv(M[1][1], det), cdiv([-M[0][1][0], -M[0][1][1]], det)], [cdiv([-M[1][0][0], -M[1][0][1]], det), cdiv(M[0][0], det)]];
+  }
+  function mul(A, B) {
+    return [[cadd(cm(A[0][0], B[0][0]), cm(A[0][1], B[1][0])), cadd(cm(A[0][0], B[0][1]), cm(A[0][1], B[1][1]))],
+            [cadd(cm(A[1][0], B[0][0]), cm(A[1][1], B[1][0])), cadd(cm(A[1][0], B[0][1]), cm(A[1][1], B[1][1]))]];
+  }
+  const mv = (M, v) => [cadd(cm(M[0][0], v[0]), cm(M[0][1], v[1])), cadd(cm(M[1][0], v[0]), cm(M[1][1], v[1]))];
+  /* edges: interface positions (ascending); Vs: potential in each of edges.length+1 regions.
+     Returns { T, R, c: [[A,B] per region], ks } for an electron arriving from the left with amplitude 1. */
+  function solve(E, edges, Vs, m = 1) {
+    const ks = Vs.map(V => kOf(E, V, m)); let M = [[[1, 0], [0, 0]], [[0, 0], [1, 0]]]; const Ms = [];
+    for (let j = 0; j < edges.length; j++) { const Mj = mul(inv(P(ks[j + 1], edges[j])), P(ks[j], edges[j])); Ms.push(Mj); M = mul(Mj, M); }
+    const B0 = cdiv([-M[1][0][0], -M[1][0][1]], M[1][1]);
+    const c = [[[1, 0], B0]]; for (const Mj of Ms) c.push(mv(Mj, c[c.length - 1]));
+    const kL = ks[0][0], kR = ks[ks.length - 1][0], A = c[c.length - 1][0];
+    const T = kR > 0 && kL > 0 ? (A[0] * A[0] + A[1] * A[1]) * kR / kL : 0;
+    return { T, R: B0[0] * B0[0] + B0[1] * B0[1], c, ks };
+  }
+  // the stationary wave at positions xs (array), for the same arguments
+  function psi(xs, E, edges, Vs, m = 1) {
+    const s = solve(E, edges, Vs, m), re = new Float64Array(xs.length), im = new Float64Array(xs.length);
+    for (let i = 0; i < xs.length; i++) {
+      const x = xs[i]; let j = 0; while (j < edges.length && x > edges[j]) j++;
+      const k = s.ks[j], [A, B] = s.c[j];
+      const ep = cexp([-k[1] * x, k[0] * x]), em = cexp([k[1] * x, -k[0] * x]);
+      const v = cadd(cm(A, ep), cm(B, em)); re[i] = v[0]; im[i] = v[1];
+    }
+    return { re, im, T: s.T };
+  }
+  // single rectangular barrier, analytic and overflow-safe
+  function Trect(E, V0, d, m = 1) {
+    if (d <= 0) return 1;
+    if (E >= V0) return solve(E, [0, d], [0, V0, 0], m).T;
+    const ka = Math.sqrt((V0 - E) * m / HB2M) * d;
+    if (ka > 30) return 16 * E * (V0 - E) / (V0 * V0) * Math.exp(-2 * ka);
+    const s = Math.sinh(ka); return 1 / (1 + V0 * V0 * s * s / (4 * E * (V0 - E)));
+  }
+  const kappa = (dV, m = 1) => Math.sqrt(Math.max(dV, 0) * m / HB2M);
+  // "1 in N" style text for a probability
+  function odds(p) {
+    if (!(p > 0)) return "essentially never";
+    if (p >= 0.995) return "almost 100%";
+    if (p >= 0.01) return (100 * p).toFixed(p >= 0.1 ? 0 : 1) + "%";
+    const n = 1 / p;
+    if (n < 1e6) { const f = Math.pow(10, Math.max(0, Math.floor(Math.log10(n)) - 1)); return "1 in " + (Math.round(n / f) * f).toLocaleString("en-GB"); }
+    return "1 in " + NX.fmt(n, 1);
+  }
+  return { HB2M, HBAR, kT300, kOf, solve, psi, Trect, kappa, odds };
+})();
+
+(() => {
+  const st = { V: 0.05, Lw: 5, Lb: 2, T: 300 };
+  const VB = 0.33, M = 0.067, EF = 0.04, SP = 2;
+  const ctl = document.getElementById("ctl");
+  NX.slider(ctl, { id: "V", label: "Voltage", min: 0, max: 0.45, step: 0.005, value: st.V, unit: "V", dp: 3, on: v => { st.V = v; atV(); } });
+  NX.slider(ctl, { id: "Lw", label: "Well width", min: 3, max: 8, step: 0.25, value: st.Lw, unit: "nm", dp: 2, on: v => { st.Lw = v; rebuild(); } });
+  NX.slider(ctl, { id: "Lb", label: "Barrier thickness", min: 1, max: 3, step: 0.1, value: st.Lb, unit: "nm", dp: 1, on: v => { st.Lb = v; rebuild(); } });
+  NX.seg(ctl, { label: "Temperature", value: st.T, options: [[300, "300 K (room)"], [77, "77 K (liquid nitrogen)"]], on: v => { st.T = v; rebuild(); } });
+  const status = document.createElement("div"); status.className = "status"; ctl.appendChild(status);
+  const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
+  const iv = new NX.Plot(document.getElementById("iv"), { aspect: 1.45, x: [0, 0.45], y: [0, 1.2], xlabel: "Voltage (V)", ylabel: "Current (relative to peak)" });
+  const iv2 = new NX.Plot(document.getElementById("iv2"), { aspect: 1.45, x: [0, 0.45], y: [0, 1.2], xlabel: "Voltage (V)", ylabel: "Current (relative)" });
+
+  // geometry: emitter | spacer | barrier | well | barrier | spacer | collector, x = 0 at the first barrier
+  function profile(V) {
+    const La = 2 * SP + 2 * st.Lb + st.Lw, x0 = -SP, n = Math.max(30, Math.round(La / 0.25));
+    const edges = [], Us = [0];
+    for (let i = 0; i <= n; i++) edges.push(x0 + La * i / n);
+    for (let i = 0; i < n; i++) {
+      const xm = x0 + La * (i + 0.5) / n, inB = (xm > 0 && xm < st.Lb) || (xm > st.Lb + st.Lw && xm < 2 * st.Lb + st.Lw);
+      Us.push(-V * (xm - x0) / La + (inB ? VB : 0));
+    }
+    Us.push(-V); return { edges, Us, La, x0 };
+  }
+  const Tof = (E, P) => TUN.solve(E, P.edges, P.Us, M).T;
+  function supply(E, V, T) { const kT = 8.617e-5 * T, a = (EF - E) / kT, b = (EF - E - V) / kT; const lp = x => x > 30 ? x : Math.log1p(Math.exp(x)); return kT * (lp(a) - lp(b)); }
+  function currentAt(V, T) {
+    const P = profile(V), Emax = EF + 12 * 8.617e-5 * T, n = 180; let s = 0;
+    for (let i = 0; i < n; i++) { const E = (i + 0.5) * Emax / n; s += Tof(E, P) * supply(E, V, T) * Emax / n; }
+    return s;
+  }
+  let IV = null, IV77 = null, IV300 = null, P = null, Tline = null, lev = null;
+  function curveFor(T) { const xs = [], ys = []; for (let V = 0; V <= 0.4501; V += 0.01) { xs.push(V); ys.push(currentAt(V, T)); } return { xs, ys }; }
+  function peakValley(c) {
+    let ip = -1; for (let i = 1; i < c.ys.length - 1; i++) if (c.ys[i] > c.ys[i - 1] && c.ys[i] >= c.ys[i + 1]) { ip = i; break; }
+    if (ip < 0) return null; let iv = ip; for (let i = ip; i < c.ys.length - 1; i++) { if (c.ys[i] < c.ys[iv]) iv = i; if (c.ys[i + 1] > c.ys[i]) break; }
+    return { ip, iv };
+  }
+  function rebuild() {
+    zeroLevel(); G0 = NaN; IV = curveFor(st.T); IV.pv = peakValley(IV); IV.norm = IV.pv ? IV.ys[IV.pv.ip] : Math.max(...IV.ys);
+    IV77 = IV300 = null; atV();
+  }
+  // zero-bias level of the well (set once per geometry); under bias it moves down with the potential at the well centre
+  let E0 = 0.09;
+  function zeroLevel() {
+    const P0 = profile(0); let b = -1, e = NaN;
+    for (let i = 1; i <= 600; i++) { const E = VB * i / 601, T = Tof(E, P0); if (T > b) { b = T; e = E; } }
+    for (let r = 0; r < 30; r++) { const d = VB / 601 / Math.pow(1.6, r + 1), a = Tof(e - d, P0), c = Tof(e + d, P0); if (a > c) e -= d / 2; else e += d / 2; }
+    E0 = e;
+  }
+  let G0 = NaN;
+  function widthAt0() {      // full width at half maximum of the zero-bias resonance, from a fine scan
+    if (isFinite(G0)) return G0;
+    const P0 = profile(0), n = 800, span = 0.03, pts = [];
+    for (let i = 0; i <= n; i++) { const E = E0 - span + 2 * span * i / n; pts.push([E, Tof(E, P0)]); }
+    const pk = Math.max(...pts.map(q => q[1])), k = pts.findIndex(q => q[1] === pk); let a = k, b = k;
+    while (a > 0 && pts[a][1] > pk / 2) a--; while (b < n && pts[b][1] > pk / 2) b++;
+    G0 = pts[b][0] - pts[a][0]; return G0;
+  }
+  function findLevel(Pr, V) {
+    const La = 2 * SP + 2 * st.Lb + st.Lw, xc = st.Lb + st.Lw / 2, guess = E0 - V * (xc + SP) / La;
+    const n = 500, lo = Math.max(0.0005, -V + 0.0005), hi = VB + 0.05, Ts = [];
+    for (let i = 0; i <= n; i++) { const E = lo + (hi - lo) * i / n; Ts.push([E, Tof(E, Pr)]); }
+    let Elev = guess, Tpk = 0, G = NaN;
+    if (guess > lo) {        // refine: the transmission maximum near the expected position
+      let k = -1; Ts.forEach(([E, T], i) => { if (Math.abs(E - guess) < 0.03 && (k < 0 || T > Ts[k][1])) k = i; });
+      if (k >= 0) { Elev = Ts[k][0]; Tpk = Ts[k][1];
+        if (Tpk > 0.3) { const half = Tpk / 2; let a = k, b = k; while (a > 0 && Ts[a][1] > half) a--; while (b < n && Ts[b][1] > half) b++; G = Ts[b][0] - Ts[a][0]; } }
+    }
+    return { E: Elev, Tpk, G, Ts };
+  }
+  function atV() {
+    P = profile(st.V); lev = findLevel(P, st.V);
+    const Iv = currentAt(st.V, st.T) / IV.norm, pv = IV.pv;
+    const Vp = pv ? IV.xs[pv.ip] : NaN, PVCR = pv ? IV.ys[pv.ip] / IV.ys[pv.iv] : NaN;
+    const L0 = { E: E0, G: widthAt0() };
+    ro.innerHTML = `<dt>Current (relative to peak)</dt><dd>${Iv.toFixed(2)}</dd>
+      <dt>Level above the emitter's band edge</dt><dd>${(lev.E * 1e3).toFixed(0)} meV</dd>
+      <dt>Peak at</dt><dd>${pv ? (Vp * 1e3).toFixed(0) + " mV" : "—"}</dd>
+      <dt class="adv">Peak-to-valley ratio</dt><dd class="adv">${pv ? PVCR.toFixed(1) : "—"}</dd>
+      <dt class="adv">Level at zero voltage</dt><dd class="adv">${(L0.E * 1e3).toFixed(0)} meV</dd>
+      <dt class="adv">Level width Γ (at 0 V)</dt><dd class="adv">${isFinite(L0.G) ? (L0.G * 1e3).toFixed(2) + " meV" : "—"}</dd>
+      <dt class="adv">Time in the well ħ/Γ</dt><dd class="adv">${isFinite(L0.G) ? (TUN.HBAR / L0.G).toFixed(0) + " fs" : "—"}</dd>`;
+    const below = lev.E < 0, near = lev.E >= 0 && lev.E <= EF + 0.01;
+    status.className = "status " + (below ? "bad" : "good");
+    status.textContent = below ? "The level has dropped below the emitter's electrons: nothing has the right energy, so the current falls (negative differential resistance)." :
+      near ? "The level lines up with the electrons in the emitter: they pass straight through. This is resonance, near the current peak." :
+      "The level is above the electrons waiting in the emitter: few have the right energy, so little current flows.";
+    drawIV(); drawIV2();
+  }
+  // ----- band picture -----
+  let dots = [];
+  function drawBand() {
+    const cv = document.getElementById("band"), t = NX.tok, narrow = (cv.clientWidth || 700) < 560;
+    const { g, w, h } = NX.fitCanvas(cv, narrow ? 1.25 : 2.2);
+    g.clearRect(0, 0, w, h); g.fillStyle = t.panel; g.fillRect(0, 0, w, h);
+    const La = 2 * SP + 2 * st.Lb + st.Lw, xL = -SP - 8, xR = La - SP + 8, split = narrow ? 0.66 : 0.72;
+    const Elo = -0.5, Ehi = 0.42, pl = 40, pt = narrow ? 24 : 14, pb = 26, xw = (w - pl) * split;
+    const X = x => pl + (x - xL) / (xR - xL) * (xw - 10), Y = E => h - pb - (E - Elo) / (Ehi - Elo) * (h - pt - pb);
+    g.font = "11px system-ui"; g.textAlign = "right"; g.textBaseline = "middle";
+    for (let E = -0.4; E <= 0.401; E += 0.1) { g.strokeStyle = t.grid; g.beginPath(); g.moveTo(pl, Y(E)); g.lineTo(w - 6, Y(E)); g.stroke(); g.fillStyle = t.muted; g.fillText(E.toFixed(1), pl - 4, Y(E)); }
+    NX.label(g, "energy (eV)", 4, 8, { align: "left", size: 11, color: t.ink });
+    const U = x => x < -SP ? 0 : x > La - SP ? -st.V : -st.V * (x + SP) / La + (((x > 0 && x < st.Lb) || (x > st.Lb + st.Lw && x < 2 * st.Lb + st.Lw)) ? VB : 0);
+    // electrons in emitter and collector
+    g.fillStyle = t.nplus; g.fillRect(X(xL), Y(EF), X(-SP) - X(xL), Y(0) - Y(EF)); g.fillRect(X(La - SP), Y(-st.V + EF), X(xR) - X(La - SP), Y(-st.V) - Y(-st.V + EF));
+    g.strokeStyle = t.ink; g.lineWidth = 2; g.beginPath(); for (let i = 0; i <= 600; i++) { const x = xL + (xR - xL) * i / 600; i ? g.lineTo(X(x), Y(U(x))) : g.moveTo(X(x), Y(U(x))); } g.stroke();
+    // level in the well
+    const yl = Y(lev.E); g.strokeStyle = t.green; g.lineWidth = 3; g.beginPath(); g.moveTo(X(st.Lb + 0.2), yl); g.lineTo(X(st.Lb + st.Lw - 0.2), yl); g.stroke();
+    NX.label(g, "emitter", X(xL + 4), Y(-0.08), { size: 11, color: t.ink }); NX.label(g, "collector", X(xR - 4), Y(-st.V - 0.08), { size: 11, color: t.ink });
+    NX.label(g, "well", X(st.Lb + st.Lw / 2), Y(Math.min(0.39, VB + 0.05)), { size: 11, color: t.muted });
+    dots.forEach(p => NX.dot(g, X(p.x), Y(p.E), 3.4, p.go ? t.electron : t.muted));
+    // transmission side panel, log scale 1e-6..1
+    const x0 = pl + xw + 8, x1 = w - 8, TX = T => x0 + (Math.log10(Math.max(T, 1e-6)) + 6) / 6 * (x1 - x0);
+    g.strokeStyle = t.line; g.lineWidth = 1; g.strokeRect(x0, pt, x1 - x0, h - pt - pb);
+    g.fillStyle = t.muted; g.font = "10.5px system-ui"; g.textAlign = "center"; g.textBaseline = "top";
+    [[1e-6, "10⁻⁶"], [1e-3, "10⁻³"], [1, "1"]].forEach(([v, s]) => g.fillText(s, TX(v), h - pb + 3));
+    g.fillText("chance through", (x0 + x1) / 2, h - pb + 13);
+    g.save(); g.beginPath(); g.rect(x0, pt, x1 - x0, h - pt - pb); g.clip();
+    g.strokeStyle = t.blue; g.lineWidth = 2; g.beginPath(); let pen = false;
+    lev.Ts.forEach(([E, T]) => { if (!(T > 0)) { pen = false; return; } pen ? g.lineTo(TX(T), Y(E)) : g.moveTo(TX(T), Y(E)); pen = true; }); g.stroke(); g.restore();
+    g.strokeStyle = t.green; g.setLineDash([3, 3]); g.lineWidth = 1; g.beginPath(); g.moveTo(X(st.Lb + st.Lw), yl); g.lineTo(x1, yl); g.stroke(); g.setLineDash([]);
+  }
+  function step(dt) {
+    const rate = 7; if (Math.random() < rate * dt) {
+      const E = Math.random() * EF, T = Tof(Math.max(E, 1e-4), P), go = Math.random() < Math.min(1, T * 1.0);
+      dots.push({ x: -SP - 7, E, go, dir: 1, v: 5.5 });   // tunnelling is elastic: each electron keeps its energy
+    }
+    const La = 2 * SP + 2 * st.Lb + st.Lw;
+    dots.forEach(p => {
+      p.x += p.dir * p.v * dt;
+      if (!p.go && p.dir > 0 && p.x >= -0.05) p.dir = -1;
+    });
+    dots = dots.filter(p => p.x > -SP - 8.5 && p.x < La - SP + 8.5);
+  }
+  function drawIV() {
+    const t = NX.tok; iv.begin().axes();
+    if (IV.pv) iv.band(IV.xs[IV.pv.ip], IV.xs[IV.pv.iv], t.rust, 0.08);
+    iv.line(IV.xs, IV.ys.map(y => y / IV.norm), { color: t.ink, width: 2.4 });
+    iv.point(st.V, currentAt(st.V, st.T) / IV.norm, { color: t.rust });
+  }
+  function drawIV2() {
+    if (!document.body.classList.contains("more")) return;
+    const t = NX.tok; if (!IV77) { IV77 = curveFor(77); IV300 = curveFor(300); }
+    const nrm = Math.max(...IV300.ys.slice(0, 30), ...IV77.ys.slice(0, 30));
+    iv2.begin().axes(); iv2.line(IV300.xs, IV300.ys.map(y => y / nrm), { color: t.rust, width: 2.2 }); iv2.line(IV77.xs, IV77.ys.map(y => y / nrm), { color: t.blue, width: 2.2 });
+    iv2.text(0.44, 1.12, "red: 300 K · blue: 77 K", { align: "right", size: 11, color: t.muted }); iv2.vline(st.V, { color: t.muted });
+  }
+  NX.loop(dt => { step(dt); drawBand(); });
+  NX.onRedraw(() => { atV(); drawBand(); });
+  rebuild(); drawBand();
+})();
+</script>
+<footer class="nav wrap"><a href="tunnel-diode.html" rel="prev"><small>← Previous</small>Tunnel diode</a><a href="tunnel-fet.html" rel="next" style="text-align:right"><small>Next →</small>Tunnel FET versus MOSFET</a></footer><p class="wrap foot">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>
+</body></html>
