@@ -1,12 +1,12 @@
 <!--META
-{"num":3,"slug":"quantum-well-emission","title":"Quantum-well emission","ref":"Document 3, Section 6.1","blurb":"A quantum-well laser emits at the band gap plus the confinement energies of the electron and the hole. Change the well width and the barrier composition and watch both levels move and the emission wavelength shift."}
+{"num":3,"slug":"quantum-well-emission","title":"Quantum-well emission","ref":"Document 2, Section 3","blurb":"In a quantum-well laser, electrons and holes meet in a thin layer and give out light. Change the thickness of the layer and watch the colour of the light change, without changing the material."}
 -->
 <div class="lab">
   <div class="card stage">
-    <div class="fig"><h3>Band diagram of a GaAs quantum well between Al<sub>x</sub>Ga<sub>1−x</sub>As barriers</h3><canvas id="band"></canvas>
-      <div class="legend"><span><i style="background:var(--blue)"></i>conduction band and electron state</span><span><i style="background:var(--hole)"></i>valence band and heavy-hole state</span><span><i style="background:var(--rust)"></i>emitted photon</span></div></div>
-    <div class="figs">
-      <div class="fig"><h3>Emission wavelength against well width</h3><canvas id="wl"></canvas></div>
+    <div class="fig"><h3>A thin GaAs layer (the well) between AlGaAs layers: the electron and hole levels, and the light</h3><canvas id="band"></canvas>
+      <div class="legend"><span><i style="background:var(--blue)"></i>electrons: their band and trapped level</span><span><i style="background:var(--hole)"></i>holes: their band and trapped level</span><span><i style="background:var(--rust)"></i>the light given out</span></div></div>
+    <div class="figs adv">
+      <div class="fig"><h3>Wavelength of the light against well thickness</h3><canvas id="wl"></canvas></div>
       <div class="fig"><h3>Where the energy goes</h3><canvas id="bud"></canvas></div>
     </div>
   </div>
@@ -14,25 +14,23 @@
 </div>
 <main class="notes">
 <section class="card"><h2>What you are seeing</h2>
-<p><b>A type I well traps both carriers.</b> GaAs has a smaller band gap than AlGaAs, so in a thin GaAs layer the conduction band dips down and the valence band bumps up: a well for electrons and a well for holes in the same place. About 65% of the band-gap difference appears in the conduction band and 35% in the valence band.</p>
-<p><b>Both carriers are confined.</b> Each sits in its lowest level, above (or, for the hole, below) its band edge. When an electron and a hole recombine, the photon carries</p>
-<span class="eq">E<sub>photon</sub> = E<sub>g</sub>(GaAs) + E<sub>1e</sub> + E<sub>1hh</sub></span>
-<p>so the narrower the well, the higher the photon energy and the shorter the wavelength. The heavy hole is ten times heavier than the electron, so its confinement energy is much smaller: most of the shift comes from the electron. Deeper barriers (more aluminium) confine more strongly and push the levels further from the band edges.</p>
-<p>GaAs wells emit in the near-infrared, between about 760 and 870 nm: these are the lasers of optical mice, short-reach fibre links and many laser printers. The same idea with InGaN wells in GaN gives the blue LED.</p></section>
-<section class="card"><h2>Try this in class</h2><ol>
-<li>Start at 10 nm, x = 0.3. Read the emission wavelength (about 848 nm) against bulk GaAs (871 nm). How much of the shift is the electron's?</li>
-<li>Predict, then set, 5 nm. The wavelength shortens to about 816 nm. Why does halving the width not double the shift?</li>
-<li>At 3 nm, lower x to 0.1. The levels approach the barrier tops and the shift stops growing: a shallow well cannot hold its electron tightly.</li>
-<li>Find the width that gives 800 nm with x = 0.3. A laser designer tunes the colour this way without changing the material.</li></ol></section>
+<p><b>A trap for both.</b> A thin layer of GaAs sits between layers of AlGaAs. Electrons have a lower energy in the GaAs, and so do holes (the empty places left where electrons are missing). So the thin layer is a well that traps both.</p>
+<p><b>They meet and give out light.</b> An electron drops into a hole and gives out its energy as light. Because each is trapped in a box, each sits on a trapped level a little away from the bottom of its band. So the light carries slightly more energy than GaAs alone would give.</p>
+<p><b>Thinner layer, shorter wavelength.</b> Make the well thinner and both trapped levels move further out, so the light has more energy and a shorter wavelength. The designer tunes the colour by choosing the thickness. GaAs wells give near-infrared light, used in optical links, sensors and laser printers.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Start at 10 nm. Read the wavelength, then compare it with bulk GaAs (871 nm).</li>
+<li>Predict whether a 5 nm well gives a longer or a shorter wavelength, then try it.</li>
+<li>Look at the picture as you make the well thinner. Which level moves more, the electron's or the hole's?</li>
+<li>Find the thickness that gives 830 nm.</li></ol></section>
 <section class="card"><h2>Check yourself</h2>
-<details><summary>Why does the photon energy exceed the GaAs band gap?</summary>The electron cannot sit at the bottom of the conduction band, nor the hole at the top of the valence band: both have zero-point confinement energies. The photon carries the band gap plus both of them.</details>
-<details><summary>Why is the hole's confinement energy so small?</summary>Confinement energy scales as 1/m*. The heavy hole (0.5 m<sub>0</sub>) is about 7.5 times heavier than the electron (0.067 m<sub>0</sub>), so for the same width its energy is several times smaller.</details>
-<details><summary>Why does the shift saturate in very narrow wells?</summary>The levels cannot rise above the barrier tops. As the well narrows, more of each wavefunction spreads into the barriers and the electron and hole are no longer well confined; eventually the "well" barely binds them.</details></section>
-<section class="card"><h2>The model behind it</h2>
-<p>Finite square wells for the electron (<var>m</var>* = 0.067 m<sub>0</sub>) and the heavy hole (0.50 m<sub>0</sub>), with barrier heights ΔE<sub>c</sub> = 0.65ΔE<sub>g</sub> and ΔE<sub>v</sub> = 0.35ΔE<sub>g</sub>, where</p>
-<span class="eq">E<sub>g</sub>(Al<sub>x</sub>Ga<sub>1−x</sub>As) = 1.424 + 1.247x eV &nbsp; (x &lt; 0.45, 300 K)</span>
-<p>Levels are found from the even-parity matching condition, as in Animation 1.</p>
-<p class="caveat">Left out: the exciton binding energy (about 8 meV, which lowers the photon energy slightly), mass changes at the interfaces, strain, and the light-hole subband. The model reproduces measured GaAs/AlGaAs emission to within about 10 nm.</p></section>
+<details><summary>Why is the light from a quantum well bluer than from bulk GaAs?</summary>The electron and hole are trapped in a box, so neither can sit at the very bottom of its band. The light carries the band gap plus both of their trapped energies.</details>
+<details><summary>Why does the hole's level move less than the electron's?</summary>The hole behaves as a much heavier particle. In a box, a heavier particle has its energies closer together and nearer the bottom.</details>
+<details><summary>How can one material make lasers of different colours?</summary>By changing the thickness of the well. The thickness sets the trapped energies, and so the colour.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>Finite square wells for the electron (<var>m</var>* = 0.067 m<sub>0</sub>) and the heavy hole (0.50 m<sub>0</sub>). The barriers are Al<sub>x</sub>Ga<sub>1−x</sub>As with E<sub>g</sub> = 1.424 + 1.247x eV; 65% of the extra gap goes to the electron wall and 35% to the hole wall. The photon energy is</p>
+<span class="eq">E<sub>photon</sub> = E<sub>g</sub>(GaAs) + E<sub>1e</sub> + E<sub>1hh</sub></span>
+<p>"More detail" lets you change the aluminium fraction, which sets the height of the walls, and shows the wavelength against thickness and how the photon energy is shared.</p>
+<p class="caveat">Left out: the electron–hole attraction (about 8 meV), strain and the light hole. The model matches measured GaAs/AlGaAs wells to within about 10 nm.</p></section>
 </main>
 <script>
 /*INCLUDE qm.js*/
@@ -40,11 +38,12 @@
   const st = { L: 10, x: 0.3 };
   const me = 0.067, mh = 0.50, Eg = 1.424;
   const ctl = document.getElementById("ctl");
-  NX.slider(ctl, { id: "L", label: "Well width", min: 2, max: 20, step: 0.1, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
-  NX.slider(ctl, { id: "x", label: "Aluminium fraction x in barriers", min: 0.1, max: 0.45, step: 0.01, value: st.x, dp: 2, on: v => { st.x = v; update(); } });
+  NX.slider(ctl, { id: "L", label: "Well thickness", min: 2, max: 20, step: 0.1, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
+  NX.slider(ctl, { id: "x", label: "Wall height: aluminium in AlGaAs", min: 0.1, max: 0.45, step: 0.01, value: st.x, dp: 2, on: v => { st.x = v; update(); } }).el.classList.add("adv");
   const sw = document.createElement("div"); sw.className = "status"; ctl.appendChild(sw);
   const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
-  const wlp = new NX.Plot(document.getElementById("wl"), { aspect: 1.25, x: [2, 20], y: [740, 880], xlabel: "Well width (nm)", ylabel: "Emission wavelength (nm)" });
+  NX.more(ctl);
+  const wlp = new NX.Plot(document.getElementById("wl"), { aspect: 1.25, x: [2, 20], y: [740, 880], xlabel: "Well thickness (nm)", ylabel: "Wavelength of the light (nm)" });
   const bud = new NX.Plot(document.getElementById("bud"), { aspect: 1.25, x: [0, 3], y: [1.38, 1.75], xlabel: "axis starts at 1.38 eV", ylabel: "Energy (eV)", nt: 4, noxt: true });
   const calc = (L, x) => {
     const dEg = 1.247 * x, Vc = 0.65 * dEg, Vv = 0.35 * dEg;
@@ -54,13 +53,14 @@
   let M;
   function update() {
     M = calc(st.L, st.x);
-    ro.innerHTML = `<dt>Barrier gap</dt><dd>${(Eg + 1.247 * st.x).toFixed(3)} eV</dd>
-      <dt>ΔE<sub>c</sub> / ΔE<sub>v</sub></dt><dd>${(M.Vc * 1e3).toFixed(0)} / ${(M.Vv * 1e3).toFixed(0)} meV</dd>
-      <dt>Electron level E<sub>1e</sub></dt><dd>${(M.e.E * 1e3).toFixed(1)} meV</dd>
-      <dt>Heavy-hole level E<sub>1hh</sub></dt><dd>${(M.hh.E * 1e3).toFixed(1)} meV</dd>
-      <dt>Photon energy</dt><dd>${M.E.toFixed(3)} eV</dd>
-      <dt>Wavelength</dt><dd>${M.wl.toFixed(0)} nm</dd>
-      <dt>Shift from bulk GaAs</dt><dd>${(QM.h_c / Eg - M.wl).toFixed(0)} nm shorter</dd>`;
+    ro.innerHTML = `<dt>Wavelength of the light</dt><dd>${M.wl.toFixed(0)} nm</dd>
+      <dt>Bulk GaAs, for comparison</dt><dd>871 nm</dd>
+      <dt class="adv">Barrier gap</dt><dd class="adv">${(Eg + 1.247 * st.x).toFixed(3)} eV</dd>
+      <dt class="adv">Wall heights ΔE<sub>c</sub> / ΔE<sub>v</sub></dt><dd class="adv">${(M.Vc * 1e3).toFixed(0)} / ${(M.Vv * 1e3).toFixed(0)} meV</dd>
+      <dt class="adv">Electron level E<sub>1e</sub></dt><dd class="adv">${(M.e.E * 1e3).toFixed(1)} meV</dd>
+      <dt class="adv">Hole level E<sub>1hh</sub></dt><dd class="adv">${(M.hh.E * 1e3).toFixed(1)} meV</dd>
+      <dt class="adv">Photon energy</dt><dd class="adv">${M.E.toFixed(3)} eV</dd>
+      <dt>Shorter than bulk by</dt><dd>${(QM.h_c / Eg - M.wl).toFixed(0)} nm</dd>`;
     sw.innerHTML = `<span style="display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;background:${QM.wlColor(M.wl)}"></span>${QM.band(M.wl)}: ${M.wl < 780 ? "just visible as deep red" : "invisible to the eye"}`;
     draw();
   }
@@ -100,10 +100,10 @@
     NX.dot(g, xm, Y(Eg + M.e.E) - 4, 6, t.electron, "-"); NX.dot(g, xm, Y(-M.hh.E) + 4, 6, t.hole, "+");
     // labels
     const lx = X(xR) + 8;
-    NX.label(g, "E_c", lx, Y(Eg + M.Vc), { align: "left", size: 12, color: t.electron });
-    NX.label(g, `E_1e = ${(M.e.E * 1e3).toFixed(0)} meV`, lx, Y(Eg + M.e.E) + 12, { align: "left", size: 11.5, color: t.electron });
-    NX.label(g, "E_v", lx, Y(-M.Vv), { align: "left", size: 12, color: t.hole });
-    NX.label(g, `E_1hh = ${(M.hh.E * 1e3).toFixed(0)} meV`, lx, Y(-M.hh.E) - 12, { align: "left", size: 11.5, color: t.hole });
+    NX.label(g, "electrons", lx, Y(Eg + M.Vc), { align: "left", size: 12, color: t.electron });
+    NX.label(g, `level +${(M.e.E * 1e3).toFixed(0)} meV`, lx, Y(Eg + M.e.E) + 12, { align: "left", size: 11.5, color: t.electron });
+    NX.label(g, "holes", lx, Y(-M.Vv), { align: "left", size: 12, color: t.hole });
+    NX.label(g, `level −${(M.hh.E * 1e3).toFixed(0)} meV`, lx, Y(-M.hh.E) - 12, { align: "left", size: 11.5, color: t.hole });
     NX.label(g, "AlGaAs", (X(xL) + X(-a)) / 2, Y(Eg / 2), { size: 12.5, color: t.muted }); NX.label(g, "AlGaAs", (X(a) + X(xR)) / 2, Y(Eg / 2), { size: 12.5, color: t.muted });
     NX.label(g, "GaAs", X(0), h - pb + 14, { size: 12, color: t.ink, bold: true });
     NX.label(g, `${st.L.toFixed(1)} nm`, X(0), h - pb - 8, { size: 11, color: t.muted });

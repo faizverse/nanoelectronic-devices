@@ -115,6 +115,10 @@ footer.nav small{display:block;color:var(--muted);font-weight:400}
 .foot{color:var(--muted);font-size:.8rem;padding-bottom:2rem}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+body:not(.more) .adv{display:none!important}
+.more-btn{font:inherit;font-size:.86rem;padding:.45rem .6rem;border-radius:6px;border:1px dashed var(--muted);background:transparent;color:var(--navy);cursor:pointer;text-align:left}
+.more-btn:hover{border-color:var(--rust);color:var(--rust)}
+body:not(.more) .fig.solo{max-width:400px;width:100%;justify-self:center}
 </style>
 <script>/* Shared helpers for the KKKC6353 animations: theme tokens, controls, plots, animation loop. */
 const NX = (() => {
@@ -179,6 +183,14 @@ const NX = (() => {
     function set(v) { val = v; btns.forEach(([k, b]) => b.setAttribute("aria-pressed", k === v)); }
     host.appendChild(w);
     return { get value() { return val; }, set value(v) { set(v); }, el: w };
+  }
+
+  /* ---------- "More detail" toggle: shows every element marked .adv ---------- */
+  function more(host, o = {}) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "more-btn";
+    const set = on => { document.body.classList.toggle("more", on); b.setAttribute("aria-expanded", on); b.textContent = on ? "Show less detail" : "More detail: numbers and graphs"; };
+    b.onclick = () => { set(!document.body.classList.contains("more")); redrawAll(); o.on && o.on(); };
+    set(false); host.appendChild(b); return b;
   }
 
   /* ---------- canvas with DPR handling ---------- */
@@ -294,7 +306,7 @@ const NX = (() => {
   const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
   C.Vt = C.k * C.T / C.q;
 
-  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, more, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
 })();
 </script></head>
 <body>
@@ -321,22 +333,22 @@ const NX = (() => {
     .banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
     .artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}</style><div class="wrap"><header class="hero"><p class="kicker">KKKC6353 Nanoelectronic Devices</p>
     <h1>Lecture 2 — interactive animations</h1><p class="byline">Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p>
-    <p class="lede">Seven interactive models that go with the Lecture 2 notes: an electron in a box, how confinement reshapes the density of states, carbon nanotubes, quantum-dot colour, and how quantum structures are grown and used in lasers. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p></header>
+    <p class="lede">Seven interactive models that go with the Lecture 2 notes: an electron in a box, how trapping electrons shares out their energies, quantum-well and cascade lasers, carbon nanotubes, quantum-dot colour, and how dots are grown. Each opens in a simple view; press More detail for the numbers and graphs. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p></header>
     <div class="tiles"><a class="card tile" href="particle-in-a-box.html">
     <span class="num">01</span><span class="t">Particle in a box</span>
-    <span class="b">Trap an electron in a well and only certain energies are allowed. Change the width, the walls and the effective mass and watch the levels and wavefunctions respond — infinite walls against the finite walls of a real heterostructure.</span><span class="pills"><span class="pill">Document 1, Sections 4–6</span></span></a><a class="card tile" href="density-of-states.html">
+    <span class="b">Trap an electron in a tiny box and only certain energies are allowed, like the notes of a guitar string. Squeeze the box, make the walls leaky, and watch the allowed energies and the waves change.</span><span class="pills"><span class="pill">Document 1, Section 6</span></span></a><a class="card tile" href="density-of-states.html">
     <span class="num">02</span><span class="t">Density of states, 3D to 0D</span>
-    <span class="b">Confine electrons in one, two or three directions and watch the density of states change shape — from a smooth curve to steps, spikes and finally sharp atom-like lines — and see where the electrons actually sit.</span><span class="pills"><span class="pill">Document 2, Section 2</span></span></a><a class="card tile" href="quantum-well-emission.html">
+    <span class="b">How many places are there for electrons at each energy? Trap the electrons in one, two or three directions and watch the places bunch up, from a smooth curve to a staircase, sharp peaks and finally single sharp levels.</span><span class="pills"><span class="pill">Document 2, Section 2</span></span></a><a class="card tile" href="quantum-well-emission.html">
     <span class="num">03</span><span class="t">Quantum-well emission</span>
-    <span class="b">A quantum-well laser emits at the band gap plus the confinement energies of the electron and the hole. Change the well width and the barrier composition and watch both levels move and the emission wavelength shift.</span><span class="pills"><span class="pill">Document 3, Section 6.1</span></span></a><a class="card tile" href="quantum-cascade-laser.html">
+    <span class="b">In a quantum-well laser, electrons and holes meet in a thin layer and give out light. Change the thickness of the layer and watch the colour of the light change, without changing the material.</span><span class="pills"><span class="pill">Document 2, Section 3</span></span></a><a class="card tile" href="quantum-cascade-laser.html">
     <span class="num">04</span><span class="t">Quantum cascade laser</span>
-    <span class="b">Electrons tumble down a staircase of quantum wells, emitting a photon at every step and tunnelling on to the next. Tune the bias until the steps line up, and choose the well width that sets the infrared colour.</span><span class="pills"><span class="pill">Document 3, Section 6.4</span></span></a><a class="card tile" href="quantum-dot-colour.html">
-    <span class="num">05</span><span class="t">Quantum-dot colour</span>
-    <span class="b">The same material glows a different colour depending only on the size of the crystal. Grow the dot, change the material, and compare the Brus equation's prediction with what is actually measured.</span><span class="pills"><span class="pill">Document 2, Section 6</span></span></a><a class="card tile" href="carbon-nanotubes.html">
-    <span class="num">06</span><span class="t">Carbon nanotubes: roll your own</span>
-    <span class="b">Choose how to roll a sheet of graphene and the nanotube you get is either a metal or a semiconductor. Pick the chiral indices (n, m), see the tube, its diameter and band gap, and whether it could make a transistor.</span><span class="pills"><span class="pill">Document 2, Section 5</span></span></a><a class="card tile" href="quantum-dot-growth.html">
+    <span class="b">Electrons run down a staircase of quantum wells, giving out a photon at every step. Turn up the voltage until the steps line up and the laser switches on, and change the step size to change the colour.</span><span class="pills"><span class="pill">Document 2, Section 4</span></span></a><a class="card tile" href="carbon-nanotubes.html">
+    <span class="num">05</span><span class="t">Carbon nanotubes: roll your own</span>
+    <span class="b">Roll a sheet of graphene into a tube and the way you roll it decides whether the tube is a metal or a semiconductor. Choose the roll, see the tube, and find out whether it could make a transistor.</span><span class="pills"><span class="pill">Document 2, Section 6</span></span></a><a class="card tile" href="quantum-dot-colour.html">
+    <span class="num">06</span><span class="t">Quantum-dot colour</span>
+    <span class="b">Dots of the same material glow different colours depending only on their size. Grow the dot, change the material, and watch the colour of its light change.</span><span class="pills"><span class="pill">Document 2, Section 7</span></span></a><a class="card tile" href="quantum-dot-growth.html">
     <span class="num">07</span><span class="t">Growing quantum dots</span>
-    <span class="b">Two ways nature builds quantum dots for us: a strained film that breaks up into islands, and nanocrystals that nucleate and grow in a hot flask. Deposit, inject, watch and quench.</span><span class="pills"><span class="pill">Document 3, Sections 3–4</span></span></a></div>
+    <span class="b">Two ways quantum dots build themselves: a squeezed film that breaks up into islands, and tiny crystals that seed and grow in a hot flask. Add material, inject, watch the dots grow, and stop them at the colour you want.</span><span class="pills"><span class="pill">Document 3, Sections 3–4</span></span></a></div>
     <section class="card howto"><h2>Using these in class</h2>
     <ul><li>Use <b>A+</b> for larger text when projecting, and <b>Full screen</b> to show just the animation.</li>
     <li>Every page works offline: save it (File → Save Page As) and it runs without a network connection.</li>

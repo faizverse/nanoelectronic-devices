@@ -63,6 +63,14 @@ const NX = (() => {
     return { get value() { return val; }, set value(v) { set(v); }, el: w };
   }
 
+  /* ---------- "More detail" toggle: shows every element marked .adv ---------- */
+  function more(host, o = {}) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "more-btn";
+    const set = on => { document.body.classList.toggle("more", on); b.setAttribute("aria-expanded", on); b.textContent = on ? "Show less detail" : "More detail: numbers and graphs"; };
+    b.onclick = () => { set(!document.body.classList.contains("more")); redrawAll(); o.on && o.on(); };
+    set(false); host.appendChild(b); return b;
+  }
+
   /* ---------- canvas with DPR handling ---------- */
   function fitCanvas(cv, aspect) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
@@ -176,5 +184,5 @@ const NX = (() => {
   const C = { q: 1.602e-19, k: 1.381e-23, eps0: 8.854e-12, epsSi: 11.7 * 8.854e-12, epsOx: 3.9 * 8.854e-12, T: 300 };
   C.Vt = C.k * C.T / C.q;
 
-  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
+  return { tok, readTokens, onRedraw, redrawAll, fmt, si, sup, slider, seg, more, fitCanvas, Plot, rect, label, arrow, dot, loop, C };
 })();

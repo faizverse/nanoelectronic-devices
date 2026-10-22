@@ -1,53 +1,54 @@
 <!--META
-{"num":2,"slug":"density-of-states","title":"Density of states, 3D to 0D","ref":"Document 2, Section 2","blurb":"Confine electrons in one, two or three directions and watch the density of states change shape — from a smooth curve to steps, spikes and finally sharp atom-like lines — and see where the electrons actually sit."}
+{"num":2,"slug":"density-of-states","title":"Density of states, 3D to 0D","ref":"Document 2, Section 2","blurb":"How many places are there for electrons at each energy? Trap the electrons in one, two or three directions and watch the places bunch up, from a smooth curve to a staircase, sharp peaks and finally single sharp levels."}
 -->
 <div class="lab">
   <div class="card stage">
-    <div class="fig"><h3>Density of states g(E) and where the electrons are, g(E)·f(E)</h3><canvas id="dos"></canvas>
-      <div class="legend"><span><i style="background:var(--blue)"></i>available states g(E)</span><span><i style="background:var(--rust);height:9px"></i>occupied states (electrons)</span><span><i style="background:var(--muted)"></i>bulk, for comparison</span></div></div>
+    <div class="fig"><h3>Places available to electrons at each energy, and where the electrons actually sit</h3><canvas id="dos"></canvas>
+      <div class="legend"><span><i style="background:var(--blue)"></i>places available (the density of states)</span><span><i style="background:var(--rust);height:9px"></i>places filled by electrons</span><span><i style="background:var(--muted)"></i>bulk, for comparison</span></div></div>
     <div class="figs">
-      <div class="fig"><h3>The structure</h3><canvas id="pic"></canvas></div>
-      <div class="fig"><h3>Energy spread of the electrons</h3><canvas id="spread"></canvas></div>
+      <div class="fig solo"><h3>The structure</h3><canvas id="pic"></canvas></div>
+      <div class="fig adv"><h3>How widely the electrons are spread in energy</h3><canvas id="spread"></canvas></div>
     </div>
   </div>
   <aside class="card controls" id="ctl"><h2>Controls</h2></aside>
 </div>
 <main class="notes">
 <section class="card"><h2>What you are seeing</h2>
-<p><b>Counting states.</b> The density of states g(E) is the number of electron states per unit energy. In bulk material the electron is free in three directions and g(E) rises as √E from the band edge.</p>
-<p><b>Each confined direction reshapes it.</b> Confine the electron in one direction (a quantum well) and each confined level becomes the bottom of a 2-D subband with a <em>constant</em> density of states: g(E) becomes a staircase. Confine in two directions (a wire) and each subband gives a 1/√(E−E<sub>n</sub>) spike. Confine in all three (a dot) and only discrete levels remain, like an atom.</p>
-<p><b>Why it matters.</b> The electrons fill these states according to the Boltzmann factor e<sup>−E/k<sub>B</sub>T</sup>. The rust area shows where they actually are. The more directions are confined, the narrower the energy range the electrons occupy — which is why quantum-well lasers need less current than bulk lasers, and why quantum-dot lasers hardly change with temperature. Real dots differ in size, so their sharp lines blur; the size-spread slider shows that.</p></section>
-<section class="card"><h2>Try this in class</h2><ol>
-<li>Start with Bulk. Note the energy spread of the electrons (about 1.8 k<sub>B</sub>T wide). Ask: what happens to it as we confine?</li>
-<li>Switch to Well, 10 nm. The first step sits 56 meV above the band edge, and the electrons pile up just above it. Compare the spread.</li>
-<li>Wire, then Dot. Watch the spikes and lines appear and the occupied region shrink. At what size does almost every electron sit in the lowest level?</li>
-<li>Dot, size spread 10%. The lines broaden to tens of meV — the "inhomogeneous broadening" of a real quantum-dot laser. Now cool to 77 K: which structure changes most?</li></ol></section>
+<p><b>Places to sit.</b> Think of the electrons as an audience filling a theatre with seats on many levels, one level for each energy. The blue curve is the number of seats on each level: the <b>density of states</b>. The rust area shows where the electrons actually sit. They fill the lowest levels first, and warmth spreads them a little higher.</p>
+<p><b>Trapping reshapes the seats.</b> In bulk material there are few places at the very bottom, and more as the energy rises. Trap the electrons in one direction (a quantum well) and the places come in a <b>staircase</b>. Trap them in two (a wire) and they bunch into <b>sharp peaks</b>. Trap them in all three (a dot) and only <b>single sharp levels</b> remain, like an atom.</p>
+<p><b>Why it matters.</b> The more directions are trapped, the narrower the range of energies the electrons occupy. A laser wants all its electrons at one energy, which is why quantum-well lasers need less current than bulk lasers, and why quantum-dot lasers are better still.</p></section>
+<section class="card"><h2>Try this</h2><ol>
+<li>Start with Bulk. See how the electrons (rust) spread over a range of energies.</li>
+<li>Switch to Well. The places now start with a step, and the electrons gather just above it.</li>
+<li>Try Wire, then Dot. Watch the places bunch up and the electrons squeeze into a narrower range.</li>
+<li>Make the trap smaller, then cool it down. In which case do almost all the electrons sit in the lowest level?</li></ol></section>
 <section class="card"><h2>Check yourself</h2>
-<details><summary>Why is the 2-D density of states constant within a subband?</summary>In two free dimensions the number of states inside a circle of radius k grows as k², and E ∝ k², so the number grows linearly with E. Its derivative — the density of states — is constant: m*/πħ² per unit area, including spin.</details>
-<details><summary>Is a quantum dot 1-D?</summary>No. A dot is zero-dimensional: confined in all three directions, with no direction of free motion. The dimension counts the free directions — well 2-D, wire 1-D, dot 0-D.</details>
-<details><summary>Why do the wire spikes not become infinite in a real wire?</summary>Scattering, disorder and finite length broaden every state, which rounds off the 1/√(E − E<sub>n</sub>) divergence. The model adds a small broadening for the same reason.</details></section>
-<section class="card"><h2>The model behind it</h2>
-<p>GaAs-like electrons with effective mass <var>m</var>*, confined by infinite walls of width <var>L</var> in each confined direction, so the subband edges are sums of ħ²π²n²/(2m*L²). Per subband:</p>
-<span class="eq">g<sub>3D</sub> ∝ √E, &nbsp; g<sub>2D</sub> = m*/πħ² for E &gt; E<sub>n</sub>, &nbsp; g<sub>1D</sub> ∝ 1/√(E − E<sub>n</sub>), &nbsp; g<sub>0D</sub> = 2Σ δ(E − E<sub>n</sub>)</span>
-<p>Occupation is non-degenerate (Boltzmann), as for injected carriers in a laser at low density. The spread readout is the full width at half maximum of g(E)·f(E). Curves are normalised to the same peak height so their shapes can be compared.</p>
-<p class="caveat">Left out: finite barriers (Animation 1 shows their effect), valence bands, many-body effects and degenerate filling at high density.</p></section>
+<details><summary>Is a quantum dot one-dimensional?</summary>No. A dot is zero-dimensional. The label counts the directions in which the electron is still free: a well is 2D, a wire 1D and a dot 0D.</details>
+<details><summary>Why does a quantum-well laser need less current than a bulk laser?</summary>In a well, a whole step of places is available right at the bottom, so the injected electrons gather at nearly the same energy and fewer are wasted at other energies.</details>
+<details><summary>Real quantum-dot lasers contain millions of dots. Why are their levels not perfectly sharp?</summary>The dots are not all exactly the same size, so their levels sit at slightly different energies. "More detail" has a slider for this size spread.</details></section>
+<section class="card"><h2>For the curious: the model behind it</h2>
+<p>GaAs-like electrons (<var>m</var>* = 0.067 m<sub>0</sub>) with perfect walls of width <var>L</var> in each trapped direction, so the level energies are sums of ħ²π²n²/(2m*L²). For each level, the density of states is</p>
+<span class="eq">bulk ∝ √E, &nbsp; well = m*/πħ² (constant), &nbsp; wire ∝ 1/√(E − E<sub>n</sub>), &nbsp; dot: sharp lines</span>
+<p>The electrons fill the places following the Boltzmann factor e<sup>−E/k<sub>B</sub>T</sup>. "More detail" shows the width of the occupied range (its full width at half maximum) for all four structures. Curves are scaled to the same peak height.</p>
+<p class="caveat">Left out: leaky walls (Animation 1 shows their effect), holes, and crowding at high electron density.</p></section>
 </main>
 <script>
 /*INCLUDE qm.js*/
 (() => {
-  const st = { dim: 2, L: 10, T: 300, m: 0.067, sig: 0.05 };
+  const st = { dim: 3, L: 10, T: 300, m: 0.067, sig: 0.05 };
   const ctl = document.getElementById("ctl");
-  NX.seg(ctl, { label: "Structure", value: st.dim, options: [[3, "Bulk (3D)"], [2, "Well (2D)"], [1, "Wire (1D)"], [0, "Dot (0D)"]], on: v => { st.dim = v; update(); } });
-  const sL = NX.slider(ctl, { id: "L", label: "Confinement size L", min: 3, max: 30, step: 0.5, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
+  NX.seg(ctl, { label: "Structure", value: st.dim, options: [[3, "Bulk"], [2, "Well"], [1, "Wire"], [0, "Dot"]], hint: "free in 3, 2, 1 or 0 directions", on: v => { st.dim = v; update(); } });
+  const sL = NX.slider(ctl, { id: "L", label: "Size of the trap", min: 3, max: 30, step: 0.5, value: st.L, unit: "nm", dp: 1, on: v => { st.L = v; update(); } });
   NX.slider(ctl, { id: "T", label: "Temperature", min: 4, max: 400, step: 1, value: st.T, unit: "K", dp: 0, on: v => { st.T = v; update(); } });
-  const sS = NX.slider(ctl, { id: "sig", label: "Dot size spread", min: 0, max: 0.15, step: 0.005, value: st.sig, fmt: v => (v * 100).toFixed(1) + " %", hint: "real self-assembled dots: 5–10 %", on: v => { st.sig = v; update(); } });
+  const sS = NX.slider(ctl, { id: "sig", label: "Spread in dot sizes", min: 0, max: 0.15, step: 0.005, value: st.sig, fmt: v => (v * 100).toFixed(1) + " %", hint: "real dots: 5–10 %", on: v => { st.sig = v; update(); } }); sS.el.classList.add("adv");
   const ro = document.createElement("dl"); ro.className = "readout"; ctl.appendChild(ro);
+  NX.more(ctl);
 
   const NE = 1200; let Emax = 0.45, dE, Es;
   const setGrid = em => { Emax = em; dE = Emax / NE; Es = Array.from({ length: NE }, (_, i) => (i + 0.5) * dE); };
   const span = dim => { const kT = QM.kT300 * st.T / 300; const e1 = dim === 3 ? 0 : (3 - dim) * QM.Einf(1, st.L, st.m); return Math.max(0.2, 1.7 * e1 + 12 * kT); };
   const spreadPlot = new NX.Plot(document.getElementById("spread"), { aspect: 1.3, x: [-0.5, 3.5], y: [0, 120], xlabel: "Occupied energy range, same L and T", ylabel: "FWHM (meV)", nt: 4, noxt: true });
-  const dos = new NX.Plot(document.getElementById("dos"), { aspect: 2.1, x: [0, Emax * 1e3], y: [0, 1.12], xlabel: "Energy above the bulk band edge (meV)", ylabel: "normalised" });
+  const dos = new NX.Plot(document.getElementById("dos"), { aspect: 2.1, x: [0, Emax * 1e3], y: [0, 1.12], xlabel: "Energy above the bottom of the band (meV)", ylabel: "number of places (scaled)" });
   function edges(dim, L) {
     const E0 = QM.Einf(1, L, st.m), out = [], cap = span(dim) * 1.2;
     const nC = 3 - dim;                                         // confined directions
@@ -99,11 +100,11 @@
     ["3D", "2D", "1D", "0D"].forEach((s, i) => spreadPlot.text(i, 0, s, { align: "center", dy: 12, size: 12, color: t.muted, bold: (3 - i) === st.dim }));
     const kT = QM.kT300 * st.T / 300, frac1 = (() => { if (st.dim === 3) return NaN; const e1 = ed[0].E, e2 = ed.length > 1 ? ed[1].E : 1e9; let a = 0, b = 0; n.forEach((v, i) => { b += v; if (Es[i] < (e1 + e2) / 2) a += v; }); return a / b; })();
     ro.innerHTML = `<dt>Free directions</dt><dd>${st.dim}</dd>
-      <dt>Lowest level E<sub>1</sub></dt><dd>${st.dim === 3 ? "0 (band edge)" : (ed[0].E * 1e3).toFixed(1) + " meV"}</dd>
-      <dt>Next level E<sub>2</sub></dt><dd>${st.dim === 3 || ed.length < 2 ? "—" : (ed[1].E * 1e3).toFixed(1) + " meV"}</dd>
-      <dt>k<sub>B</sub>T</dt><dd>${(kT * 1e3).toFixed(1)} meV</dd>
-      <dt>Electrons in lowest level</dt><dd>${isFinite(frac1) ? (100 * frac1).toFixed(0) + " %" : "—"}</dd>
-      <dt>Energy spread (FWHM)</dt><dd>${sp[3 - st.dim].toFixed(1)} meV</dd>`;
+      <dt>Lowest level</dt><dd>${st.dim === 3 ? "0 (band edge)" : (ed[0].E * 1e3).toFixed(1) + " meV"}</dd>
+      <dt class="adv">Next level E<sub>2</sub></dt><dd class="adv">${st.dim === 3 || ed.length < 2 ? "—" : (ed[1].E * 1e3).toFixed(1) + " meV"}</dd>
+      <dt class="adv">k<sub>B</sub>T</dt><dd class="adv">${(kT * 1e3).toFixed(1)} meV</dd>
+      <dt>Electrons in the lowest level</dt><dd>${isFinite(frac1) ? (100 * frac1).toFixed(0) + " %" : "—"}</dd>
+      <dt class="adv">Energy spread (FWHM)</dt><dd class="adv">${sp[3 - st.dim].toFixed(1)} meV</dd>`;
     drawPic();
   }
   function drawPic() {
