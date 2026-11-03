@@ -31,17 +31,17 @@
       "slide": 5
     },
     {
-      "q": "The graphs show the density of states (the number of 'seats' for electrons at each energy) in bulk, a well, a wire and a dot. Why does a quantum-well laser start at a much lower current than a bulk laser?",
+      "q": "The graphs show the density of states (the number of 'seats' for electrons at each energy) in bulk, a well, a wire and a dot. Which one has its states only at single sharp energies, like an atom?",
       "img": "img/L2-D2-dos.jpg",
-      "alt": "Four graphs of states available against energy: bulk, a smooth curve rising from zero; well, a staircase; wire, sharp peaks that fall away; dot, single sharp vertical lines",
+      "alt": "Four graphs of the states available against energy, labelled bulk, well, wire and dot",
       "options": [
-        "The well has a whole step of states right at the bottom, so the injected electrons are not spread over a wide range of energies",
-        "The well has more states than bulk at every energy, so it can hold many more electrons for the laser",
-        "The well has no states near the bottom, so all the electrons are forced up to one high energy",
-        "The well has a single sharp level like an atom, so every electron sits at exactly the same energy"
+        "The quantum dot",
+        "The quantum well",
+        "The quantum wire",
+        "Bulk material"
       ],
       "answer": 0,
-      "explain": "In bulk, injected electrons spread over a wide range of energies and many are wasted. A well's staircase puts a whole step of seats right at the bottom, so the laser starts at a much lower current.",
+      "explain": "Bulk has few states at the bottom and more higher up; a well has a staircase; a wire has sharp peaks; a dot has single sharp levels, like an atom. The well's staircase puts many states right at the bottom, which is why quantum-well lasers need less current.",
       "slide": 7,
       "anim": "L2/density-of-states.html"
     },
@@ -61,10 +61,10 @@
     {
       "q": "A bulk GaAs laser gives out light at 871 nm. What happens to the wavelength if the light comes from a thin GaAs quantum well instead?",
       "options": [
-        "It gets shorter: the trapped levels sit a little inside the bands, away from the band edges, so the light carries more energy than the gap",
-        "It gets longer: the trapped levels sit a little inside the gap, between the band edges, so the light carries less energy than the gap",
-        "It stays at 871 nm, because the wavelength is set only by the material, not by the thickness of the layer",
-        "It becomes visible green light, because thin layers always give out visible light whatever the material"
+        "It gets shorter (bluer): trapping the electrons adds energy, so each photon carries more",
+        "It gets longer (redder): trapping the electrons takes energy away, so each photon carries less",
+        "It stays at 871 nm: only the material sets the wavelength, not the layer's thickness",
+        "It becomes visible green light, whatever the material"
       ],
       "answer": 0,
       "explain": "Electrons and holes in the well sit on trapped levels a little away from their band edges, so the light carries more energy than the band gap: 848 nm for a 10 nm well and 816 nm for a 5 nm well. Thinner well, shorter wavelength.",

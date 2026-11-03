@@ -23,7 +23,7 @@
       "alt": "Energy on a log scale against island diameter from 1 nm to 1000 nm: the cost of adding one electron falls from about 400 meV at 1 nm to under 1 meV at 1000 nm; dashed lines mark the thermal energy at 300 K, 77 K and 4.2 K",
       "options": [
         "About 1–2 nm, so that the cost is about ten times the thermal energy",
-        "About 15 nm, where the cost first rises above the thermal energy",
+        "About 100 nm, the size of a large virus",
         "About 1 µm, the size that already works at 4.2 K",
         "Any size, because the cost does not depend on the island's size"
       ],
@@ -35,7 +35,7 @@
     {
       "q": "Coulomb blockade needs a charging energy well above the thermal energy. What is its second condition?",
       "options": [
-        "Each tunnel junction must have a resistance above about 26 kΩ, so electrons really sit on the island",
+        "The tunnel junctions must have a high resistance (above about 26 kΩ), so each electron really sits on the island",
         "The island must hold at least 100 electrons, so that its charge is smooth",
         "The island must be made of a superconductor, so that the electrons pair up",
         "The island must be lit by a laser, which gives the electrons the energy to tunnel"
@@ -57,15 +57,15 @@
       "slide": 8
     },
     {
-      "q": "In a blocked SET, the next empty place on the island is too high in energy for an electron from the source. How does raising the gate voltage let current flow?",
+      "q": "In a blocked SET, how does raising the gate voltage let current flow?",
       "options": [
-        "It lowers the island's ladder of places until one sits between the source and drain levels, so electrons pass one at a time",
-        "It raises the source's energy until it is above every place on the island",
+        "It lowers the island's energy levels until one sits between the source and drain, so electrons pass one at a time",
+        "It raises the source's energy until it is above every level on the island",
         "It removes the charging energy, so the island behaves like a large piece of metal",
         "It thins the tunnel junctions until electrons can pass straight from source to drain"
       ],
       "answer": 0,
-      "explain": "The island's places form a ladder, one charging energy apart. The gate lowers the ladder until an empty place sits between the source and drain: electrons then hop on and off one at a time.",
+      "explain": "The island's energy levels form a ladder, one charging energy apart. The gate lowers the ladder until an empty level sits between the source and drain: electrons then hop on and off one at a time.",
       "slide": 9,
       "anim": "L3/single-electron-transistor.html"
     },
@@ -125,10 +125,10 @@
     {
       "q": "The 2025 Nobel Prize in Physics went to Clarke, Devoret and Martinis. What did their 1984–85 experiment show?",
       "options": [
-        "A whole superconducting circuit can tunnel as one quantum object and has quantised energy levels: the basis of superconducting qubits",
+        "A whole superconducting circuit can tunnel and has quantised energy levels: the basis of today's qubits",
         "Single electrons can be counted one at a time as they tunnel through a junction",
         "Light can tunnel through a thin gap between two glass blocks",
-        "Electrons can tunnel through a single 1 nm insulating layer between two magnets"
+        "Electrons can tunnel through a 1 nm insulating layer between two magnets"
       ],
       "answer": 0,
       "explain": "They biased a Josephson junction and found that, at the lowest temperatures, the whole circuit still escaped its energy dip by tunnelling, and that microwaves revealed quantised levels. Circuits like this are the qubits of Google's and IBM's quantum processors.",

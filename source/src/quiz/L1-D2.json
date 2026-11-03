@@ -48,10 +48,10 @@
       "img": "img/L1-D2-velocity-field.jpg",
       "alt": "Drift velocity against field on log scales: electrons and holes follow v = μE at low field, then level off near 10⁷ cm/s above about 10⁴ to 10⁵ V/cm",
       "options": [
-        "Fast carriers emit optical phonons, losing energy as fast as the field gives it to them",
-        "The carriers reach the speed of light inside silicon and cannot go any faster",
+        "Fast carriers lose energy to the crystal (by emitting phonons) as fast as the field gives it",
+        "The carriers reach the speed of light inside silicon",
         "The field pushes the carriers out of the channel into the gate oxide",
-        "At high field all the carriers turn into holes, which are slower than electrons"
+        "At high field the electrons turn into holes, which are slower"
       ],
       "answer": 0,
       "explain": "Once a carrier has enough energy to emit an optical phonon, energy is removed as fast as the field supplies it, and the velocity levels off at v_sat ≈ 10⁷ cm/s. A modern transistor works mostly in this regime.",
@@ -115,10 +115,10 @@
     {
       "q": "Electron mobility in bulk silicon reaches about 1400 cm²/V·s, but in a modern transistor's inversion layer it is only 200–400. What is the main reason?",
       "options": [
-        "The vertical field presses carriers against an interface that is not atomically flat, so they scatter off its roughness",
-        "The inversion layer contains many more dopant atoms than bulk silicon, so carriers scatter off them",
-        "Carriers in the inversion layer are heavier, because the gate's field adds to their mass",
-        "The wavefunction leaks into the oxide, where the electrons carry current very slowly"
+        "The gate's field presses carriers against the rough silicon–oxide interface, where they scatter",
+        "The inversion layer contains many more dopant atoms, so carriers scatter off them",
+        "The gate's field makes the carriers heavier",
+        "The carriers leak into the oxide, where they move very slowly"
       ],
       "answer": 0,
       "explain": "At high vertical field, carriers are pressed against the Si/oxide interface, which is not atomically flat: surface-roughness scattering. Charges and vibrations in the high-k dielectric add more. (The tail of the wavefunction in the oxide carries no current: a common pitfall.)",
@@ -127,10 +127,10 @@
     {
       "q": "Why is the drift-diffusion model only an approximation for today's transistors?",
       "options": [
-        "The gate length is now about the same as the mean free path, so carriers collide only once or twice on the way",
-        "The gate length is now about a hundred times the mean free path, so carriers collide too often to model",
-        "Today's transistors use holes instead of electrons, and drift-diffusion applies only to electrons",
-        "The supply voltage is now so low that no current flows by drift, only by diffusion"
+        "The gate is now about as long as the distance between collisions, so carriers barely collide",
+        "The gate is now about a hundred times the distance between collisions, so carriers collide too often",
+        "Today's transistors use holes, and drift-diffusion applies only to electrons",
+        "The supply voltage is so low that no current flows by drift"
       ],
       "answer": 0,
       "explain": "Drift-diffusion assumes many collisions in the channel. With a mean free path of about 10 nm and gate lengths of 12–20 nm, a carrier scatters only once or twice: transport is quasi-ballistic.",

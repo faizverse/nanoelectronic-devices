@@ -59,7 +59,7 @@
       "alt": "Four stages: 1 layer flat; at 1.7 layers a complete wetting layer; at 2.2 layers islands appear; at 3 layers dense dots",
       "options": [
         "InAs atoms are spaced about 7% further apart than GaAs, so the squeezed film relieves its strain by bunching into islands",
-        "InAs atoms are spaced closer together than GaAs, so the stretched film shrinks and cracks into separate islands",
+        "The GaAs surface is dirty, so the InAs sticks only to the dirty spots",
         "A pattern is drawn on the surface first, and the islands then grow only where that pattern was drawn",
         "The InAs film melts once it reaches that thickness and forms droplets that later freeze into islands"
       ],

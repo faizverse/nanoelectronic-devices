@@ -114,10 +114,10 @@
     {
       "q": "The graph shows the output curves of a partially depleted SOI transistor. What causes the 'kink' in the solid curves?",
       "options": [
-        "Holes made near the drain build up in the floating body, which has no contact to remove them, so the current jumps",
-        "Electrons tunnel through the buried oxide into the substrate once the drain voltage is high enough, so the current jumps",
-        "The silicon film heats up at high drain voltage, its resistance falls, and so the current jumps",
-        "The gate oxide starts to break down at high drain voltage, letting extra current through, so the current jumps"
+        "Holes made near the drain pile up in the floating body, which has no contact, and the current jumps",
+        "Electrons tunnel through the buried oxide into the substrate, and the current jumps",
+        "The silicon film heats up, its resistance falls, and the current jumps",
+        "The gate oxide starts to break down, and the current jumps"
       ],
       "answer": 0,
       "explain": "The neutral body is connected to nothing, so holes made by the high field near the drain have nowhere to go. They charge the body, the threshold voltage falls and the current jumps. A body tie drains the holes away, at a cost in area.",
@@ -127,15 +127,15 @@
       "alt": "Drain current against drain voltage: the solid curves (floating body) jump upwards at about 1.5 to 2 V, the dashed curves (body tied to the source) do not"
     },
     {
-      "q": "Why can the substrate act as a second ('back') gate in a fully depleted SOI transistor?",
+      "q": "In a fully depleted SOI transistor, what can the substrate under the buried oxide be used for?",
       "options": [
-        "There is no neutral silicon left to screen it, so its voltage reaches the channel through the thin buried oxide",
-        "The substrate is wired to the front gate, so both gates always carry the same voltage",
-        "The buried oxide conducts a small current, so the substrate can feed charge into the channel",
-        "The substrate supplies the electrons for the channel, so its voltage sets how many there are"
+        "As a second (back) gate that tunes the threshold voltage",
+        "As the source of the electrons in the channel",
+        "As a third terminal that carries the drain current",
+        "Nothing: the buried oxide cuts it off completely"
       ],
       "answer": 0,
-      "explain": "In a fully depleted film nothing screens the substrate's field, so its voltage tunes the threshold: lower for speed when the chip is busy, higher for less leakage when it is idle.",
+      "explain": "With no neutral layer left in the film, the substrate acts as a back gate through the thin buried oxide. Its voltage tunes the threshold: faster when the chip is busy, less leakage when it idles.",
       "slide": 25,
       "anim": "L4/soi-pd-fd.html"
     }
