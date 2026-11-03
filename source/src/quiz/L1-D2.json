@@ -1,0 +1,164 @@
+{
+  "lecture": "L1",
+  "doc": "D2",
+  "kicker": "Lecture 1 · Part 2",
+  "title": "Device Physics for Nanoscale CMOS",
+  "slides": "L1-D2-Device-Physics-slides",
+  "questions": [
+    {
+      "q": "Near a band edge, a band that is flat (has little curvature) means the carriers in it are…",
+      "options": [
+        "Heavy: effective mass is inversely proportional to the band's curvature",
+        "Light: effective mass is proportional to the band's curvature",
+        "Unable to move at all, because a flat band has no available states",
+        "Exactly as heavy as a free electron, whatever the band's shape"
+      ],
+      "answer": 0,
+      "explain": "Near a band edge the band is a parabola, and the carrier behaves like a particle with an effective mass m* that is inversely proportional to the curvature. A flat band means a heavy carrier.",
+      "slide": 5
+    },
+    {
+      "q": "Why are holes in silicon slower than electrons?",
+      "options": [
+        "The valence band is flatter, so holes have a heavier effective mass",
+        "Holes are disrupted by the broken bonds they leave behind as they move",
+        "There are far fewer holes than electrons in every piece of silicon",
+        "Holes carry a positive charge, so the electric field pushes them less"
+      ],
+      "answer": 0,
+      "explain": "Holes are slower because the valence band is flatter, which means a heavier effective mass. Explanations about 'bond disruptions' are a common pitfall and do not survive scrutiny.",
+      "slide": 6
+    },
+    {
+      "q": "Mobility is μ = qτ/m*. What are the only two ways to make carriers more mobile?",
+      "options": [
+        "Make collisions rarer (longer τ) or make the carriers lighter (smaller m*)",
+        "Make collisions more frequent (shorter τ) or make the carriers heavier (larger m*)",
+        "Raise τ and m* together by the same factor",
+        "Make the electric field stronger or the channel longer"
+      ],
+      "answer": 0,
+      "explain": "Mobility depends only on the mean time between collisions τ and the effective mass m*. Rare collisions and light carriers are the two levers; nothing else enters.",
+      "slide": 11
+    },
+    {
+      "q": "The graph shows the mobility of electrons and holes in bulk silicon against doping. Why does mobility fall at high doping?",
+      "img": "img/L1-D2-mobility.jpg",
+      "alt": "Bulk silicon mobility against total dopant concentration: electrons fall from about 1400 to under 100 cm²/V·s and holes from about 470 to about 50 as doping rises from 10¹⁶ to 10²⁰ cm⁻³",
+      "options": [
+        "Carriers scatter off the many ionised dopant atoms, so collisions become more frequent",
+        "The extra dopant atoms make the carriers heavier, so they accelerate more slowly",
+        "Heavily doped silicon runs hotter, so the lattice vibrates harder",
+        "The band gap disappears at high doping, so the carriers can no longer move"
+      ],
+      "answer": 0,
+      "explain": "At low doping, scattering by lattice vibrations (phonons) sets the mobility. At high doping, scattering by the charged, ionised dopant atoms takes over and mobility falls steeply.",
+      "slide": 12
+    },
+    {
+      "q": "The graph shows drift velocity against electric field in silicon. Why does the velocity stop rising near 10⁷ cm/s?",
+      "img": "img/L1-D2-velocity-field.jpg",
+      "alt": "Drift velocity against field on log scales: electrons and holes follow v = μE at low field, then level off near 10⁷ cm/s above about 10⁴ to 10⁵ V/cm",
+      "options": [
+        "Fast carriers emit optical phonons, losing energy as fast as the field gives it to them",
+        "The carriers reach the speed of light inside silicon and cannot go any faster",
+        "The field pushes the carriers out of the channel into the gate oxide",
+        "At high field all the carriers turn into holes, which are slower than electrons"
+      ],
+      "answer": 0,
+      "explain": "Once a carrier has enough energy to emit an optical phonon, energy is removed as fast as the field supplies it, and the velocity levels off at v_sat ≈ 10⁷ cm/s. A modern transistor works mostly in this regime.",
+      "slide": 13,
+      "anim": "L1/velocity-saturation.html"
+    },
+    {
+      "q": "Why are a carrier's diffusion coefficient D and its mobility μ linked (the Einstein relation)?",
+      "options": [
+        "Both are set by the same random collisions that carriers undergo",
+        "Both are set by the band gap, which fixes how many carriers there are",
+        "Both depend only on the gate voltage applied to the transistor",
+        "They are not linked: D and μ are measured separately and are unrelated"
+      ],
+      "answer": 0,
+      "explain": "Drift and diffusion come from the same collisions, so D = μ·kT/q. At 300 K, kT/q = 25.9 mV. The relation holds for non-degenerate material.",
+      "slide": 16
+    },
+    {
+      "q": "The picture shows the bands of a MOS capacitor in three regimes. In depletion (b), what is left near the silicon surface?",
+      "img": "img/L1-D2-mos-regimes.jpg",
+      "alt": "Band diagrams of a MOS capacitor on p-type silicon: (a) accumulation with holes at the surface, (b) depletion with bands bent down over a depletion width W, (c) inversion with a thin layer of electrons at the surface",
+      "options": [
+        "Fixed negative acceptor ions: the holes have been pushed away from the surface",
+        "A thin sheet of free electrons that forms the conducting channel",
+        "A layer of extra holes that has been pulled up to the surface",
+        "Nothing at all: the surface region is completely empty of charge"
+      ],
+      "answer": 0,
+      "explain": "In depletion the gate pushes the holes away, leaving the fixed, negatively charged acceptor ions behind. Only at higher gate voltage, in inversion (c), does a sheet of electrons form the channel.",
+      "slide": 20,
+      "anim": "L1/mosfet-basics.html"
+    },
+    {
+      "q": "How do modern transistors mainly set their threshold voltage?",
+      "options": [
+        "By choosing the work function of the metal gate",
+        "By making the gate oxide thicker or thinner",
+        "By heavily doping the channel under the gate",
+        "By heating the transistor to a set temperature"
+      ],
+      "answer": 0,
+      "explain": "In older transistors V_T was set by channel doping. Modern devices, with undoped channels, set V_T by the work function of the metal gate.",
+      "slide": 21
+    },
+    {
+      "q": "When the carriers in a channel travel at their saturation velocity, how does the drain current behave?",
+      "options": [
+        "It rises in a straight line with gate overdrive and no longer depends on the channel length",
+        "It rises with the square of the gate overdrive and doubles every time the channel is halved",
+        "It falls as the gate voltage rises, because the carriers slow down at high field",
+        "It stays zero until the drain voltage exceeds the gate voltage"
+      ],
+      "answer": 0,
+      "explain": "With velocity saturation, I_D ≈ W·C_ox·v_sat·(V_GS − V_T): linear in overdrive and independent of L. The long-channel square law overestimates the drive current of a modern transistor.",
+      "slide": 22
+    },
+    {
+      "q": "The graph shows three transistors with the same threshold voltage but different subthreshold swings. Which one has the lowest off-current at V_GS = 0?",
+      "img": "img/L1-D2-swing.jpg",
+      "alt": "Drain current on a log scale against gate voltage for three transistors crossing at the same threshold: swings of 60, 75 and 95 mV per decade; at V_GS = 0 their off-currents differ by more than three decades",
+      "options": [
+        "The one with the steepest curve, a swing of 60 mV per decade",
+        "The one with the flattest curve, a swing of 95 mV per decade",
+        "The one in the middle, a swing of 75 mV per decade",
+        "All three are the same, because they share the same threshold"
+      ],
+      "answer": 0,
+      "explain": "Below threshold the current falls exponentially, by ten times for every 'swing' of gate voltage. The steeper the curve (the smaller the swing), the lower the current at V_GS = 0: here the off-currents differ by more than three decades.",
+      "slide": 24,
+      "anim": "L1/subthreshold-swing.html"
+    },
+    {
+      "q": "Electron mobility in bulk silicon reaches about 1400 cm²/V·s, but in a modern transistor's inversion layer it is only 200–400. What is the main reason?",
+      "options": [
+        "The vertical field presses carriers against an interface that is not atomically flat, so they scatter off its roughness",
+        "The inversion layer contains many more dopant atoms than bulk silicon, so carriers scatter off them",
+        "Carriers in the inversion layer are heavier, because the gate's field adds to their mass",
+        "The wavefunction leaks into the oxide, where the electrons carry current very slowly"
+      ],
+      "answer": 0,
+      "explain": "At high vertical field, carriers are pressed against the Si/oxide interface, which is not atomically flat: surface-roughness scattering. Charges and vibrations in the high-k dielectric add more. (The tail of the wavefunction in the oxide carries no current: a common pitfall.)",
+      "slide": 31
+    },
+    {
+      "q": "Why is the drift-diffusion model only an approximation for today's transistors?",
+      "options": [
+        "The gate length is now about the same as the mean free path, so carriers collide only once or twice on the way",
+        "The gate length is now about a hundred times the mean free path, so carriers collide too often to model",
+        "Today's transistors use holes instead of electrons, and drift-diffusion applies only to electrons",
+        "The supply voltage is now so low that no current flows by drift, only by diffusion"
+      ],
+      "answer": 0,
+      "explain": "Drift-diffusion assumes many collisions in the channel. With a mean free path of about 10 nm and gate lengths of 12–20 nm, a carrier scatters only once or twice: transport is quasi-ballistic.",
+      "slide": 28
+    }
+  ]
+}

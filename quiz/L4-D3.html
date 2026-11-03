@@ -376,6 +376,8 @@ const QMETA = {"id": "L4-D3", "root": "../", "slides": null};
   const app = $("#quiz"), KEY = "kkkc6353-quiz-" + QMETA.id;
   const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  // escape, then turn V_T, I_D, V_GS … into subscripts
+  const fmt = s => esc(s).replace(/([A-Za-zμσ])_([A-Za-z0-9]+)/g, "$1<sub>$2</sub>");
   let order, i, score, missed, answered;
 
   function best() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } }
@@ -401,10 +403,10 @@ const QMETA = {"id": "L4-D3", "root": "../", "slides": null};
     app.innerHTML = `
       <div class="qhead"><span>Question ${i + 1} of ${order.length}</span><span>Score ${score}</span></div>
       <div class="qbar" aria-hidden="true"><i style="width:${100 * i / order.length}%"></i></div>
-      <h2 class="qtext" id="qtext" tabindex="-1">${esc(q.q)}</h2>
+      <h2 class="qtext" id="qtext" tabindex="-1">${fmt(q.q)}</h2>
       ${q.img ? `<figure class="qimg"><button type="button" class="qzoom" title="Enlarge the picture"><img src="${q.img}" alt="${esc(q.alt || "")}"></button><figcaption>Click or tap the picture to enlarge it.</figcaption></figure>` : ""}
       <div class="qopts" role="group" aria-labelledby="qtext">
-        ${opts.map((j, n) => `<button type="button" class="qopt" data-j="${j}"><span class="qkey">${q.type === "tf" ? "" : "ABCD"[n]}</span><span>${esc(q.options[j])}</span></button>`).join("")}
+        ${opts.map((j, n) => `<button type="button" class="qopt" data-j="${j}"><span class="qkey">${q.type === "tf" ? "" : "ABCD"[n]}</span><span>${fmt(q.options[j])}</span></button>`).join("")}
       </div>
       <div class="qfb" aria-live="polite"></div>
       <div class="qnext"></div>`;
@@ -431,7 +433,7 @@ const QMETA = {"id": "L4-D3", "root": "../", "slides": null};
       if (jj === q.answer) b.classList.add("right");
       else if (jj === j) b.classList.add("wrong");
     });
-    $(".qfb").innerHTML = `<div class="fb ${ok ? "good" : "bad"}"><b>${ok ? "Correct." : "Not quite."}</b> ${esc(q.explain)}
+    $(".qfb").innerHTML = `<div class="fb ${ok ? "good" : "bad"}"><b>${ok ? "Correct." : "Not quite."}</b> ${fmt(q.explain)}
       <div class="fbref">${slideRef(q)}${animRef(q)}</div></div>`;
     $(".qhead span:last-child").textContent = "Score " + score;
     const last = i === order.length - 1;
@@ -448,8 +450,8 @@ const QMETA = {"id": "L4-D3", "root": "../", "slides": null};
     app.innerHTML = `
       <div class="qdone"><p class="kicker">Your score</p><p class="big">${score} <span>/ ${n}</span></p><p>${msg}</p>
       ${b ? `<p class="best">Your best on this device: ${b.score} / ${b.of}</p>` : ""}</div>
-      ${missed.length ? `<h2 class="qrev">Questions to review</h2>` + missed.map(k => { const q = QUIZ[k]; return `<div class="card qmiss"><p class="qmq">${esc(q.q)}</p>
-        <p><b>Answer:</b> ${esc(q.options[q.answer])}</p><p class="qme">${esc(q.explain)}</p><div class="fbref">${slideRef(q)}${animRef(q)}</div></div>`; }).join("") : ""}
+      ${missed.length ? `<h2 class="qrev">Questions to review</h2>` + missed.map(k => { const q = QUIZ[k]; return `<div class="card qmiss"><p class="qmq">${fmt(q.q)}</p>
+        <p><b>Answer:</b> ${fmt(q.options[q.answer])}</p><p class="qme">${fmt(q.explain)}</p><div class="fbref">${slideRef(q)}${animRef(q)}</div></div>`; }).join("") : ""}
       <div class="btnrow qend"><button type="button" class="btn" id="qagain">Try again (new order)</button>
       <a class="btn ghost" href="index.html">All quizzes</a></div>`;
     $("#qagain").onclick = () => start(true);
