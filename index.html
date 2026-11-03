@@ -2,13 +2,13 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KKKC6353 Nanoelectronic Devices</title>
-<meta name="description" content="Interactive animations and course materials for KKKC6353 Nanoelectronic Devices. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="description" content="Lecture notes, slides, interactive animations and quizzes for KKKC6353 Nanoelectronic Devices. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta name="author" content="Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
 <link rel="canonical" href="https://faizverse.github.io/nanoelectronic-devices/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KKKC6353 Nanoelectronic Devices · Universiti Kebangsaan Malaysia">
 <meta property="og:title" content="KKKC6353 Nanoelectronic Devices">
-<meta property="og:description" content="Interactive animations and course materials for KKKC6353 Nanoelectronic Devices. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta property="og:description" content="Lecture notes, slides, interactive animations and quizzes for KKKC6353 Nanoelectronic Devices. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta property="og:url" content="https://faizverse.github.io/nanoelectronic-devices/">
 <meta property="og:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
 <meta property="og:image:secure_url" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
@@ -18,7 +18,7 @@
 <meta property="og:image:alt" content="KKKC6353 Nanoelectronic Devices: Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="KKKC6353 Nanoelectronic Devices">
-<meta name="twitter:description" content="Interactive animations and course materials for KKKC6353 Nanoelectronic Devices. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
+<meta name="twitter:description" content="Lecture notes, slides, interactive animations and quizzes for KKKC6353 Nanoelectronic Devices. Dr Muhammad Faiz Bukhori, Universiti Kebangsaan Malaysia.">
 <meta name="twitter:image" content="https://faizverse.github.io/nanoelectronic-devices/og-image.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f3a5f'/%3E%3Crect x='6' y='9' width='20' height='4' fill='%23b4451f'/%3E%3Crect x='6' y='15' width='20' height='9' fill='%23dfe7ef'/%3E%3C/svg%3E">
 <style>:root{
@@ -57,6 +57,19 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,su
 .tools{display:flex;gap:.4rem}
 .tools button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:.25rem .6rem;font:inherit;font-size:.8rem;cursor:pointer}
 .tools button:hover{background:rgba(255,255,255,.22)}
+.brand{font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.brand span{font-weight:400;opacity:.85;margin-left:.35rem}
+.snav{display:flex;flex-wrap:wrap;gap:.2rem;flex:1 1 auto}
+.top .snav a{padding:.25rem .65rem;border-radius:6px;font-size:.92rem;opacity:.88}
+.top .snav a:hover{background:rgba(255,255,255,.12);text-decoration:none;opacity:1}
+.top .snav a[aria-current="page"]{background:rgba(255,255,255,.18);opacity:1;font-weight:600;box-shadow:inset 0 -2px 0 #e58a5f}
+@media (max-width:720px){.brand span{display:none}.top .wrap{justify-content:flex-start}.tools{margin-left:auto}.snav{order:3;flex-basis:100%;margin:0 -.65rem}}
+.bc{font-size:.85rem;color:var(--muted);padding-top:.9rem}
+.bc a{color:var(--muted)}
+.ltabs{display:flex;flex-wrap:wrap;gap:6px;margin:.4rem 0 .2rem}
+.ltabs a{padding:.3rem .8rem;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink);text-decoration:none;font-size:.9rem}
+.ltabs a:hover{border-color:var(--rust)}
+.ltabs a[aria-current="page"]{background:var(--navy);border-color:var(--navy);color:var(--panel);font-weight:600}
 .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
 header.hero{padding:1.4rem 0 .6rem}
 .kicker{color:var(--rust);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;margin:0 0 .25rem}
@@ -310,10 +323,7 @@ const NX = (() => {
 })();
 </script></head>
 <body>
-<div class="top"><div class="wrap">
-<a class="crumb" href="index.html">KKKC6353 Nanoelectronic Devices</a>
-<div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button>
-<button id="ttheme" type="button" title="Switch light/dark">Theme</button></div></div></div>
+<div class="top"><div class="wrap"><a class="brand" href="index.html">KKKC6353<span>Nanoelectronic Devices</span></a><nav class="snav" aria-label="Sections"><a href="notes/index.html">Notes &amp; Slides</a><a href="animations/index.html">Animations</a><a href="quiz/index.html">Quizzes</a></nav><div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button><button id="ttheme" type="button" title="Switch light/dark">Theme</button></div></div></div>
 <style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:1rem 0 2rem}
     .tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
     .tile:hover{border-color:var(--rust);transform:translateY(-2px)}
@@ -331,11 +341,40 @@ const NX = (() => {
     .banner .sub{color:#d6e2f0;margin:0 0 1.1rem;font-size:1.05rem}
     .banner .who{border-top:3px solid #d6683e;padding-top:.8rem;display:inline-block}
     .banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
-    .artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}</style><div class="wrap">
+    .artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}
+    .also{margin:.6rem 0 0;font-size:.95rem}</style><style>
+.lec{margin:1.6rem 0 2rem;scroll-margin-top:1rem}
+.lec>h2{font-size:1.25rem;color:var(--navy);margin:0 0 .2rem;padding-bottom:.3rem;border-bottom:2px solid var(--rust)}
+.lec>p{color:var(--muted);margin:.3rem 0 .8rem}
+.docs{display:grid;gap:10px}
+.doc{padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.3rem 1.2rem;align-items:center}
+.doc>*{grid-column:1}.doc .btnrow{grid-column:2;grid-row:1/span 4;justify-content:flex-end}
+@media (max-width:760px){.doc{grid-template-columns:minmax(0,1fr)}.doc .btnrow{grid-column:1;grid-row:auto;justify-content:flex-start}}
+a.btn{text-decoration:none;display:inline-block}
+.doc .dk{margin:0;color:var(--rust);font-weight:700;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
+.doc h3{margin:0;font-size:1.08rem;color:var(--navy)}
+.doc .dn{margin:0;color:var(--muted);font-size:.9rem}
+.doc .rel{margin:.2rem 0 0;font-size:.88rem;color:var(--muted)}
+.doc .rel a{white-space:nowrap}
+.soon{display:inline-block;font-size:.84rem;padding:.38rem .65rem;border-radius:6px;border:1px dashed var(--line);color:var(--muted)}
+.sections{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;margin:0 0 1.6rem}
+.sections .tile .t{font-size:1.25rem}
+table.bylec{width:100%;border-collapse:collapse;font-size:.95rem;margin:.4rem 0 1.4rem}
+table.bylec th,table.bylec td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+table.bylec th{color:var(--muted);font-weight:600;font-size:.82rem;text-transform:uppercase;letter-spacing:.05em}
+table.bylec td a{white-space:nowrap}
+@media (max-width:640px){table.bylec .topic,table.bylec .ln{display:none}table.bylec th,table.bylec td{padding:.5rem .35rem}}
+</style><div class="wrap">
 <section class="banner" aria-label="KKKC6353 Nanoelectronic Devices"><div class="in"><p class="k">KKKC6353</p><h1>Nanoelectronic Devices</h1>
-<p class="sub">Interactive animations and course materials</p>
+<p class="sub">Lecture notes, slides, interactive animations and quizzes</p>
 <div class="who"><b>Dr Muhammad Faiz Bukhori</b><span>Universiti Kebangsaan Malaysia · 2026</span></div></div></section>
 <p class="artnote">Banner: original artwork made for this course, chip wiring giving way to a quantum interference pattern.</p>
-<div class="tiles"><a class="card tile" href="L1/index.html"><span class="num">LECTURE 1</span><span class="t">CMOS technology, device physics and short-channel effects</span><span class="b">11 interactive animations, with things to try in class and check questions.</span></a><a class="card tile" href="L2/index.html"><span class="num">LECTURE 2</span><span class="t">Quantum wells, wires and dots</span><span class="b">7 interactive animations, with things to try in class and check questions.</span></a><a class="card tile" href="L3/index.html"><span class="num">LECTURE 3</span><span class="t">Quantum tunnelling devices</span><span class="b">6 interactive animations, with things to try in class and check questions.</span></a><a class="card tile" href="L4/index.html"><span class="num">LECTURE 4</span><span class="t">Beyond planar silicon: nanotubes, FinFETs, SOI and compound semiconductors</span><span class="b">6 interactive animations, with things to try in class and check questions.</span></a></div>
-<p class="wrap foot" style="padding:0">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p></div>
+<div class="sections">
+<a class="card tile" href="notes/index.html"><span class="num">READ</span><span class="t">Notes &amp; Slides</span><span class="b">The lecture notes and slides for every lecture, as PDFs.</span></a>
+<a class="card tile" href="animations/index.html"><span class="num">EXPLORE</span><span class="t">Animations</span><span class="b">30 interactive models: change the device and watch the physics respond.</span></a>
+<a class="card tile" href="quiz/index.html"><span class="num">TEST YOURSELF</span><span class="t">Quizzes</span><span class="b">A short quiz for each set of slides, with an explanation after every answer.</span></a>
+</div>
+<h2 style="color:var(--navy);font-size:1.15rem;margin:0">By lecture</h2>
+<table class="bylec"><thead><tr><th>Lecture</th><th class="topic">Topic</th><th>Notes</th><th>Animations</th><th>Quizzes</th></tr></thead><tbody><tr><td><b><span class="ln">Lecture </span>1</b></td><td class="topic">CMOS technology, device physics and short-channel effects</td><td><a href="notes/index.html#L1">Notes &amp; slides</a></td><td><a href="L1/index.html">11<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#L1">Quizzes</a></td></tr><tr><td><b><span class="ln">Lecture </span>2</b></td><td class="topic">Quantum wells, wires and dots</td><td><a href="notes/index.html#L2">Notes &amp; slides</a></td><td><a href="L2/index.html">7<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#L2">Quizzes</a></td></tr><tr><td><b><span class="ln">Lecture </span>3</b></td><td class="topic">Quantum tunnelling devices</td><td><a href="notes/index.html#L3">Notes &amp; slides</a></td><td><a href="L3/index.html">6<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#L3">Quizzes</a></td></tr><tr><td><b><span class="ln">Lecture </span>4</b></td><td class="topic">Beyond planar silicon: nanotubes, FinFETs, SOI and compound semiconductors</td><td><a href="notes/index.html#L4">Notes &amp; slides</a></td><td><a href="L4/index.html">6<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#L4">Quizzes</a></td></tr></tbody></table>
+<p class="foot" style="padding:0">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p></div>
 </body></html>
