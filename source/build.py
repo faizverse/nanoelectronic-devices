@@ -268,7 +268,13 @@ qcss = """<style>
 .qhead{display:flex;justify-content:space-between;color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
 .qbar{height:5px;background:var(--grid);border-radius:3px;margin:.4rem 0 1rem;overflow:hidden}.qbar i{display:block;height:100%;background:var(--rust)}
 .qtext{font-size:1.15rem;line-height:1.4;color:var(--ink);margin:0 0 .9rem;outline:none}
-.qimg{margin:0 0 1rem;text-align:center}.qimg img{max-width:100%;max-height:340px;border-radius:8px;border:1px solid var(--line);background:#fff}
+.qimg{margin:0 0 1rem;text-align:center}.qzoom{padding:0;border:0;background:none;cursor:zoom-in;max-width:100%}.qimg img{display:block;max-width:100%;max-height:340px;margin:0 auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+.qimg figcaption{font-size:.8rem;color:var(--muted);margin-top:.3rem}
+.qlight{position:fixed;inset:0;z-index:50;background:rgba(10,16,26,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px;cursor:zoom-out}
+.qlbox{max-width:100%;max-height:80vh;overflow:auto;border-radius:6px;background:#fff;cursor:default}
+.qlbox img{display:block;max-width:100%;max-height:80vh}
+.qlhint{display:none;color:#d6e2f0;font-size:.85rem;margin:0}
+@media (max-width:700px) and (orientation:portrait){.qlbox img{max-width:none;max-height:none;height:min(42vh,330px)}.qlhint{display:block}}
 .qopts{display:grid;gap:8px}
 .qopt{display:flex;gap:.7rem;align-items:flex-start;text-align:left;font:inherit;padding:.7rem .85rem;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .qopt:hover:not(:disabled){border-color:var(--blue)}
