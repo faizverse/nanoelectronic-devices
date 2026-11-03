@@ -43,10 +43,10 @@
     {
       "q": "Why could the threshold voltage V_T not keep falling after the early 2000s?",
       "options": [
-        "Below threshold the current can fall no faster than ten times per 60 mV, so each 60 mV off V_T raises leakage tenfold",
-        "A lower V_T raises the field across the gate oxide, so gate tunnelling grows tenfold for every 60 mV removed",
-        "A lower V_T needs heavier channel doping, so the junctions break down at the supply voltage",
-        "A lower V_T makes the carriers saturate their velocity, so the drive current stops rising"
+        "Every 60 mV taken off V_T makes the leakage current when off ten times larger",
+        "A lower V_T needs a much thicker gate oxide, which could not be made",
+        "A lower V_T makes the transistor switch on more slowly",
+        "A lower V_T cannot be measured accurately on a finished chip"
       ],
       "answer": 0,
       "explain": "The subthreshold slope is at best 60 mV per decade at room temperature. Lowering V_T by 60 mV raises every transistor's off-current tenfold, and with 10⁸ transistors per chip the leakage power became as large as the switching power.",
@@ -81,10 +81,10 @@
     {
       "q": "Strained silicon carries current faster than unstrained silicon. What is the main reason?",
       "options": [
-        "Strain changes the shape of the bands, giving carriers a lighter effective mass and fewer scattering events",
-        "Strain makes the band gap much smaller, so more carriers are available to carry the current",
-        "Strain adds extra dopant atoms to the channel, so there are more carriers to carry the current",
-        "Strain makes the silicon thinner, so the gate controls the channel more strongly"
+        "Strain changes the bands so the carriers are lighter and move faster",
+        "Strain makes the band gap much smaller, so there are more carriers",
+        "Strain adds extra dopant atoms to the channel",
+        "Strain makes the silicon thinner, so the gate controls it better"
       ],
       "answer": 0,
       "explain": "Strain warps the bands: carriers get a lighter transport mass and scatter less between valleys, so mobility rises. The band gap does change a little, but that is not the mechanism, although it is often stated as if it were.",
@@ -105,13 +105,13 @@
     {
       "q": "What does a gate-all-around nanosheet transistor (2 nm class, 2025) offer over a FinFET?",
       "options": [
-        "The gate surrounds the channel on all four sides, and the channel width is set by the sheet rather than in whole fins",
-        "The channel is made of carbon nanotubes instead of silicon, so the electrons move much faster than in a fin",
-        "The gate is placed underneath the wafer, so the wiring above has more room for signals",
-        "The nMOS transistor sits on top of the pMOS transistor, so each logic cell takes half the area"
+        "The gate wraps around the channel on all sides",
+        "The channel is made of carbon nanotubes instead of silicon",
+        "The transistor needs no gate oxide at all",
+        "The gate sits beside the channel on one side only"
       ],
       "answer": 0,
-      "explain": "In a nanosheet the gate encloses each sheet on all four sides, and the width is chosen by the sheet width rather than in whole fins. (Power under the wafer is backside power; stacked nMOS on pMOS is the CFET.)",
+      "explain": "In a nanosheet the gate wraps around each sheet on all four sides, which gives it the best control of the channel. The channel width can also be chosen freely by the sheet width, rather than in whole fins.",
       "slide": 28
     },
     {

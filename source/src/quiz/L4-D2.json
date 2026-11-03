@@ -88,9 +88,9 @@
       "img": "img/L4-D2-sb-iv.jpg",
       "alt": "Drain current per tube on a log scale against gate voltage from −0.8 to 1.2 V for three tube diameters: each curve has a sharp minimum near 0.2 V and rises on both sides",
       "options": [
-        "A high gate voltage lets electrons tunnel in, and a low gate voltage lets holes tunnel in",
+        "A high gate voltage lets electrons in, and a low gate voltage lets holes in",
         "The tube heats up at both ends of the sweep, and heat raises the current",
-        "The gate oxide leaks at both high and low gate voltages, adding to the current",
+        "The gate oxide leaks at both high and low gate voltages",
         "Wider tubes leak at both ends of the sweep, while narrow tubes do not"
       ],
       "answer": 0,
@@ -99,15 +99,15 @@
       "anim": "L4/sb-cntfet.html"
     },
     {
-      "q": "In a nanotube shorter than about 1 µm, electrons cross without colliding. Why does the tube still have a resistance of at least 6.45 kΩ?",
+      "q": "Electrons cross a nanotube shorter than about 1 µm without colliding. What is this called?",
       "options": [
-        "Only four channels conduct, each with a fixed conductance, paid at the contacts",
-        "The band gap adds a fixed resistance even when the gate is fully on",
-        "The tube is too thin, so electrons must squeeze through one at a time",
-        "The 6.45 kΩ is the resistance of the metal wires leading to the tube"
+        "Ballistic transport",
+        "Thermionic emission",
+        "Diffusion",
+        "Avalanche breakdown"
       ],
       "answer": 0,
-      "explain": "Ballistic does not mean zero resistance. Each of the four lanes (two spins × two valleys) has a fixed conductance, giving at least h/4e² = 6.45 kΩ per tube, paid where the electrons enter and leave the tube.",
+      "explain": "Ballistic transport: with no collisions, the current is limited only by the number of lanes (four in a nanotube), and the minimum resistance, about 6.45 kΩ, is paid at the contacts.",
       "slide": 21,
       "anim": "L4/cntfet-ballistic.html"
     },

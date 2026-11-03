@@ -76,10 +76,10 @@
       "img": "img/L1-D3-swing-vs-L.jpg",
       "alt": "Drain current on a log scale against gate voltage for gate lengths of 60, 30, 20 and 15 nm: the shorter the gate, the further left and the less steep the curve",
       "options": [
-        "The drain adds its own coupling to the channel, so the gate's share of control over the barrier falls",
-        "The gate oxide is made thicker as the gate gets shorter, so the gate couples more weakly",
-        "Short channels run hotter, so the carriers have more thermal energy to cross the barrier",
-        "Short channels have fewer electrons in the source, so the current rises more slowly"
+        "The drain now shares control of the channel, so the gate has less control",
+        "The gate oxide is made thicker as the gate gets shorter",
+        "Short channels run hotter, so carriers cross the barrier more easily",
+        "Short channels have fewer electrons in the source"
       ],
       "answer": 0,
       "explain": "The drain acts like an extra capacitor on the channel, so the gate controls a smaller share of the barrier and the curves flatten: the swing rises from about 70 to about 125 mV per decade. With the leftward shift, the off-current at V_GS = 0 rises by over four decades.",

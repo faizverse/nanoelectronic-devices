@@ -45,17 +45,17 @@
       "slide": 7
     },
     {
-      "q": "The graphs show electron velocity against electric field for five materials, on a linear scale (left) and a log scale (right). Which materials are fastest at very high fields?",
+      "q": "The graphs show electron velocity against electric field for five materials. Which two speed up to a peak and then slow down again?",
       "img": "img/L4-D4-velocity.jpg",
       "alt": "Electron drift velocity against electric field for Si, GaAs, InGaAs, 4H-SiC and GaN, with a linear field axis (left) and a log field axis (right)",
       "options": [
-        "The wide-gap materials, GaN and SiC",
-        "GaAs and InGaAs, which keep their peak velocity",
-        "Silicon, whose velocity keeps rising with field",
-        "All five are equally fast at very high fields"
+        "GaAs and InGaAs",
+        "GaN and SiC",
+        "Silicon and GaN",
+        "Silicon and SiC"
       ],
       "answer": 0,
-      "explain": "GaAs and InGaAs are fastest at low fields but fall back after their peak. The wide-gap GaN and SiC saturate later but at a higher speed, which matters for high-power, high-frequency devices.",
+      "explain": "GaAs and InGaAs electrons are light and fast, until at a few kV/cm they jump into heavier valleys and slow down. GaN and SiC saturate later but at a higher speed, which suits high-power, high-frequency devices.",
       "slide": 9,
       "anim": "L4/compound-semiconductors.html"
     },
@@ -72,23 +72,24 @@
       "slide": 12
     },
     {
-      "q": "True or false: in a GaN HEMT, as in a GaAs HEMT, the channel electrons must come from a doped donor layer.",
-      "type": "tf",
+      "q": "Which kind of HEMT is used in 5G base stations, radar and fast power switches?",
       "options": [
-        "True",
-        "False"
+        "The GaN HEMT",
+        "The InP HEMT",
+        "The pHEMT on GaAs",
+        "The silicon HEMT"
       ],
-      "answer": 1,
-      "explain": "False. AlGaN and GaN crystals are electrically polarised. The change in polarisation at the interface pulls in about ten times more electrons than an AlGaAs/GaAs HEMT holds, with no doping at all.",
-      "slide": 12
+      "answer": 0,
+      "explain": "GaN HEMTs: 5G base stations, radar and fast power switches. In GaN, polarisation at the AlGaN/GaN interface supplies about ten times more channel electrons than a GaAs HEMT holds, with no doping. InP HEMTs are the fastest transistors of all (radio astronomy); pHEMTs on GaAs make low-noise amplifiers and switches.",
+      "slide": 13
     },
     {
       "q": "In a heterojunction bipolar transistor (HBT), what does the wider-gap emitter do?",
       "options": [
-        "It blocks holes leaking back from the base, so the base can be heavily doped",
+        "It blocks holes flowing back from the base into the emitter",
         "It lowers the emitter's resistance, so more electrons are injected",
         "It blocks electrons from entering the base, cutting the leakage current",
-        "It makes the transistor switch on at zero voltage, so it needs no supply"
+        "It makes the transistor switch on at zero voltage"
       ],
       "answer": 0,
       "explain": "Holes leaking back into the emitter waste current. A wider-gap emitter adds a wall in the valence band that stops them but not the electrons, so the base can be heavily doped: lower resistance and higher speed.",
@@ -109,29 +110,27 @@
       "slide": 16
     },
     {
-      "q": "The picture compares how 8 electrons fill the states in a silicon channel and in an InGaAs channel. Why does InGaAs give less charge per volt of gate voltage, despite its faster electrons?",
-      "img": "img/L4-D4-dos.jpg",
-      "alt": "8 electrons filling the energy levels in a silicon channel (left) and in an InGaAs channel (right)",
+      "q": "Which compound semiconductor is used for blue and white LEDs, 5G and radar, and compact phone chargers?",
       "options": [
-        "Light electrons have few states per energy, so they must fill higher ones, which costs gate voltage",
-        "Its electrons are heavier than silicon's, so the gate cannot move them as easily",
-        "Its gate oxide is much thicker than silicon's, so the gate is further from the channel",
-        "Its electrons leak out of the channel into the substrate before they reach the drain"
+        "GaN (gallium nitride)",
+        "GaAs (gallium arsenide)",
+        "InP (indium phosphide)",
+        "Si (silicon)"
       ],
       "answer": 0,
-      "explain": "A light mass means few states at each energy. To hold the same charge, InGaAs electrons must fill states much higher up, and that is paid for with gate voltage: faster electrons, but fewer of them (the density-of-states bottleneck).",
-      "slide": 19
+      "explain": "GaN: blue and white LEDs, 5G and radar, chargers. GaAs is used in phone power amplifiers, red LEDs and space solar cells; InP in lasers for optical fibre and the fastest radio chips; SiC in electric-car inverters.",
+      "slide": 22
     },
     {
-      "q": "Apart from charge per volt, what else has kept III–V compounds out of CMOS processors?",
+      "q": "Why have III–V compounds not replaced silicon in processors?",
       "options": [
-        "Their holes are no faster than silicon's, and they have no clean native oxide for the gate",
+        "Few states per energy, slow holes and no clean native oxide for the gate",
         "They cannot be made into transistors smaller than 1 µm",
-        "They conduct electricity so poorly that the chips would need very high voltages",
+        "They conduct electricity so poorly that chips would need very high voltages",
         "Their band gaps are too large to switch at 1 V"
       ],
       "answer": 0,
-      "explain": "CMOS needs fast p-channels too, and III–V holes are no better than silicon's; GaAs has no clean native oxide, and deposited ones trap charge. Instead, III–Vs join silicon for what it cannot do: GaN power and RF, and lasers on silicon photonics.",
+      "explain": "Light electrons have few states per energy, so the gate gets less charge per volt; CMOS also needs fast p-channels, and III–V holes are no better than silicon's; and GaAs has no clean native oxide. Instead, III–Vs work beside silicon: GaN power and RF, and lasers on silicon photonics.",
       "slide": 20
     }
   ]
