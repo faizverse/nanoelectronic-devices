@@ -24,6 +24,16 @@ LECTURES = [
 ]
 
 
+QUIZDIR = SRC / "quiz"           # one JSON file of questions per slide deck, e.g. L4-D3.json
+def quiz_links(LID, ref, pre="../"):
+    """Links to the quizzes for the documents an animation supports (only quizzes that exist)."""
+    out = []
+    for n in sorted(set(re.findall(r"Document (\d)", ref))):
+        f = QUIZDIR / f"{LID}-D{n}.json"
+        if f.exists():
+            q = json.loads(f.read_text()); out.append(f'<a href="{pre}quiz/{LID}-D{n}.html">{q["kicker"]}: {q["title"]}</a>')
+    return out
+
 def load(folder):
     out = []
     for f in sorted((SRC / folder).glob("*.html")):
@@ -95,7 +105,9 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
         hero = f"""<div class="wrap"><nav class="bc" aria-label="Breadcrumb"><a href="../animations/index.html">Animations</a> › <a href="index.html">{LNAME}</a></nav><header class="hero">
     <p class="kicker">Animation {m['num']} of {N} · {m['ref']}</p>
     <h1>{m['title']}</h1><p class="lede">{m['blurb']}</p></header>"""
-        page = hero + body.replace("</main>", "</main>", 1) + nav + \
+        ql = quiz_links(LID, m["ref"])
+        qline = (f'<p class="quizlink">Test yourself: {" · ".join(ql)}</p>') if ql else ""
+        page = hero + body.replace("</main>", "</main>", 1) + qline + nav + \
             f'<p class="wrap foot">{COURSE} · {BYLINE}.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>'
         (OUT / LID / f"{m['slug']}.html").write_text(shell(f"{m['title']} · KKKC6353 {LNAME}", m["blurb"], page, pre="../", section="animations", fs=True, path=f"{LID}/{m['slug']}.html"))
 
@@ -143,7 +155,6 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
 import shutil
 HERE = pathlib.Path(__file__).parent
 PDFDIR = HERE / "pdf"            # PDFs of notes, slides and student guides (copied to notes/files/ when present)
-QUIZDIR = SRC / "quiz"           # one JSON file of questions per slide deck, e.g. L4-D3.json
 # lecture -> [(doc id, kicker, title, file stem, has slides, note)]
 DOCS = {
     "L1": [("D1", "Document 1", "CMOS Technology", "L1-D1-CMOS-Technology", True, ""),
@@ -242,12 +253,65 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
         q = quiz_of(LID, D)
         nq = f"{len(q['questions'])} questions · " if q else ""
         cards.append(f'<div class="card doc"><p class="dk">{kick}</p><h3>{title}</h3><p class="dn">{nq}Easy questions on the key ideas of this set of slides.</p>'
-                     f'<div class="btnrow">{btn(f"{LID}-{D}.html", "Start the quiz", True) if q else SOON.format("Quiz")}</div></div>')
+                     f'<div class="btnrow">{btn(f"{LID}-{D}.html", "Start the quiz", True).replace(' target="_blank" rel="noopener"', '') if q else SOON.format("Quiz")}</div></div>')
     blocks.append(lec_head(LID, LNAME, LTITLE) + f'<div class="docs">{"".join(cards)}</div></section>')
 quiz = f"""{sec_css}<div class="wrap"><header class="hero"><p class="kicker">{COURSE}</p><h1>Quizzes</h1>
 <p class="lede">One short quiz for each set of slides: easy multiple-choice questions on the foundations, with an explanation after every answer. Nothing is recorded: your best score is kept only in your own browser.</p></header>
 {ltabs(None, lambda k: f"#{k}")}{"".join(blocks)}<p class="foot">{COURSE} · {BYLINE}</p></div>"""
 (OUT / "quiz" / "index.html").write_text(shell(f"Quizzes · {COURSE}", f"Self-test quizzes for {COURSE}, one per set of slides.", quiz, pre="../", section="quiz", path="quiz/"))
+
+# ---------- Quiz pages, one per slide deck with a JSON file
+qjs = (SRC / "quiz.js").read_text()
+qcss = """<style>
+.qwrap{max-width:820px;margin:0 auto}
+#quiz{padding:18px 20px 20px}
+.qhead{display:flex;justify-content:space-between;color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
+.qbar{height:5px;background:var(--grid);border-radius:3px;margin:.4rem 0 1rem;overflow:hidden}.qbar i{display:block;height:100%;background:var(--rust)}
+.qtext{font-size:1.15rem;line-height:1.4;color:var(--ink);margin:0 0 .9rem;outline:none}
+.qimg{margin:0 0 1rem;text-align:center}.qimg img{max-width:100%;max-height:340px;border-radius:8px;border:1px solid var(--line);background:#fff}
+.qopts{display:grid;gap:8px}
+.qopt{display:flex;gap:.7rem;align-items:flex-start;text-align:left;font:inherit;padding:.7rem .85rem;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.qopt:hover:not(:disabled){border-color:var(--blue)}
+.qopt:disabled{cursor:default}
+.qkey{flex:0 0 1.5rem;height:1.5rem;border-radius:50%;background:var(--chip);color:var(--muted);font-weight:700;font-size:.8rem;display:grid;place-items:center}
+.qkey:empty{display:none}
+.qopt.right{border-color:var(--green);background:color-mix(in srgb,var(--green) 12%,var(--panel))}
+.qopt.right .qkey{background:var(--green);color:#fff}
+.qopt.wrong{border-color:var(--rust);background:color-mix(in srgb,var(--rust) 12%,var(--panel))}
+.qopt.wrong .qkey{background:var(--rust);color:#fff}
+.fb{margin-top:1rem;padding:.75rem .9rem;border-radius:8px;background:var(--chip);border-left:4px solid var(--blue)}
+.fb.good{border-left-color:var(--green)}.fb.bad{border-left-color:var(--rust)}
+.fbref{margin-top:.4rem;font-size:.88rem;color:var(--muted)}
+.qnext{margin-top:1rem;display:flex;justify-content:flex-end}
+.qdone{text-align:center;padding:.5rem 0 1rem}.qdone .big{font-size:3rem;font-weight:700;color:var(--navy);margin:.2rem 0}.qdone .big span{font-size:1.5rem;color:var(--muted)}
+.qdone .best{color:var(--muted);font-size:.9rem}
+.qrev{font-size:1.05rem;color:var(--navy);margin:1rem 0 .5rem}
+.qmiss{padding:12px 14px;margin:0 0 10px}.qmiss p{margin:.2rem 0}.qmq{font-weight:600}.qme{color:var(--muted)}
+.qend{justify-content:center;margin-top:1rem}
+.qnote{color:var(--muted);font-size:.85rem;text-align:center;margin:.8rem 0 0}
+.also{margin:.6rem 0 0;font-size:.95rem}
+</style>"""
+qfiles = sorted(QUIZDIR.glob("*.json")) if QUIZDIR.exists() else []
+if (QUIZDIR / "img").exists():
+    (OUT / "quiz" / "img").mkdir(parents=True, exist_ok=True)
+    for f in (QUIZDIR / "img").iterdir(): shutil.copy(f, OUT / "quiz" / "img" / f.name)
+for f in qfiles:
+    Q = json.loads(f.read_text()); qid = f.stem; LID = Q["lecture"]
+    sp = pdf(Q["slides"])
+    meta = {"id": qid, "root": "../", "slides": ("../notes/" + sp) if sp else None}
+    rel = [m for m in anims_for(LID, Q["doc"])]
+    rel_html = " · ".join(f'<a href="../{LID}/{m["slug"]}.html">{m["title"]}</a>' for m in rel)
+    body = f"""{qcss}<div class="wrap qwrap"><nav class="bc" aria-label="Breadcrumb"><a href="index.html">Quizzes</a> › {Q["kicker"]}</nav>
+<header class="hero"><p class="kicker">Quiz · {Q["kicker"]}</p><h1>{Q["title"]}</h1>
+<p class="lede">{len(Q["questions"])} easy questions on the key ideas of these slides. Pick an answer to see whether it is right, and why. Keys: A–D (or 1–4) to answer, Enter for the next question.</p>
+<p class="also">{'<a href="../notes/' + sp + '" target="_blank" rel="noopener">Slides (PDF)</a> · ' if sp else ''}<a href="../notes/index.html#{LID}">Notes &amp; slides</a>{' · Animations: ' + rel_html if rel_html else ''}</p></header>
+<section class="card" id="quiz"><noscript>This quiz needs JavaScript.</noscript></section>
+<p class="qnote">Nothing is recorded or sent anywhere. Your best score is kept only in this browser.</p>
+<p class="foot">{COURSE} · {BYLINE}</p></div>
+<script>const QUIZ = {json.dumps(Q["questions"], ensure_ascii=False)};
+const QMETA = {json.dumps(meta)};
+{qjs}</script>"""
+    (OUT / "quiz" / f"{qid}.html").write_text(shell(f"Quiz: {Q['title']} · {COURSE}", f"Self-test quiz for {COURSE}, {Q['kicker']}: {Q['title']}.", body, pre="../", section="quiz", path=f"quiz/{qid}.html"))
 
 # ---------- Animations landing
 total = sum(len(v) for v in ANIMS.values())

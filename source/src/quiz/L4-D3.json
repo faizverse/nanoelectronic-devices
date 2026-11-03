@@ -1,0 +1,163 @@
+{
+  "lecture": "L4",
+  "doc": "D3",
+  "kicker": "Lecture 4 · Part 2",
+  "title": "FinFETs, Nanosheets and Silicon-on-Insulator",
+  "slides": "L4-D3-FinFETs-Nanosheets-SOI-slides",
+  "questions": [
+    {
+      "q": "The colour maps in the slides show the electric potential inside a short planar transistor. What problem do they reveal?",
+      "options": [
+        "The drain's voltage spreads under the gate into the channel, so the gate is no longer fully in control",
+        "Electrons tunnel through the thin gate oxide, so the gate leaks current into the channel",
+        "The source runs short of electrons at high current, so the channel current stops rising",
+        "The gate's voltage spreads into the drain, so the drain can no longer collect electrons"
+      ],
+      "answer": 0,
+      "explain": "In a short planar transistor the middle of the channel feels about a third of the drain voltage. The drain is competing with the gate for control of the channel.",
+      "slide": 2
+    },
+    {
+      "q": "Which two changes keep the drain's field out of the channel?",
+      "options": [
+        "Make the silicon body thin, and put the gate on more sides of the channel",
+        "Make the silicon body thicker, and dope it more lightly under the gate",
+        "Raise the drain voltage, and make the gate oxide thicker",
+        "Make the source and drain deeper, and move them closer together"
+      ],
+      "answer": 0,
+      "explain": "Cure 1: a thin film on oxide leaves no deep silicon for the drain's field to spread through (22% instead of 34%). Cure 2: gate on both sides cuts the drain's reach to 7%. SOI, FinFETs and nanosheets are built on these two ideas.",
+      "slide": 4
+    },
+    {
+      "q": "Why do chipmakers make FinFET fins tall and closely packed?",
+      "options": [
+        "A tall fin carries current down both sidewalls, so it gives a lot of channel width on a small area of chip",
+        "A tall fin is further from the substrate, so it needs less gate voltage to switch on and off",
+        "A tall fin has more surface to lose heat from, so the transistor stays cooler in use",
+        "A tall fin is easier to etch accurately, so the transistors come out more uniform"
+      ],
+      "answer": 0,
+      "explain": "Current flows along both sidewalls and the top of each fin, so its effective width is about 2 × height + width. Taller, closer fins pack more channel width into each µm of chip, so fewer fins are needed per transistor.",
+      "slide": 7,
+      "anim": "L4/finfet-nanosheet.html"
+    },
+    {
+      "q": "The picture shows a stacked nanosheet transistor. What can a designer choose freely in a nanosheet that a FinFET only offers in fixed steps?",
+      "img": "img/L4-D3-slide-3d-sheet.jpg",
+      "alt": "Three thin silicon sheets stacked above one another, with the gate filling the gaps between them and surrounding each sheet",
+      "options": [
+        "The width of the channel: sheets can be any width, while a FinFET's width comes in whole fins",
+        "The gate material: sheets can use any metal, while a FinFET must use polysilicon",
+        "The type of carrier: sheets carry both electrons and holes, while a FinFET carries one",
+        "The supply voltage: sheets work at any voltage, while a FinFET needs a fixed one"
+      ],
+      "answer": 0,
+      "explain": "A FinFET's width can only be 1, 2, 3 … fins. A nanosheet's sheet width can be set to any value, and the gate surrounds every sheet on all four sides.",
+      "slide": 8,
+      "anim": "L4/finfet-nanosheet.html"
+    },
+    {
+      "q": "Why do FinFETs and nanosheets tend to run hotter than old planar transistors?",
+      "options": [
+        "The channel is surrounded largely by oxide, which conducts heat about a hundred times worse than silicon",
+        "They run from a higher supply voltage, so each transistor turns more power into heat",
+        "Their electrons move more slowly, so they spend longer in the channel heating it",
+        "Their metal gates absorb light from the chip's surroundings and pass the heat inward"
+      ],
+      "answer": 0,
+      "explain": "Wrapping the channel in gate oxide also wraps it in a heat insulator. The heat cannot escape easily, so the channel runs hot, which slows it and ages it.",
+      "slide": 14
+    },
+    {
+      "q": "Why does every drain in a bulk transistor act like a capacitor?",
+      "options": [
+        "The n⁺ drain and the p substrate are both conductors, and the depletion layer between them is an insulating gap",
+        "The gate oxide sits directly on top of the drain, so the gate and drain form the two plates",
+        "The drain is made of metal, and metal always stores some charge on its surface",
+        "Holes leaking in from the source pile up in the drain and store charge there"
+      ],
+      "answer": 0,
+      "explain": "Two conductors separated by an insulating gap form a capacitor. Here the gap is the depletion layer, which has no free carriers. Every time the output switches, this capacitor must be charged and discharged.",
+      "slide": 17
+    },
+    {
+      "q": "The picture compares the material under the drain in bulk silicon and in SOI. For the same drain size, why is the SOI drain's capacitance smaller?",
+      "img": "img/L4-D3-slide-cj-plates.jpg",
+      "alt": "Two parallel-plate capacitors: on the left a thin depletion layer of silicon between drain and substrate, on the right a much thicker layer of buried oxide",
+      "options": [
+        "The gap under the drain is thicker, and oxide has a lower permittivity than silicon",
+        "The SOI drain is drawn with a smaller layout, so the capacitor's area is less",
+        "Oxide conducts electricity better than silicon, so charge drains away quickly",
+        "The buried oxide holds a fixed charge that cancels the drain's charge"
+      ],
+      "answer": 0,
+      "explain": "A capacitor is C = εA/d. SOI replaces tens of nm of depleted silicon (ε = 11.7) with about 145 nm of buried oxide (ε = 3.9): a wider gap and a lower ε both make C smaller.",
+      "slide": 19
+    },
+    {
+      "q": "In one example, SOI cuts a drain's capacitance from 13.5 fF to 4.5 fF. What does a circuit gain from this?",
+      "options": [
+        "It can run at the same speed from a lower supply voltage, and so uses much less power",
+        "It can use a thicker gate oxide, and so its gates leak much less current",
+        "Its transistors carry more current per µm, and so its wires can be thinner",
+        "Its drains can be made larger, and so the chip needs fewer transistors"
+      ],
+      "answer": 0,
+      "explain": "Less capacitance to charge means the same speed from a lower voltage. Switching energy goes as C·V², so lower C and lower V together cut power: 266 µW at 1.2 V on bulk against 66 µW at 0.7 V on SOI in the example.",
+      "slide": 20
+    },
+    {
+      "q": "True or false: in SOI CMOS, the hidden p-n-p-n path that causes latch-up in bulk CMOS is removed, because each transistor sits on its own island of oxide.",
+      "type": "tf",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": 0,
+      "explain": "True. In bulk CMOS a hidden p-n-p-n path between neighbouring transistors can switch on and short the supply. In SOI, oxide surrounds each transistor, so that path does not exist.",
+      "slide": 21
+    },
+    {
+      "q": "The picture shows two SOI transistors. Why is the one on the right fully depleted?",
+      "img": "img/L4-D3-slide-pd-fd.jpg",
+      "alt": "Two SOI transistors: on the left a thick silicon film with a depletion layer only at the top; on the right a thin film depleted all the way down to the buried oxide",
+      "options": [
+        "Its silicon film is thinner than the depth the gate can deplete",
+        "Its gate voltage is higher, so it pushes holes out of the whole film",
+        "Its buried oxide is thicker, so it soaks up the film's free carriers",
+        "Its source and drain are doped more heavily, so they deplete the film"
+      ],
+      "answer": 0,
+      "explain": "The gate can only deplete silicon to a certain depth. A thick film keeps a neutral layer underneath (partially depleted); a film thinner than that depth is depleted right down to the oxide (fully depleted).",
+      "slide": 23,
+      "anim": "L4/soi-pd-fd.html"
+    },
+    {
+      "q": "In a partially depleted SOI transistor, what causes the 'kink' in the output curves?",
+      "options": [
+        "Holes made near the drain build up in the floating body, which has no contact to remove them, so the current jumps",
+        "Electrons tunnel through the buried oxide into the substrate once the drain voltage is high enough, so the current jumps",
+        "The silicon film heats up at high drain voltage, its resistance falls, and so the current jumps",
+        "The gate oxide starts to break down at high drain voltage, letting extra current through, so the current jumps"
+      ],
+      "answer": 0,
+      "explain": "The neutral body is connected to nothing, so holes made by the high field near the drain have nowhere to go. They charge the body, the threshold voltage falls and the current jumps. A body tie drains the holes away, at a cost in area.",
+      "slide": 24,
+      "anim": "L4/soi-pd-fd.html"
+    },
+    {
+      "q": "Why can the substrate act as a second ('back') gate in a fully depleted SOI transistor?",
+      "options": [
+        "There is no neutral silicon left to screen it, so its voltage reaches the channel through the thin buried oxide",
+        "The substrate is wired to the front gate, so both gates always carry the same voltage",
+        "The buried oxide conducts a small current, so the substrate can feed charge into the channel",
+        "The substrate supplies the electrons for the channel, so its voltage sets how many there are"
+      ],
+      "answer": 0,
+      "explain": "In a fully depleted film nothing screens the substrate's field, so its voltage tunes the threshold: lower for speed when the chip is busy, higher for less leakage when it is idle.",
+      "slide": 25,
+      "anim": "L4/soi-pd-fd.html"
+    }
+  ]
+}
