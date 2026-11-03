@@ -111,30 +111,6 @@
       "slide": 11
     },
     {
-      "q": "A small semiconductor quantum dot behaves like an 'artificial atom'. After how many electrons does adding the next one cost extra energy, as when an atom's shell is full?",
-      "options": [
-        "2, 6 and 12",
-        "1, 2 and 3",
-        "10, 20 and 30",
-        "Every electron costs exactly the same"
-      ],
-      "answer": 0,
-      "explain": "Adding an electron costs the charging energy plus a jump when a level is full. Tarucha and colleagues (1996) found extra costs after 2, 6 and 12 electrons, like the shells of an atom.",
-      "slide": 14
-    },
-    {
-      "q": "Why have single-electron transistors not replaced MOSFETs in computer chips?",
-      "options": [
-        "Room temperature needs 1–2 nm islands by the billion, and the current is tiny",
-        "They need a supply voltage far too high for modern chips",
-        "They use more power than MOSFETs, because each electron is heated as it tunnels",
-        "Their islands wear out after a few million switching cycles"
-      ],
-      "answer": 0,
-      "explain": "Room temperature needs islands of 1–2 nm by the billion; the current is a few nanoamperes, too small to drive wires; and one stray charge nearby shifts the oscillations differently in each device.",
-      "slide": 16
-    },
-    {
       "q": "What are single-electron devices actually good for today?",
       "options": [
         "As ultra-sensitive charge detectors, and as pumps that define the ampere",

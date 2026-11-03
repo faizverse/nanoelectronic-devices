@@ -115,18 +115,6 @@
       "slide": 28
     },
     {
-      "q": "What wavelength of light does EUV lithography use to print today's smallest features?",
-      "options": [
-        "13.5 nm",
-        "193 nm",
-        "134 nm",
-        "365 nm"
-      ],
-      "answer": 0,
-      "explain": "EUV uses 13.5 nm light made from laser-vaporised tin, with all-mirror optics in vacuum. Before it, 193 nm immersion lithography (an effective 134 nm) plus multiple patterning was used.",
-      "slide": 31
-    },
-    {
       "q": "The chart compares three '2 nm' processes. What does the '2 nm' in the name actually measure?",
       "img": "img/L1-D1-node-names.jpg",
       "alt": "Bar chart for TSMC N2, Intel 18A and Samsung SF2: contacted gate pitch 48–50 nm, tightest metal pitch 26–32 nm, and the number in the node name about 2",
@@ -139,18 +127,6 @@
       "answer": 0,
       "explain": "Node names were once a real dimension; now they are generation labels. The 2 nm processes have gate pitches of 48–50 nm, metal pitches of 26–32 nm and a physical gate length of about 12 nm.",
       "slide": 33
-    },
-    {
-      "q": "About how long is the mean free path of an electron (the distance between collisions) in a modern silicon inversion layer?",
-      "options": [
-        "About 10 nm: similar to today's gate lengths",
-        "About 1 µm: far longer than today's gate lengths",
-        "About 0.01 nm: far smaller than one atom",
-        "About 1 mm: the size of a whole chip"
-      ],
-      "answer": 0,
-      "explain": "About 10 nm, while today's gate lengths are 12–20 nm. A carrier crossing a modern channel may scatter once or not at all: transport is quasi-ballistic, and the drift-diffusion picture is at the edge of its validity.",
-      "slide": 37
     }
   ]
 }

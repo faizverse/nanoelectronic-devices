@@ -6,20 +6,6 @@
   "slides": "L4-D3-FinFETs-Nanosheets-SOI-slides",
   "questions": [
     {
-      "q": "The colour map shows the electric potential inside a short planar transistor, with the drain at 1 V. What problem does it reveal?",
-      "options": [
-        "The drain's voltage spreads under the gate into the channel, so the gate is no longer fully in control",
-        "Electrons tunnel through the thin gate oxide, so the gate leaks current into the channel",
-        "The source runs short of electrons at high current, so the channel current stops rising",
-        "The gate's voltage spreads into the drain, so the drain can no longer collect electrons"
-      ],
-      "answer": 0,
-      "explain": "In a short planar transistor the middle of the channel feels about a third of the drain voltage. The drain is competing with the gate for control of the channel.",
-      "slide": 2,
-      "img": "img/L4-D3-slide-drain-reach-1.jpg",
-      "alt": "Colour map of the potential in a planar transistor: the drain's high potential spreads under the gate, and the centre of the channel feels 34% of the drain voltage"
-    },
-    {
       "q": "The colour maps compare a planar transistor, a thin silicon film on oxide (SOI) and a channel with a gate on both sides. Which two changes keep the drain's field out of the channel?",
       "options": [
         "Make the silicon body thin, and put the gate on more sides of the channel",
@@ -72,18 +58,6 @@
       "answer": 0,
       "explain": "Wrapping the channel in gate oxide also wraps it in a heat insulator. The heat cannot escape easily, so the channel runs hot, which slows it and ages it.",
       "slide": 14
-    },
-    {
-      "q": "Why does every drain in a bulk transistor act like a capacitor?",
-      "options": [
-        "The n⁺ drain and the p substrate are both conductors, and the depletion layer between them is an insulating gap",
-        "The gate oxide sits directly on top of the drain, so the gate and drain form the two plates",
-        "The drain is made of metal, and metal always stores some charge on its surface",
-        "Holes leaking in from the source pile up in the drain and store charge there"
-      ],
-      "answer": 0,
-      "explain": "Two conductors separated by an insulating gap form a capacitor. Here the gap is the depletion layer, which has no free carriers. Every time the output switches, this capacitor must be charged and discharged.",
-      "slide": 17
     },
     {
       "q": "The picture compares the material under the drain in bulk silicon and in SOI. For the same drain size, why is the SOI drain's capacitance smaller?",

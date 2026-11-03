@@ -9,7 +9,8 @@
   const fmt = s => esc(s).replace(/([A-Za-zμσ])_([A-Za-z0-9]+)/g, "$1<sub>$2</sub>");
   let order, i, score, missed, answered;
 
-  function best() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } }
+  // a best score saved when the quiz had a different number of questions no longer counts
+  function best() { try { const b = JSON.parse(localStorage.getItem(KEY) || "null"); return b && b.of === QUIZ.length ? b : null; } catch (e) { return null; } }
   function saveBest(s) { try { const b = best(); if (!b || s > b.score) localStorage.setItem(KEY, JSON.stringify({ score: s, of: QUIZ.length })); } catch (e) {} }
   function slideRef(q) {
     if (!q.slide) return "";
