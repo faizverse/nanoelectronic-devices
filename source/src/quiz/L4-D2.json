@@ -59,18 +59,6 @@
       "slide": 5
     },
     {
-      "q": "The first nanotube transistors (1998) worked only with holes (p-type). What did the experiments of 2001 show about this?",
-      "options": [
-        "Removing the oxygen at the contacts made the tube carry electrons",
-        "The tubes were naturally p-type, and no treatment could change them",
-        "Replacing the silicon back gate with a metal gate made them n-type",
-        "Cooling the tubes to 4 K made them carry electrons"
-      ],
-      "answer": 0,
-      "explain": "Oxygen at the metal contacts shifted the barrier in favour of holes. Removing it made the tube n-type, and half a tube of each type made the first nanotube logic gate. Lesson: in a nanotube transistor the contacts decide how it behaves.",
-      "slide": 10
-    },
-    {
       "q": "In a nanotube transistor with metal contacts, how does a high gate voltage switch the current on?",
       "options": [
         "It bends the bands down so the barrier at the contact becomes thin, and electrons tunnel through it",
@@ -109,19 +97,6 @@
       "explain": "With metal contacts, a high gate voltage thins the barrier for electrons and a low gate voltage thins it for holes, so the current rises at both ends: a V. Doped contacts allow one carrier only, which makes the better transistor.",
       "slide": 15,
       "anim": "L4/sb-cntfet.html"
-    },
-    {
-      "q": "The gate charges a nanotube through two capacitances in series: the insulator's and the tube's own 'quantum' capacitance. What happens when the insulator is a very thin high-κ film?",
-      "options": [
-        "The tube's own states become the limit, so making the insulator thinner still adds almost no charge",
-        "The insulator becomes the limit, so every further thinning doubles the charge",
-        "The two capacitances cancel each other, so the tube holds no charge at all",
-        "The quantum capacitance grows to match, so thinning keeps adding charge"
-      ],
-      "answer": 0,
-      "explain": "In series, the smaller capacitor wins. With a thin high-κ gate the insulator capacitance is large, so the tube's few states (its quantum capacitance) set the charge. Below a few nm of HfO₂, thinning adds almost nothing.",
-      "slide": 19,
-      "anim": "L4/cntfet-ballistic.html"
     },
     {
       "q": "In a nanotube shorter than about 1 µm, electrons cross without colliding. Why does the tube still have a resistance of at least 6.45 kΩ?",

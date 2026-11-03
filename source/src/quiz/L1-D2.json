@@ -6,18 +6,6 @@
   "slides": "L1-D2-Device-Physics-slides",
   "questions": [
     {
-      "q": "Near a band edge, a band that is flat (has little curvature) means the carriers in it are…",
-      "options": [
-        "Heavy: effective mass is inversely proportional to the band's curvature",
-        "Light: effective mass is proportional to the band's curvature",
-        "Unable to move at all, because a flat band has no available states",
-        "Exactly as heavy as a free electron, whatever the band's shape"
-      ],
-      "answer": 0,
-      "explain": "Near a band edge the band is a parabola, and the carrier behaves like a particle with an effective mass m* that is inversely proportional to the curvature. A flat band means a heavy carrier.",
-      "slide": 5
-    },
-    {
       "q": "Why are holes in silicon slower than electrons?",
       "options": [
         "The valence band is flatter, so holes have a heavier effective mass",
@@ -108,18 +96,6 @@
       "answer": 0,
       "explain": "In older transistors V_T was set by channel doping. Modern devices, with undoped channels, set V_T by the work function of the metal gate.",
       "slide": 21
-    },
-    {
-      "q": "When the carriers in a channel travel at their saturation velocity, how does the drain current behave?",
-      "options": [
-        "It rises in a straight line with gate overdrive and no longer depends on the channel length",
-        "It rises with the square of the gate overdrive and doubles every time the channel is halved",
-        "It falls as the gate voltage rises, because the carriers slow down at high field",
-        "It stays zero until the drain voltage exceeds the gate voltage"
-      ],
-      "answer": 0,
-      "explain": "With velocity saturation, I_D ≈ W·C_ox·v_sat·(V_GS − V_T): linear in overdrive and independent of L. The long-channel square law overestimates the drive current of a modern transistor.",
-      "slide": 22
     },
     {
       "q": "The graph shows three transistors with the same threshold voltage but different subthreshold swings. Which one has the lowest off-current at V_GS = 0?",

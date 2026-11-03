@@ -72,18 +72,6 @@
       "slide": 12
     },
     {
-      "q": "Transistors replaced tunnel diodes in most uses. Where are heavily doped tunnel junctions still essential today?",
-      "options": [
-        "Joining the stacked cells of the best multi-junction solar cells, as used on almost every satellite",
-        "In the memory cells of every smartphone",
-        "As the light source in fibre-optic links",
-        "As the switches in every computer processor"
-      ],
-      "answer": 0,
-      "explain": "Tunnel diodes lost out because they have only two terminals and carry little current, so they could not be packed by the billion. But tunnel junctions still join the cells of the best solar cells, on almost every satellite.",
-      "slide": 13
-    },
-    {
       "q": "A resonant-tunnelling diode has two thin walls with a quantum well between them. Why can an electron at one particular energy pass through both walls almost every time?",
       "options": [
         "At the well's level the reflections from the two walls cancel, so the electron is hardly reflected at all",
@@ -110,18 +98,6 @@
       "explain": "(a) The level is above the electrons: little current. (b) It lines up with them: resonance and the peak. (c) It has dropped below the emitter's band, so nothing has the right energy and the current falls.",
       "slide": 16,
       "anim": "L3/resonant-tunnelling-diode.html"
-    },
-    {
-      "q": "What are resonant-tunnelling diodes best known for?",
-      "options": [
-        "The fastest electronic oscillators at room temperature, reaching nearly 2 THz",
-        "The most efficient solar cells ever made, above 50% efficiency",
-        "The brightest blue LEDs, used in all white lighting",
-        "The largest memory chips, storing terabytes on one die"
-      ],
-      "answer": 0,
-      "explain": "RTDs are the fastest electronic oscillators at room temperature: 650 GHz in 1997, 1.98 THz in 2017. Their weakness is tiny output power, typically microwatts at the highest frequencies.",
-      "slide": 17
     },
     {
       "q": "Why can an ordinary MOSFET not switch more steeply than about 60 mV per tenfold change in current at room temperature?",

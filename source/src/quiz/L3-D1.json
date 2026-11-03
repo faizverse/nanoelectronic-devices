@@ -6,18 +6,6 @@
   "slides": "L3-D1-Tunnelling-slides",
   "questions": [
     {
-      "q": "A ball without enough energy to climb a hill always rolls back. What happens when electrons meet a thin energy wall higher than their energy?",
-      "options": [
-        "Most are reflected, but a few appear on the far side, having passed through the wall",
-        "All of them are reflected, exactly like the ball, because they lack the energy",
-        "All of them pass straight through, because electrons ignore energy walls",
-        "They gather in front of the wall until together they have enough energy to climb it"
-      ],
-      "answer": 0,
-      "explain": "Send electrons at a thin enough wall and a few appear on the far side. They do not go over the top or break the wall: they pass through it. This is quantum tunnelling.",
-      "slide": 5
-    },
-    {
       "q": "Why can an electron tunnel through a wall when a ball cannot roll through a hill?",
       "options": [
         "The electron is a spread-out wave, and some of the wave reaches the far side of a thin wall",
@@ -105,19 +93,6 @@
       ],
       "answer": 0,
       "explain": "Electrons tunnel across the 0.5–1 nm gap between the tip and the surface. Because tunnelling depends so strongly on the gap, 0.1 nm closer makes the current about ten times larger, so the microscope feels single atoms.",
-      "slide": 18,
-      "anim": "L3/scanning-tunnelling-microscope.html"
-    },
-    {
-      "q": "In the STM's usual (constant-current) mode, what forms the image?",
-      "options": [
-        "The height of the tip, which feedback moves up and down to keep the current constant",
-        "The current itself, measured while the tip is held at a fixed height",
-        "The voltage needed to pull atoms off the surface at each point",
-        "The light reflected from the surface as the tip passes over it"
-      ],
-      "answer": 0,
-      "explain": "Feedback moves the tip up and down to keep the tunnelling current constant, and the tip's height, recorded point by point, is the image. Constant-current mode is also safer: the tip lifts over raised features instead of hitting them.",
       "slide": 18,
       "anim": "L3/scanning-tunnelling-microscope.html"
     },

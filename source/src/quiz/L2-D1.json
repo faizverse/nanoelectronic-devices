@@ -32,18 +32,6 @@
       "slide": 8
     },
     {
-      "q": "Light spreads out after passing through a narrow gap, like ripples on a pond. What is this called, and what does it show?",
-      "options": [
-        "Diffraction: it shows that light travels as a wave",
-        "Reflection: it shows that light bounces off the edges of the gap",
-        "Absorption: it shows that the gap takes energy from the light",
-        "The photoelectric effect: it shows that light is made of particles"
-      ],
-      "answer": 0,
-      "explain": "Spreading out after a narrow gap is diffraction, a sure sign of a wave. Light travels like a wave and arrives like a particle: wave–particle duality.",
-      "slide": 9
-    },
-    {
       "q": "De Broglie said everything that moves has a wavelength, equal to h divided by its momentum. Why do we never see a baseball diffract?",
       "options": [
         "Its momentum is so large that its wavelength is far smaller than an atomic nucleus",
@@ -66,18 +54,6 @@
       "answer": 0,
       "explain": "Each electron is detected as a dot (a particle), but the dots build up interference stripes (a wave). The wave sets the chances; the particle is what we detect.",
       "slide": 11
-    },
-    {
-      "q": "What does the wave ψ in the Schrödinger equation tell us about an electron?",
-      "options": [
-        "ψ² gives the chance of finding the electron at each place",
-        "ψ² gives the exact path the electron follows",
-        "ψ² gives the electron's speed at each place",
-        "ψ² gives the electric charge of the electron at each place"
-      ],
-      "answer": 0,
-      "explain": "We never see the wave itself. The chance of finding the electron at a place follows ψ², the wave squared (Born's rule).",
-      "slide": 14
     },
     {
       "q": "Why can a trapped electron only have certain energies?",

@@ -31,18 +31,6 @@
       "anim": "L1/vt-rolloff.html"
     },
     {
-      "q": "As a rule of thumb, how short can the gate of each architecture be made before roll-off and DIBL get out of hand?",
-      "options": [
-        "About five times its natural length λ",
-        "About the same as its natural length λ",
-        "About one tenth of its natural length λ",
-        "About a hundred times its natural length λ"
-      ],
-      "answer": 0,
-      "explain": "Each architecture runs out at a gate length of about 5λ. Shrinking λ (thinner bodies, more gates) is what lets the gate get shorter.",
-      "slide": 6
-    },
-    {
       "q": "The graph shows the conduction-band barrier along the channel. The red curve is a short channel at high drain voltage. Why is its lower barrier a problem when the transistor should be off?",
       "img": "img/L1-D3-barrier.jpg",
       "alt": "Conduction-band edge from source to drain: a long channel has a high, wide barrier; a short channel at low drain voltage a lower one; a short channel at high drain voltage a much lower barrier",
@@ -123,19 +111,6 @@
       "explain": "Making an electron–hole pair needs about 1.5 eV, which a carrier cannot gain from a 0.7 V supply. In 1990, at 5 V, it was a serious problem, and the lightly doped drain (LDD) was invented to deal with it.",
       "slide": 22,
       "anim": "L1/hot-carriers.html"
-    },
-    {
-      "q": "DIBL is the single number engineers use to judge how well a transistor's gate controls its channel. What does it measure?",
-      "options": [
-        "How much the threshold voltage falls for each volt on the drain (mV/V)",
-        "How much the drain current rises for each volt on the gate (A/V)",
-        "How much the gate leaks for each volt on the drain (A/V)",
-        "How much the threshold voltage rises with temperature (mV/K)"
-      ],
-      "answer": 0,
-      "explain": "DIBL (drain-induced barrier lowering) is the fall in V_T per volt of drain voltage. A well-scaled transistor has 20–60 mV/V; above 100 mV/V the gate's control is poor.",
-      "slide": 12,
-      "anim": "L1/dibl.html"
     },
     {
       "q": "Why do FinFETs and nanosheet transistors use undoped channels?",

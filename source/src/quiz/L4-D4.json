@@ -45,18 +45,6 @@
       "slide": 7
     },
     {
-      "q": "GaAs electrons are about six times more mobile than silicon's at low fields. Why do they slow down at high fields?",
-      "options": [
-        "Hot electrons jump into higher valleys where they are heavy and slow",
-        "Ionised impurities scatter fast electrons more strongly",
-        "The band gap shrinks at high field, so the electrons become heavier",
-        "At high fields the electrons tunnel out of the GaAs into the metal contacts"
-      ],
-      "answer": 0,
-      "explain": "GaAs electrons sit in a narrow valley where they are light and fast. At high fields they gain enough energy to jump into heavy valleys about 0.29 eV higher, and slow down.",
-      "slide": 8
-    },
-    {
       "q": "The graphs show electron velocity against electric field for five materials, on a linear scale (left) and a log scale (right). Which materials are fastest at very high fields?",
       "img": "img/L4-D4-velocity.jpg",
       "alt": "Electron drift velocity against electric field for Si, GaAs, InGaAs, 4H-SiC and GaN, with a linear field axis (left) and a log field axis (right)",
@@ -119,18 +107,6 @@
       "answer": 0,
       "explain": "SiC and GaN withstand about ten times silicon's critical field. The blocking layer can be ten times thinner and a hundred times more heavily doped, so its resistance is hundreds of times lower.",
       "slide": 16
-    },
-    {
-      "q": "GaN and SiC switches have much lower resistance than silicon ones, so a smaller chip does the same job. Why does that make phone chargers much smaller?",
-      "options": [
-        "A smaller chip switches faster, so the bulky inductors and capacitors can shrink",
-        "GaN switches more slowly, so less filtering is needed",
-        "GaN chips run straight from the mains without a transformer",
-        "GaN chips charge the battery at a higher voltage, so less charge is needed"
-      ],
-      "answer": 0,
-      "explain": "Lower resistance means a smaller chip for the same job, with less capacitance, so it can switch faster. At higher switching frequency the inductors and capacitors around it can be much smaller.",
-      "slide": 17
     },
     {
       "q": "The picture compares how 8 electrons fill the states in a silicon channel and in an InGaAs channel. Why does InGaAs give less charge per volt of gate voltage, despite its faster electrons?",

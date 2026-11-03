@@ -18,18 +18,6 @@
       "slide": 3
     },
     {
-      "q": "In lithography and etching, what does the resist do?",
-      "options": [
-        "It records the pattern, then shields what lies beneath during etching",
-        "It hardens the whole wafer so that nothing can be etched anywhere",
-        "It conducts electricity between the finished devices",
-        "It is the light source that prints the pattern onto the wafer"
-      ],
-      "answer": 0,
-      "explain": "A resist coating records the pattern. After developing, the remaining resist protects the material underneath while the uncovered parts are etched away.",
-      "slide": 5
-    },
-    {
       "q": "Electron-beam lithography can write features below 10 nm. Why are chips still made by photolithography instead?",
       "options": [
         "Photolithography prints a whole pattern at once through a mask, while an electron beam writes one point at a time",
@@ -143,18 +131,6 @@
       "answer": 0,
       "explain": "Arc discharge (1991) and laser ablation came first, but chemical vapour deposition, with a carbon-rich gas over metal particles at 600–1000 °C, scales up and grows tubes directly on wafers.",
       "slide": 19
-    },
-    {
-      "q": "Why must the metallic tubes be sorted out before nanotubes can be used in transistors?",
-      "options": [
-        "About one tube in three is metallic, and a single metallic tube can short-circuit a transistor",
-        "Metallic tubes carry too little current to switch anything, so they waste space in the transistor",
-        "Metallic tubes are much thicker than semiconducting ones, so they do not fit under the gate",
-        "Metallic tubes stick to each other in bundles, so they block the semiconducting tubes from lining up"
-      ],
-      "answer": 0,
-      "explain": "Every growth method makes a mix, about one tube in three metallic, and one metallic tube can short a transistor. They are removed by spinning in a centrifuge, by polymers that wrap only semiconducting tubes, or by burning them off with a large current.",
-      "slide": 20
     }
   ]
 }

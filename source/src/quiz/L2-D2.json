@@ -100,18 +100,6 @@
       "anim": "L2/quantum-cascade-laser.html"
     },
     {
-      "q": "How does a HEMT (high-electron-mobility transistor) let electrons move so fast?",
-      "options": [
-        "The donor atoms sit in the AlGaAs, and the electrons travel in the GaAs in a thin sheet away from them",
-        "The electrons travel through a vacuum gap between two layers, with nothing to collide with",
-        "The channel is cooled to near absolute zero, so the atoms stop vibrating",
-        "The electrons are replaced by holes, which move faster in GaAs"
-      ],
-      "answer": 0,
-      "explain": "Donor atoms supply electrons but also slow them down. In a HEMT the donors are put in the AlGaAs; the electrons fall into the GaAs and travel in a thin sheet away from them: an express lane.",
-      "slide": 19
-    },
-    {
       "q": "The graph shows the conductance of a very short, narrow wire as it is opened up. Why does the conductance rise in equal steps?",
       "img": "img/L2-D2-lanes.jpg",
       "alt": "A narrow constriction between two wide contacts, and a graph of conductance rising in equal steps (1, 2, 3, 4) as the wire is opened wider",
@@ -124,19 +112,6 @@
       "answer": 0,
       "explain": "Even a wire too short for electrons to bump into anything has resistance. Like a motorway narrowing to a few lanes, each lane adds a fixed conductance (about 12.9 kΩ of resistance per lane, set at the contacts).",
       "slide": 20
-    },
-    {
-      "q": "What decides whether a carbon nanotube is a metal or a semiconductor?",
-      "options": [
-        "How the graphene sheet is rolled up; about one tube in three is metallic",
-        "The length of the tube; long tubes are metals, short tubes semiconductors",
-        "The temperature at which the tube is used",
-        "The metal catalyst it was grown on, which stays inside the tube"
-      ],
-      "answer": 0,
-      "explain": "A nanotube is a sheet of graphene rolled into a tube about 1 nm across. The way it is rolled decides metal or semiconductor, and about one tube in three is metallic. Thinner tubes have bigger band gaps.",
-      "slide": 22,
-      "anim": "L2/carbon-nanotubes.html"
     },
     {
       "q": "True or false: because electrons cross a short nanotube without bumping into anything, the tube has no resistance and makes no heat.",
