@@ -1,0 +1,163 @@
+{
+  "lecture": "L3",
+  "doc": "D1",
+  "kicker": "Lecture 3 · Part 1",
+  "title": "Tunnelling: Passing Through Walls",
+  "slides": "L3-D1-Tunnelling-slides",
+  "questions": [
+    {
+      "q": "A ball without enough energy to climb a hill always rolls back. What happens when electrons meet a thin energy wall higher than their energy?",
+      "options": [
+        "Most are reflected, but a few appear on the far side, having passed through the wall",
+        "All of them are reflected, exactly like the ball, because they lack the energy",
+        "All of them pass straight through, because electrons ignore energy walls",
+        "They gather in front of the wall until together they have enough energy to climb it"
+      ],
+      "answer": 0,
+      "explain": "Send electrons at a thin enough wall and a few appear on the far side. They do not go over the top or break the wall: they pass through it. This is quantum tunnelling.",
+      "slide": 5
+    },
+    {
+      "q": "Why can an electron tunnel through a wall when a ball cannot roll through a hill?",
+      "options": [
+        "The electron is a spread-out wave, and some of the wave reaches the far side of a thin wall",
+        "The electron is so small that it slips through the gaps between the atoms of the wall",
+        "The electron is so light that a little heat lifts it over the top of the wall",
+        "The electron borrows energy from the wall and gives it back once it is through"
+      ],
+      "answer": 0,
+      "explain": "A ball is a small hard lump; an electron is a spread-out wave. At a wall part of the wave reflects and part enters and fades. If the wall is thin, some of the wave reaches the far side, and wherever there is some wave there is some chance of finding the electron.",
+      "slide": 6,
+      "anim": "L3/tunnelling.html"
+    },
+    {
+      "q": "The picture shows an electron's wave arriving at a wall (region 2) from the left. What does the wave do inside the wall?",
+      "img": "img/L3-D1-wave.jpg",
+      "alt": "A wave and its envelope against position: large oscillations in region 1, a grey wall in region 2, and smaller oscillations in region 3",
+      "options": [
+        "It stops wiggling and simply fades away smoothly",
+        "It wiggles much faster than outside the wall",
+        "It grows larger, then shrinks again before leaving",
+        "It stops dead at the edge of the wall and goes no further"
+      ],
+      "answer": 0,
+      "explain": "Inside the wall there are no wiggles: the wave just fades, shrinking by the same factor for every step in. If the wall is thin enough, a smaller wave leaves the far side.",
+      "slide": 8,
+      "anim": "L3/tunnelling.html"
+    },
+    {
+      "q": "True or false: an electron that tunnels through a wall comes out with less energy, because it has to push its way through.",
+      "type": "tf",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": 1,
+      "explain": "False. The wave that comes out has the same wavelength, so the same energy. Tunnelling is all or nothing: the electron is found on the far side with all its energy, or back where it started.",
+      "slide": 9
+    },
+    {
+      "q": "The graph shows the chance of getting through a wall against its thickness, on a log scale. What happens to the chance as the wall gets thicker?",
+      "img": "img/L3-D1-thickness.jpg",
+      "alt": "Chance of getting through on a log scale from 1 down to 1 in 10¹⁶, against wall thickness from 0 to 3 nm, for walls 0.3, 1 and 3 eV above the electron: three straight lines falling, the steepest for the highest wall",
+      "options": [
+        "It falls by the same large factor for every extra slice, so doubling the thickness cuts it enormously",
+        "It falls in direct proportion to the thickness, so a wall twice as thick lets half as many through",
+        "It stays almost the same until the wall reaches a critical thickness, then drops suddenly to zero",
+        "It rises, because a thicker wall gives the electron more time to work its way through"
+      ],
+      "answer": 0,
+      "explain": "The chance falls exponentially: the same factor for every extra slice, so the lines are straight on a log scale. From 1 nm to 2 nm it does not halve; for a typical wall it falls about 30 000 times.",
+      "slide": 12,
+      "anim": "L3/tunnelling.html"
+    },
+    {
+      "q": "Electrons tunnel all the time in devices. Why do the much heavier atoms and protons around them almost never tunnel?",
+      "options": [
+        "A heavier particle's wave fades much faster inside a wall, so its chance of getting through is far smaller",
+        "Atoms are held in place by chemical bonds, which stop them from ever reaching a wall",
+        "Protons have a positive charge, and only negative charges can tunnel",
+        "Atoms are too large to fit through a wall only a nanometre thick"
+      ],
+      "answer": 0,
+      "explain": "A heavier particle's wave fades faster inside the wall. Through a 0.1 nm wall about 3 electrons in 4 get through, but only about 1 proton in 7 million million.",
+      "slide": 13
+    },
+    {
+      "q": "How does tunnelling explain why the Sun shines?",
+      "options": [
+        "Protons in the Sun have far too little energy to overcome their repulsion, but some tunnel through it and fuse",
+        "Light from the Sun's core tunnels through the cooler outer layers that would otherwise block it",
+        "Electrons tunnel out of the Sun's surface and glow as they cool in space",
+        "Heat tunnels from the Sun's core to its surface much faster than it could be conducted"
+      ],
+      "answer": 0,
+      "explain": "Protons have well under 1% of the energy needed to climb their mutual repulsion. Classically none would fuse; in fact a few tunnel through, and so many protons collide that the trickle powers the Sun.",
+      "slide": 16
+    },
+    {
+      "q": "Why can a scanning tunnelling microscope (STM) see single atoms?",
+      "options": [
+        "The current changes about tenfold for every 0.1 nm change in the gap, so tiny bumps change it a lot",
+        "The tip is sharper than an atom, so it focuses the electrons onto one atom like a fine lens",
+        "The tip touches each atom in turn and feels its shape, like a record needle",
+        "The tip shines a beam of light so narrow that it lights up one atom at a time"
+      ],
+      "answer": 0,
+      "explain": "Electrons tunnel across the 0.5–1 nm gap between the tip and the surface. Because tunnelling depends so strongly on the gap, 0.1 nm closer makes the current about ten times larger, so the microscope feels single atoms.",
+      "slide": 18,
+      "anim": "L3/scanning-tunnelling-microscope.html"
+    },
+    {
+      "q": "In the STM's usual (constant-current) mode, what forms the image?",
+      "options": [
+        "The height of the tip, which feedback moves up and down to keep the current constant",
+        "The current itself, measured while the tip is held at a fixed height",
+        "The voltage needed to pull atoms off the surface at each point",
+        "The light reflected from the surface as the tip passes over it"
+      ],
+      "answer": 0,
+      "explain": "Feedback moves the tip up and down to keep the tunnelling current constant, and the tip's height, recorded point by point, is the image. Constant-current mode is also safer: the tip lifts over raised features instead of hitting them.",
+      "slide": 18,
+      "anim": "L3/scanning-tunnelling-microscope.html"
+    },
+    {
+      "q": "Why did tunnelling become a problem for transistors in the early 2000s, and how was it fixed?",
+      "options": [
+        "The SiO₂ gate insulator was only about 1.2 nm thick, so electrons tunnelled through it; a thicker high-k insulator was used instead",
+        "The channels became so short that electrons tunnelled from source to drain; the transistors were made longer instead",
+        "The wires became so thin that electrons tunnelled between them; they were spaced further apart instead",
+        "The supply voltage became so low that electrons tunnelled backwards; it was raised again instead"
+      ],
+      "answer": 0,
+      "explain": "At about 1.2 nm of SiO₂, electrons tunnelled straight through the gate. A hafnium-based high-k insulator gives the same control at several times the thickness, cutting the leakage more than a hundredfold (Intel 45 nm, 2007).",
+      "slide": 22
+    },
+    {
+      "q": "The picture shows a flash memory cell. Why do the electrons stored on the floating gate stay there for years once the power is off?",
+      "img": "img/L3-D1-flash.jpg",
+      "alt": "Left: a flash cell with a control gate, a floating gate storing charge, a thin tunnel oxide and a silicon channel. Right: the energy wall of the tunnel oxide, drawn with no field and under a strong field",
+      "options": [
+        "With no writing voltage the insulator is a wall about 8 nm thick, far too thick to tunnel through",
+        "The control gate keeps a small voltage on them, even with the power off",
+        "The electrons bond to the floating gate's atoms and can no longer move",
+        "The insulator is a perfect barrier that no electron can ever cross"
+      ],
+      "answer": 0,
+      "explain": "To write, about 20 V tilts the wall into a thin triangle and electrons tunnel through its tip (Fowler–Nordheim tunnelling). With no voltage the wall is about 8 nm thick again, and the stored electrons stay for years.",
+      "slide": 24
+    },
+    {
+      "q": "A magnetic tunnel junction has two magnets separated by about 1 nm of insulator. What changes its resistance?",
+      "options": [
+        "Whether the two magnets point the same way (electrons tunnel easily) or opposite ways (much less easily)",
+        "How strong the two magnets are: stronger magnets pull the electrons through faster",
+        "How hard the magnets squeeze the insulator, which changes how thick it is",
+        "Whether the two magnets are made of the same metal or of different metals"
+      ],
+      "answer": 0,
+      "explain": "With the magnets aligned, electrons tunnel through the 1 nm MgO easily; opposite, much less easily (a factor of two or more). This is used in hard-disk read heads and in MRAM, memory that keeps its data without power.",
+      "slide": 25
+    }
+  ]
+}
