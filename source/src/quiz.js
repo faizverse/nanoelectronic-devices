@@ -31,14 +31,24 @@
       <div class="qhead"><span>Question ${i + 1} of ${order.length}</span><span>Score ${score}</span></div>
       <div class="qbar" aria-hidden="true"><i style="width:${100 * i / order.length}%"></i></div>
       <h2 class="qtext" id="qtext" tabindex="-1">${esc(q.q)}</h2>
-      ${q.img ? `<figure class="qimg"><img src="${q.img}" alt="${esc(q.alt || "")}"></figure>` : ""}
+      ${q.img ? `<figure class="qimg"><button type="button" class="qzoom" title="Enlarge the picture"><img src="${q.img}" alt="${esc(q.alt || "")}"></button><figcaption>Click or tap the picture to enlarge it.</figcaption></figure>` : ""}
       <div class="qopts" role="group" aria-labelledby="qtext">
         ${opts.map((j, n) => `<button type="button" class="qopt" data-j="${j}"><span class="qkey">${q.type === "tf" ? "" : "ABCD"[n]}</span><span>${esc(q.options[j])}</span></button>`).join("")}
       </div>
       <div class="qfb" aria-live="polite"></div>
       <div class="qnext"></div>`;
     app.querySelectorAll(".qopt").forEach(b => b.onclick = () => pick(+b.dataset.j));
+    const z = $(".qzoom"); if (z) z.onclick = () => zoom(q.img, q.alt);
     $("#qtext").focus({ preventScroll: true });
+  }
+
+  function zoom(src, alt) {
+    const o = document.createElement("div"); o.className = "qlight"; o.setAttribute("role", "dialog"); o.setAttribute("aria-label", "Enlarged picture");
+    o.innerHTML = `<div class="qlbox"><img src="${src}" alt="${esc(alt || "")}"></div><p class="qlhint">Scroll sideways to see the whole picture.</p><button type="button" class="btn">Close</button>`;
+    const close = () => { o.remove(); document.removeEventListener("keydown", key, true); const z = $(".qzoom"); z && z.focus(); };
+    const key = e => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); } };
+    o.onclick = e => { if (!e.target.closest(".qlbox")) close(); }; document.addEventListener("keydown", key, true);
+    document.body.appendChild(o); o.querySelector("button").focus();
   }
 
   function pick(j) {
@@ -77,6 +87,7 @@
 
   document.addEventListener("keydown", e => {
     if (e.target.closest && e.target.closest("input,textarea")) return;
+    if (document.querySelector(".qlight")) return;
     const opts = [...app.querySelectorAll(".qopt")];
     if (!answered && opts.length) {
       const n = "abcd".indexOf(e.key.toLowerCase()), d = "1234".indexOf(e.key), t = e.key.toLowerCase() === "t" ? 0 : e.key.toLowerCase() === "f" ? 1 : -1;

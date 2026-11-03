@@ -34,6 +34,8 @@ for f in sorted((SRC / "quiz").glob("*.json")):
         if not q.get("q"): err(f.name, n, "no question text")
         s = q.get("slide")
         if not isinstance(s, int) or s < 1 or (nslides and s > nslides): err(f.name, n, f"bad slide {s}")
+        if re.search(r"\b(picture|colour maps?|graph|figure|diagram|curves?|shown)\b", q["q"], re.I) and not q.get("img"):
+            err(f.name, n, "refers to a picture but has no img")
         if q.get("img"):
             if not (SRC / "quiz" / q["img"]).exists(): err(f.name, n, f"missing image {q['img']}")
             if not q.get("alt"): err(f.name, n, "image without alt text")
