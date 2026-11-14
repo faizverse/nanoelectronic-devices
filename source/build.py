@@ -25,6 +25,18 @@ LECTURES = [
 
 
 QUIZDIR = SRC / "quiz"           # one JSON file of questions per slide deck, e.g. L4-D3.json
+QUIZZES = {}                     # lecture -> [(doc, "Part N", title, page stem)], in document order
+for _f in sorted(QUIZDIR.glob("*.json")):
+    _q = json.loads(_f.read_text())
+    QUIZZES.setdefault(_q["lecture"], []).append((_q["doc"], _q["kicker"].split("·")[-1].strip(), _q["title"], _f.stem))
+def part_of(LID, doc):
+    """'Part N' for a document that has slides and a quiz; the notes-only L4 Document 1 is background reading."""
+    for d, part, _, _ in QUIZZES.get(LID, []):
+        if d == doc: return part
+    return "Background reading"
+def ref_label(LID, ref):
+    """'Document 2, Sections 3–4' -> 'Part 1, Sections 3–4' (the notes are not on the site, so name the part of the lecture)."""
+    return re.sub(r"Document (\d), (Sections? [^·]+?)(?=\s*·|$)", lambda k: f"{part_of(LID, 'D' + k.group(1))}, {k.group(2)}", ref)
 def quiz_links(LID, ref, pre="../"):
     """Links to the quizzes for the documents an animation supports (only quizzes that exist)."""
     out = []
@@ -110,7 +122,7 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
             f'<a href="{prev["slug"]}.html" rel="prev"><small>← Previous</small>{prev["title"]}</a>' if prev else '<a href="index.html"><small>←</small>All animations</a>') + (
             f'<a href="{nxt["slug"]}.html" rel="next" style="text-align:right"><small>Next →</small>{nxt["title"]}</a>' if nxt else '<a href="index.html" style="text-align:right"><small>→</small>All animations</a>') + '</footer>'
         hero = f"""<div class="wrap"><nav class="bc" aria-label="Breadcrumb"><a href="../animations/index.html">Animations</a> › <a href="index.html">{LNAME}</a></nav><header class="hero">
-    <p class="kicker">Animation {m['num']} of {N} · {m['ref']}</p>
+    <p class="kicker">Animation {m['num']} of {N} · {ref_label(LID, m['ref'])}</p>
     <h1>{m['title']}</h1><p class="lede">{m['blurb']}</p></header>"""
         ql = quiz_links(LID, m["ref"])
         qline = (f'<p class="quizlink">Test yourself: {" · ".join(ql)}</p>') if ql else ""
@@ -118,21 +130,46 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
             f'<p class="wrap foot">{COURSE} · {BYLINE}.<br>Interactive teaching models: simplified physics, stated on each page. Original work; no third-party figures.</p></div>'
         (OUT / LID / f"{m['slug']}.html").write_text(shell(f"{m['title']} · KKKC6353 {LNAME}", m["blurb"], page, pre="../", section="animations", fs=True, path=f"{LID}/{m['slug']}.html"))
 
-    # ---- L1 index
-    cards = "".join(f"""<a class="card tile" href="{m['slug']}.html">
+    # ---- lecture index: intro with a "This lecture" panel (quizzes, guide), then the animations grouped by part
+    def tile(m):
+        return f"""<a class="card tile" href="{m['slug']}.html">
     <span class="num">{m['num']:02d}</span><span class="t">{m['title']}</span>
-    <span class="b">{m['blurb']}</span><span class="pills"><span class="pill">{m['ref']}</span>{'<span class="pill new">New</span>' if m.get('new') else ''}</span></a>"""
-                    for m, _ in pages)
-    idx_css = """<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:1rem 0 2rem}
+    <span class="b">{m['blurb']}</span><span class="pills"><span class="pill">{ref_label(LID, m['ref'])}</span>{'<span class="pill new">New</span>' if m.get('new') else ''}</span></a>"""
+    groups = {}
+    for m, _ in pages:   # an animation belongs to the first document its reference names
+        groups.setdefault("D" + re.search(r"Document (\d)", m["ref"]).group(1), []).append(m)
+    qinfo = {d: (part, title, stem) for d, part, title, stem in QUIZZES.get(LID, [])}
+    parts = ""
+    for doc in sorted(set(groups) | set(qinfo)):
+        if doc in qinfo:
+            part, title, stem = qinfo[doc]
+            head = f'<div class="parthead"><h2>{part} · {title}</h2><a href="../quiz/{stem}.html">Take the {part} quiz →</a></div>'
+        else:
+            head = '<div class="parthead"><h2>Background reading</h2></div>'
+        parts += head + (f'<div class="tiles">{"".join(tile(m) for m in groups[doc])}</div>' if doc in groups else '<p class="none">No animations for this part.</p>')
+    g = guide(LID)
+    panel = ('<aside class="card panel" aria-label="This lecture"><h2>This lecture</h2><ul>'
+             + "".join(f'<li><a href="../quiz/{stem}.html">{part} quiz</a><br><span>{title}</span></li>' for _, part, title, stem in QUIZZES.get(LID, []))
+             + '</ul>' + (f'<a class="btn" href="../{g}" target="_blank" rel="noopener">Student guide (PDF)</a>' if g else '') + '</aside>')
+    idx_css = """<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:0 0 1rem}
     .tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
     .tile:hover{border-color:var(--rust);transform:translateY(-2px)}
     .tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
     .tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
     .tile .b{color:var(--muted);font-size:.92rem;flex:1}
     .tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
-    .howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
+    .howto{padding:16px 18px;margin:1.6rem 0 1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
     .byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
-    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
+    .lhead{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+    .lhead>*{min-width:0}
+    @media (max-width:860px){.lhead{grid-template-columns:minmax(0,1fr)}.lhead .panel{margin-top:0}}
+    .panel{padding:14px 16px;margin-top:2.2rem}.panel h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--rust);margin:0 0 .5rem}
+    .panel ul{list-style:none;padding:0;margin:0 0 .8rem}.panel li{margin:.35rem 0;font-size:.93rem}.panel li span{color:var(--muted)}
+    a.btn{text-decoration:none;display:inline-block}
+    .parthead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.4rem 1rem;margin:1.6rem 0 .7rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+    .parthead h2{margin:0;font-size:1.15rem;color:var(--navy)}.parthead a{font-size:.92rem}
+    .none{color:var(--muted);margin:0 0 1rem;font-size:.95rem}
+    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(200px,24vw,300px);display:flex;align-items:center;
      background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
     .banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
     .banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
@@ -143,11 +180,11 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
     .artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}
     .also{margin:.6rem 0 0;font-size:.95rem}</style>"""
     idx = f"""{idx_css}<div class="wrap"><nav class="bc" aria-label="Breadcrumb"><a href="../animations/index.html">Animations</a> › {LNAME}</nav>
-    {ltabs(LID, lambda k: f"../{k}/index.html")}<header class="hero"><p class="kicker">{COURSE}</p>
+    {ltabs(LID, lambda k: f"../{k}/index.html")}<div class="lhead"><header class="hero"><p class="kicker">{COURSE}</p>
     <h1>{LNAME} — interactive animations</h1><p class="byline">{BYLINE}</p>
-    <p class="lede">{LEDE} Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p>
-    <p class="also">Also for {LNAME}: {('<a href="../' + guide(LID) + '" target="_blank" rel="noopener">student guide (PDF)</a> · ') if guide(LID) else ''}<a href="../quiz/index.html#{LID}">quizzes</a></p></header>
-    <div class="tiles">{cards}</div>
+    <p class="lede">{LEDE} Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p></header>
+    {panel}</div>
+    {parts}
     <section class="card howto"><h2>Using these in class</h2>
     <ul><li>Use <b>A+</b> for larger text when projecting, and <b>Full screen</b> to show just the animation.</li>
     <li>Every page works offline: save it (File → Save Page As) and it runs without a network connection.</li>
@@ -301,22 +338,30 @@ anim = f"""{sec_css}<div class="wrap"><header class="hero"><p class="kicker">{CO
 <div class="tiles">{"".join(tiles)}</div><p class="foot">{COURSE} · {BYLINE}</p></div>"""
 (OUT / "animations" / "index.html").write_text(shell(f"Animations · {COURSE}", f"{total} interactive animations for {COURSE}, by lecture.", anim, pre="../", section="animations", path="animations/"))
 
-# ---------- Site root
-rows = "".join(f'<tr><td><b><span class="ln">Lecture </span>{LNAME.split()[-1]}</b></td><td class="topic">{LTITLE}</td>'
-               f'<td><a href="{LID}/index.html">{len(ANIMS[LID])}<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#{LID}">Quizzes</a></td>'
-               + (f'<td><a href="{guide(LID)}" target="_blank" rel="noopener">Guide<span class="ln"> (PDF)</span></a></td>' if guide(LID) else '<td></td>') + '</tr>'
-               for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES)
-root = f"""{sec_css}<div class="wrap">
+# ---------- Site root: banner, then one card per lecture with its animations, quizzes and guide together
+lcss = """<style>.lecs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;margin:0 0 1.4rem}
+.lcard{padding:16px 18px;display:flex;flex-direction:column;gap:.5rem}
+.lcard .k{margin:0;color:var(--rust);font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+.lcard h3{margin:0;font-size:1.12rem;color:var(--navy);text-wrap:balance}
+.lcard .meta{margin:0;color:var(--muted);font-size:.9rem}
+.lcard .qrow{margin:0;font-size:.92rem}.lcard .qrow a{margin-right:.6rem;white-space:nowrap}
+.lcard .btnrow{margin-top:auto}</style>"""
+def lcard(LID, LNAME, LTITLE):
+    qs = QUIZZES.get(LID, []); g = guide(LID)
+    qrow = " ".join(f'<a href="quiz/{stem}.html" title="{title}">{part}</a>' for _, part, title, stem in qs)
+    meta = f'{len(ANIMS[LID])} animations · {len(qs)} quizzes' + (' · student guide' if g else '')
+    return (f'<div class="card lcard" id="{LID}"><p class="k">{LNAME}</p><h3>{LTITLE}</h3><p class="meta">{meta}</p>'
+            + (f'<p class="qrow">Quizzes: {qrow}</p>' if qs else '')
+            + f'<div class="btnrow"><a class="btn" href="{LID}/index.html">Open the animations</a>'
+            + (f'<a class="btn ghost" href="{g}" target="_blank" rel="noopener">Guide (PDF)</a>' if g else '') + '</div></div>')
+cards = "".join(lcard(LID, LNAME, LTITLE) for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES)
+root = f"""{sec_css}{lcss}<div class="wrap">
 <section class="banner" aria-label="{COURSE}"><div class="in"><p class="k">KKKC6353</p><h1>Nanoelectronic Devices</h1>
 <p class="sub">Interactive animations and quizzes</p>
 <div class="who"><b>{AUTHOR}</b><span>{UNI} · 2026</span></div></div></section>
 <p class="artnote">Banner: original artwork made for this course, chip wiring giving way to a quantum interference pattern.</p>
-<div class="sections">
-<a class="card tile" href="animations/index.html"><span class="num">EXPLORE</span><span class="t">Animations</span><span class="b">{total} interactive models: change the device and watch the physics respond.</span></a>
-<a class="card tile" href="quiz/index.html"><span class="num">TEST YOURSELF</span><span class="t">Quizzes</span><span class="b">A short quiz for each part of each lecture, with an explanation after every answer.</span></a>
-</div>
-<h2 style="color:var(--navy);font-size:1.15rem;margin:0">By lecture</h2>
-<table class="bylec"><thead><tr><th>Lecture</th><th class="topic">Topic</th><th>Animations</th><th>Quizzes</th><th>Student guide</th></tr></thead><tbody>{rows}</tbody></table>
+<h2 style="color:var(--navy);font-size:1.15rem;margin:0 0 .7rem">Lectures</h2>
+<div class="lecs">{cards}</div>
 <p class="foot" style="padding:0">{COURSE} · {BYLINE}</p></div>"""
 (OUT / "index.html").write_text(shell(COURSE, "Interactive animations and quizzes for " + COURSE + ".", root, pre="", section=None, path=""))
 for img in ("hero.jpg", "og-image.jpg"): shutil.copy(pathlib.Path(__file__).parent / "art" / img, OUT / img)

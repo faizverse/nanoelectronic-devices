@@ -326,16 +326,25 @@ const NX = (() => {
 </script></head>
 <body>
 <div class="top"><div class="wrap"><a class="brand" href="../index.html">KKKC6353<span>Nanoelectronic Devices</span></a><nav class="snav" aria-label="Sections"><a href="../animations/index.html" aria-current="page">Animations</a><a href="../quiz/index.html">Quizzes</a></nav><div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button><button id="ttheme" type="button" title="Switch light/dark">Theme</button></div></div></div>
-<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:1rem 0 2rem}
+<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:0 0 1rem}
     .tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
     .tile:hover{border-color:var(--rust);transform:translateY(-2px)}
     .tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
     .tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
     .tile .b{color:var(--muted);font-size:.92rem;flex:1}
     .tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
-    .howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
+    .howto{padding:16px 18px;margin:1.6rem 0 1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
     .byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
-    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
+    .lhead{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+    .lhead>*{min-width:0}
+    @media (max-width:860px){.lhead{grid-template-columns:minmax(0,1fr)}.lhead .panel{margin-top:0}}
+    .panel{padding:14px 16px;margin-top:2.2rem}.panel h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--rust);margin:0 0 .5rem}
+    .panel ul{list-style:none;padding:0;margin:0 0 .8rem}.panel li{margin:.35rem 0;font-size:.93rem}.panel li span{color:var(--muted)}
+    a.btn{text-decoration:none;display:inline-block}
+    .parthead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.4rem 1rem;margin:1.6rem 0 .7rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+    .parthead h2{margin:0;font-size:1.15rem;color:var(--navy)}.parthead a{font-size:.92rem}
+    .none{color:var(--muted);margin:0 0 1rem;font-size:.95rem}
+    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(200px,24vw,300px);display:flex;align-items:center;
      background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
     .banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
     .banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
@@ -345,23 +354,23 @@ const NX = (() => {
     .banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
     .artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}
     .also{margin:.6rem 0 0;font-size:.95rem}</style><div class="wrap"><nav class="bc" aria-label="Breadcrumb"><a href="../animations/index.html">Animations</a> › Lecture 4</nav>
-    <nav class="ltabs" aria-label="Lectures"><a href="../L1/index.html">Lecture 1</a><a href="../L2/index.html">Lecture 2</a><a href="../L3/index.html">Lecture 3</a><a href="../L4/index.html" aria-current="page">Lecture 4</a></nav><header class="hero"><p class="kicker">KKKC6353 Nanoelectronic Devices</p>
+    <nav class="ltabs" aria-label="Lectures"><a href="../L1/index.html">Lecture 1</a><a href="../L2/index.html">Lecture 2</a><a href="../L3/index.html">Lecture 3</a><a href="../L4/index.html" aria-current="page">Lecture 4</a></nav><div class="lhead"><header class="hero"><p class="kicker">KKKC6353 Nanoelectronic Devices</p>
     <h1>Lecture 4 — interactive animations</h1><p class="byline">Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p>
-    <p class="lede">Six interactive models for Lecture 4: the band structure of a carbon nanotube, the ballistic nanotube transistor, the Schottky-barrier nanotube transistor, FinFET and nanosheet design, partially and fully depleted SOI, and the speed and colour of compound semiconductors. Each opens in a simple view; press More detail for the numbers and graphs. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p>
-    <p class="also">Also for Lecture 4: <a href="../guides/L4-Animations-Student-Guide.pdf" target="_blank" rel="noopener">student guide (PDF)</a> · <a href="../quiz/index.html#L4">quizzes</a></p></header>
-    <div class="tiles"><a class="card tile" href="cnt-band-structure.html">
+    <p class="lede">Six interactive models for Lecture 4: the band structure of a carbon nanotube, the ballistic nanotube transistor, the Schottky-barrier nanotube transistor, FinFET and nanosheet design, partially and fully depleted SOI, and the speed and colour of compound semiconductors. Each opens in a simple view; press More detail for the numbers and graphs. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p></header>
+    <aside class="card panel" aria-label="This lecture"><h2>This lecture</h2><ul><li><a href="../quiz/L4-D2.html">Part 1 quiz</a><br><span>Carbon Nanotube Transistors</span></li><li><a href="../quiz/L4-D3.html">Part 2 quiz</a><br><span>FinFETs, Nanosheets and Silicon-on-Insulator</span></li><li><a href="../quiz/L4-D4.html">Part 3 quiz</a><br><span>Compound Semiconductors</span></li></ul><a class="btn" href="../guides/L4-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Student guide (PDF)</a></aside></div>
+    <div class="parthead"><h2>Background reading</h2></div><div class="tiles"><a class="card tile" href="cnt-band-structure.html">
     <span class="num">01</span><span class="t">Nanotube band structure: zone folding</span>
-    <span class="b">Choose how the graphene sheet is rolled, (n, m), and watch the allowed states cut through the Dirac cone of graphene. See why one tube in three is metallic, how the band gap scales as 1/d, and where the sharp peaks in the density of states come from.</span><span class="pills"><span class="pill">Document 1, Sections 4–5</span></span></a><a class="card tile" href="cntfet-ballistic.html">
+    <span class="b">Choose how the graphene sheet is rolled, (n, m), and watch the allowed states cut through the Dirac cone of graphene. See why one tube in three is metallic, how the band gap scales as 1/d, and where the sharp peaks in the density of states come from.</span><span class="pills"><span class="pill">Background reading, Sections 4–5</span></span></a></div><div class="parthead"><h2>Part 1 · Carbon Nanotube Transistors</h2><a href="../quiz/L4-D2.html">Take the Part 1 quiz →</a></div><div class="tiles"><a class="card tile" href="cntfet-ballistic.html">
     <span class="num">02</span><span class="t">The ballistic nanotube transistor</span>
-    <span class="b">In a short nanotube, electrons cross from source to drain without scattering. The current is set by how many states at the top of the barrier are filled from each end. Change the gate, the drain, the tube and the insulator, and watch the quantum capacitance limit the charge.</span><span class="pills"><span class="pill">Document 2, Sections 3–4</span></span></a><a class="card tile" href="sb-cntfet.html">
+    <span class="b">In a short nanotube, electrons cross from source to drain without scattering. The current is set by how many states at the top of the barrier are filled from each end. Change the gate, the drain, the tube and the insulator, and watch the quantum capacitance limit the charge.</span><span class="pills"><span class="pill">Part 1, Sections 3–4</span></span></a><a class="card tile" href="sb-cntfet.html">
     <span class="num">03</span><span class="t">Schottky-barrier nanotube transistor</span>
-    <span class="b">With metal source and drain, the gate does not lower a barrier: it thins the Schottky barriers at the contacts so that electrons, or holes, tunnel through. See why such transistors conduct both ways, why wide tubes leak, and what doped contacts change.</span><span class="pills"><span class="pill">Document 2, Sections 2 and 4.4</span></span></a><a class="card tile" href="finfet-nanosheet.html">
+    <span class="b">With metal source and drain, the gate does not lower a barrier: it thins the Schottky barriers at the contacts so that electrons, or holes, tunnel through. See why such transistors conduct both ways, why wide tubes leak, and what doped contacts change.</span><span class="pills"><span class="pill">Part 1, Sections 2 and 4.4</span></span></a></div><div class="parthead"><h2>Part 2 · FinFETs, Nanosheets and Silicon-on-Insulator</h2><a href="../quiz/L4-D3.html">Take the Part 2 quiz →</a></div><div class="tiles"><a class="card tile" href="finfet-nanosheet.html">
     <span class="num">04</span><span class="t">FinFET and nanosheet: width and control</span>
-    <span class="b">Design a FinFET or a stacked-nanosheet transistor. Change fin height, width and pitch, or the number and size of the sheets, and see how much channel width fits in each micrometre of layout, and how well the gate controls a short channel.</span><span class="pills"><span class="pill">Document 3, Sections 1–2</span></span></a><a class="card tile" href="soi-pd-fd.html">
+    <span class="b">Design a FinFET or a stacked-nanosheet transistor. Change fin height, width and pitch, or the number and size of the sheets, and see how much channel width fits in each micrometre of layout, and how well the gate controls a short channel.</span><span class="pills"><span class="pill">Part 2, Sections 1–2</span></span></a><a class="card tile" href="soi-pd-fd.html">
     <span class="num">05</span><span class="t">SOI: partially and fully depleted</span>
-    <span class="b">Thin the silicon film or change its doping and watch the depletion region reach the buried oxide: partially depleted becomes fully depleted. Then use the substrate as a second gate, and see the kink that a floating body causes.</span><span class="pills"><span class="pill">Document 3, Sections 6–7</span></span></a><a class="card tile" href="compound-semiconductors.html">
+    <span class="b">Thin the silicon film or change its doping and watch the depletion region reach the buried oxide: partially depleted becomes fully depleted. Then use the substrate as a second gate, and see the kink that a floating body causes.</span><span class="pills"><span class="pill">Part 2, Sections 6–7</span></span></a></div><div class="parthead"><h2>Part 3 · Compound Semiconductors</h2><a href="../quiz/L4-D4.html">Take the Part 3 quiz →</a></div><div class="tiles"><a class="card tile" href="compound-semiconductors.html">
     <span class="num">06</span><span class="t">Compound semiconductors: speed and colour</span>
-    <span class="b">Two views of why engineers use materials other than silicon. Compare how fast electrons move in Si, GaAs, InGaAs, SiC and GaN as the field rises; then move along an alloy and read off its band gap, lattice match and the colour of light it would emit.</span><span class="pills"><span class="pill">Document 4, Sections 1–2</span></span></a></div>
+    <span class="b">Two views of why engineers use materials other than silicon. Compare how fast electrons move in Si, GaAs, InGaAs, SiC and GaN as the field rises; then move along an alloy and read off its band gap, lattice match and the colour of light it would emit.</span><span class="pills"><span class="pill">Part 3, Sections 1–2</span></span></a></div>
     <section class="card howto"><h2>Using these in class</h2>
     <ul><li>Use <b>A+</b> for larger text when projecting, and <b>Full screen</b> to show just the animation.</li>
     <li>Every page works offline: save it (File → Save Page As) and it runs without a network connection.</li>

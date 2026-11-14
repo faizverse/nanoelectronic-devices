@@ -326,16 +326,25 @@ const NX = (() => {
 </script></head>
 <body>
 <div class="top"><div class="wrap"><a class="brand" href="../index.html">KKKC6353<span>Nanoelectronic Devices</span></a><nav class="snav" aria-label="Sections"><a href="../animations/index.html" aria-current="page">Animations</a><a href="../quiz/index.html">Quizzes</a></nav><div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button><button id="ttheme" type="button" title="Switch light/dark">Theme</button></div></div></div>
-<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:1rem 0 2rem}
+<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:0 0 1rem}
     .tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
     .tile:hover{border-color:var(--rust);transform:translateY(-2px)}
     .tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
     .tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
     .tile .b{color:var(--muted);font-size:.92rem;flex:1}
     .tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
-    .howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
+    .howto{padding:16px 18px;margin:1.6rem 0 1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
     .byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
-    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
+    .lhead{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+    .lhead>*{min-width:0}
+    @media (max-width:860px){.lhead{grid-template-columns:minmax(0,1fr)}.lhead .panel{margin-top:0}}
+    .panel{padding:14px 16px;margin-top:2.2rem}.panel h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--rust);margin:0 0 .5rem}
+    .panel ul{list-style:none;padding:0;margin:0 0 .8rem}.panel li{margin:.35rem 0;font-size:.93rem}.panel li span{color:var(--muted)}
+    a.btn{text-decoration:none;display:inline-block}
+    .parthead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.4rem 1rem;margin:1.6rem 0 .7rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+    .parthead h2{margin:0;font-size:1.15rem;color:var(--navy)}.parthead a{font-size:.92rem}
+    .none{color:var(--muted);margin:0 0 1rem;font-size:.95rem}
+    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(200px,24vw,300px);display:flex;align-items:center;
      background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
     .banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
     .banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}

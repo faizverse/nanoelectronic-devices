@@ -326,16 +326,25 @@ const NX = (() => {
 </script></head>
 <body>
 <div class="top"><div class="wrap"><a class="brand" href="../index.html">KKKC6353<span>Nanoelectronic Devices</span></a><nav class="snav" aria-label="Sections"><a href="../animations/index.html" aria-current="page">Animations</a><a href="../quiz/index.html">Quizzes</a></nav><div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button><button id="ttheme" type="button" title="Switch light/dark">Theme</button></div></div></div>
-<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:1rem 0 2rem}
+<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:0 0 1rem}
     .tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
     .tile:hover{border-color:var(--rust);transform:translateY(-2px)}
     .tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
     .tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
     .tile .b{color:var(--muted);font-size:.92rem;flex:1}
     .tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
-    .howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
+    .howto{padding:16px 18px;margin:1.6rem 0 1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
     .byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
-    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
+    .lhead{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+    .lhead>*{min-width:0}
+    @media (max-width:860px){.lhead{grid-template-columns:minmax(0,1fr)}.lhead .panel{margin-top:0}}
+    .panel{padding:14px 16px;margin-top:2.2rem}.panel h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--rust);margin:0 0 .5rem}
+    .panel ul{list-style:none;padding:0;margin:0 0 .8rem}.panel li{margin:.35rem 0;font-size:.93rem}.panel li span{color:var(--muted)}
+    a.btn{text-decoration:none;display:inline-block}
+    .parthead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.4rem 1rem;margin:1.6rem 0 .7rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+    .parthead h2{margin:0;font-size:1.15rem;color:var(--navy)}.parthead a{font-size:.92rem}
+    .none{color:var(--muted);margin:0 0 1rem;font-size:.95rem}
+    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(200px,24vw,300px);display:flex;align-items:center;
      background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
     .banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
     .banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
@@ -345,25 +354,25 @@ const NX = (() => {
     .banner .who b{display:block;font-size:1.15rem}.banner .who span{color:#d6e2f0}
     .artnote{font-size:.78rem;color:var(--muted);margin:-.8rem 0 1rem}
     .also{margin:.6rem 0 0;font-size:.95rem}</style><div class="wrap"><nav class="bc" aria-label="Breadcrumb"><a href="../animations/index.html">Animations</a> › Lecture 2</nav>
-    <nav class="ltabs" aria-label="Lectures"><a href="../L1/index.html">Lecture 1</a><a href="../L2/index.html" aria-current="page">Lecture 2</a><a href="../L3/index.html">Lecture 3</a><a href="../L4/index.html">Lecture 4</a></nav><header class="hero"><p class="kicker">KKKC6353 Nanoelectronic Devices</p>
+    <nav class="ltabs" aria-label="Lectures"><a href="../L1/index.html">Lecture 1</a><a href="../L2/index.html" aria-current="page">Lecture 2</a><a href="../L3/index.html">Lecture 3</a><a href="../L4/index.html">Lecture 4</a></nav><div class="lhead"><header class="hero"><p class="kicker">KKKC6353 Nanoelectronic Devices</p>
     <h1>Lecture 2 — interactive animations</h1><p class="byline">Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p>
-    <p class="lede">Seven interactive models for Lecture 2: an electron in a box, how trapping electrons shares out their energies, quantum-well and cascade lasers, carbon nanotubes, quantum-dot colour, and how dots are grown. Each opens in a simple view; press More detail for the numbers and graphs. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p>
-    <p class="also">Also for Lecture 2: <a href="../guides/L2-Animations-Student-Guide.pdf" target="_blank" rel="noopener">student guide (PDF)</a> · <a href="../quiz/index.html#L2">quizzes</a></p></header>
-    <div class="tiles"><a class="card tile" href="particle-in-a-box.html">
+    <p class="lede">Seven interactive models for Lecture 2: an electron in a box, how trapping electrons shares out their energies, quantum-well and cascade lasers, carbon nanotubes, quantum-dot colour, and how dots are grown. Each opens in a simple view; press More detail for the numbers and graphs. Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p></header>
+    <aside class="card panel" aria-label="This lecture"><h2>This lecture</h2><ul><li><a href="../quiz/L2-D1.html">Part 1 quiz</a><br><span>The Quantum World</span></li><li><a href="../quiz/L2-D2.html">Part 2 quiz</a><br><span>Wells, Wires and Dots, and What They Do</span></li><li><a href="../quiz/L2-D3.html">Part 3 quiz</a><br><span>Making Quantum Dots and Nanotubes</span></li></ul><a class="btn" href="../guides/L2-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Student guide (PDF)</a></aside></div>
+    <div class="parthead"><h2>Part 1 · The Quantum World</h2><a href="../quiz/L2-D1.html">Take the Part 1 quiz →</a></div><div class="tiles"><a class="card tile" href="particle-in-a-box.html">
     <span class="num">01</span><span class="t">Particle in a box</span>
-    <span class="b">Trap an electron in a tiny box and only certain energies are allowed, like the notes of a guitar string. Squeeze the box, make the walls leaky, and watch the allowed energies and the waves change.</span><span class="pills"><span class="pill">Document 1, Section 6</span></span></a><a class="card tile" href="density-of-states.html">
+    <span class="b">Trap an electron in a tiny box and only certain energies are allowed, like the notes of a guitar string. Squeeze the box, make the walls leaky, and watch the allowed energies and the waves change.</span><span class="pills"><span class="pill">Part 1, Section 6</span></span></a></div><div class="parthead"><h2>Part 2 · Wells, Wires and Dots, and What They Do</h2><a href="../quiz/L2-D2.html">Take the Part 2 quiz →</a></div><div class="tiles"><a class="card tile" href="density-of-states.html">
     <span class="num">02</span><span class="t">Density of states, 3D to 0D</span>
-    <span class="b">How many places are there for electrons at each energy? Trap the electrons in one, two or three directions and watch the places bunch up, from a smooth curve to a staircase, sharp peaks and finally single sharp levels.</span><span class="pills"><span class="pill">Document 2, Section 2</span></span></a><a class="card tile" href="quantum-well-emission.html">
+    <span class="b">How many places are there for electrons at each energy? Trap the electrons in one, two or three directions and watch the places bunch up, from a smooth curve to a staircase, sharp peaks and finally single sharp levels.</span><span class="pills"><span class="pill">Part 2, Section 2</span></span></a><a class="card tile" href="quantum-well-emission.html">
     <span class="num">03</span><span class="t">Quantum-well emission</span>
-    <span class="b">In a quantum-well laser, electrons and holes meet in a thin layer and give out light. Change the thickness of the layer and watch the colour of the light change, without changing the material.</span><span class="pills"><span class="pill">Document 2, Section 3</span></span></a><a class="card tile" href="quantum-cascade-laser.html">
+    <span class="b">In a quantum-well laser, electrons and holes meet in a thin layer and give out light. Change the thickness of the layer and watch the colour of the light change, without changing the material.</span><span class="pills"><span class="pill">Part 2, Section 3</span></span></a><a class="card tile" href="quantum-cascade-laser.html">
     <span class="num">04</span><span class="t">Quantum cascade laser</span>
-    <span class="b">Electrons run down a staircase of quantum wells, giving out a photon at every step. Turn up the voltage until the steps line up and the laser switches on, and change the step size to change the colour.</span><span class="pills"><span class="pill">Document 2, Section 4</span></span></a><a class="card tile" href="carbon-nanotubes.html">
+    <span class="b">Electrons run down a staircase of quantum wells, giving out a photon at every step. Turn up the voltage until the steps line up and the laser switches on, and change the step size to change the colour.</span><span class="pills"><span class="pill">Part 2, Section 4</span></span></a><a class="card tile" href="carbon-nanotubes.html">
     <span class="num">05</span><span class="t">Carbon nanotubes: roll your own</span>
-    <span class="b">Roll a sheet of graphene into a tube and the way you roll it decides whether the tube is a metal or a semiconductor. Choose the roll, see the tube, and find out whether it could make a transistor.</span><span class="pills"><span class="pill">Document 2, Section 6</span></span></a><a class="card tile" href="quantum-dot-colour.html">
+    <span class="b">Roll a sheet of graphene into a tube and the way you roll it decides whether the tube is a metal or a semiconductor. Choose the roll, see the tube, and find out whether it could make a transistor.</span><span class="pills"><span class="pill">Part 2, Section 6</span></span></a><a class="card tile" href="quantum-dot-colour.html">
     <span class="num">06</span><span class="t">Quantum-dot colour</span>
-    <span class="b">Dots of the same material glow different colours depending only on their size. Grow the dot, change the material, and watch the colour of its light change.</span><span class="pills"><span class="pill">Document 2, Section 7</span></span></a><a class="card tile" href="quantum-dot-growth.html">
+    <span class="b">Dots of the same material glow different colours depending only on their size. Grow the dot, change the material, and watch the colour of its light change.</span><span class="pills"><span class="pill">Part 2, Section 7</span></span></a></div><div class="parthead"><h2>Part 3 · Making Quantum Dots and Nanotubes</h2><a href="../quiz/L2-D3.html">Take the Part 3 quiz →</a></div><div class="tiles"><a class="card tile" href="quantum-dot-growth.html">
     <span class="num">07</span><span class="t">Growing quantum dots</span>
-    <span class="b">Two ways quantum dots build themselves: a squeezed film that breaks up into islands, and tiny crystals that seed and grow in a hot flask. Add material, inject, watch the dots grow, and stop them at the colour you want.</span><span class="pills"><span class="pill">Document 3, Sections 3–4</span></span></a></div>
+    <span class="b">Two ways quantum dots build themselves: a squeezed film that breaks up into islands, and tiny crystals that seed and grow in a hot flask. Add material, inject, watch the dots grow, and stop them at the colour you want.</span><span class="pills"><span class="pill">Part 3, Sections 3–4</span></span></a></div>
     <section class="card howto"><h2>Using these in class</h2>
     <ul><li>Use <b>A+</b> for larger text when projecting, and <b>Full screen</b> to show just the animation.</li>
     <li>Every page works offline: save it (File → Save Page As) and it runs without a network connection.</li>

@@ -326,16 +326,25 @@ const NX = (() => {
 </script></head>
 <body>
 <div class="top"><div class="wrap"><a class="brand" href="index.html">KKKC6353<span>Nanoelectronic Devices</span></a><nav class="snav" aria-label="Sections"><a href="animations/index.html">Animations</a><a href="quiz/index.html">Quizzes</a></nav><div class="tools"><button id="tbig" type="button" title="Larger text for projection">A+</button><button id="ttheme" type="button" title="Switch light/dark">Theme</button></div></div></div>
-<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:1rem 0 2rem}
+<style>.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin:0 0 1rem}
     .tile{display:flex;flex-direction:column;gap:.35rem;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
     .tile:hover{border-color:var(--rust);transform:translateY(-2px)}
     .tile .num{font-weight:700;color:var(--rust);font-size:.85rem;letter-spacing:.06em}
     .tile .t{font-weight:650;font-size:1.08rem;color:var(--navy)}
     .tile .b{color:var(--muted);font-size:.92rem;flex:1}
     .tile .pills{display:flex;flex-wrap:wrap;gap:6px}.tile .pill.new{color:var(--green);border-color:var(--green)}
-    .howto{padding:16px 18px;margin-bottom:1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
+    .howto{padding:16px 18px;margin:1.6rem 0 1rem}.howto h2{font-size:1.05rem;color:var(--navy);margin:0 0 .4rem}
     .byline{margin:.1rem 0 .6rem;font-weight:600;color:var(--ink)}
-    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(260px,34vw,400px);display:flex;align-items:center;
+    .lhead{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+    .lhead>*{min-width:0}
+    @media (max-width:860px){.lhead{grid-template-columns:minmax(0,1fr)}.lhead .panel{margin-top:0}}
+    .panel{padding:14px 16px;margin-top:2.2rem}.panel h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--rust);margin:0 0 .5rem}
+    .panel ul{list-style:none;padding:0;margin:0 0 .8rem}.panel li{margin:.35rem 0;font-size:.93rem}.panel li span{color:var(--muted)}
+    a.btn{text-decoration:none;display:inline-block}
+    .parthead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.4rem 1rem;margin:1.6rem 0 .7rem;padding-bottom:.35rem;border-bottom:2px solid var(--rust)}
+    .parthead h2{margin:0;font-size:1.15rem;color:var(--navy)}.parthead a{font-size:.92rem}
+    .none{color:var(--muted);margin:0 0 1rem;font-size:.95rem}
+    .banner{position:relative;margin:1rem 0 1.4rem;border-radius:14px;overflow:hidden;color:#fff;min-height:clamp(200px,24vw,300px);display:flex;align-items:center;
      background:linear-gradient(90deg,rgba(12,22,40,.94) 0%,rgba(12,22,40,.82) 40%,rgba(12,22,40,.15) 78%),url(hero.jpg) 62% center/cover no-repeat #0e1a2e}
     .banner .in{padding:clamp(20px,4vw,48px);max-width:640px}
     .banner .k{color:#ecb85c;font-weight:700;letter-spacing:.08em;font-size:.85rem;margin:0}
@@ -366,16 +375,18 @@ table.bylec th,table.bylec td{text-align:left;padding:.55rem .6rem;border-bottom
 table.bylec th{color:var(--muted);font-weight:600;font-size:.82rem;text-transform:uppercase;letter-spacing:.05em}
 table.bylec td a{white-space:nowrap}
 @media (max-width:640px){table.bylec .topic,table.bylec .ln{display:none}table.bylec th,table.bylec td{padding:.5rem .35rem}}
-</style><div class="wrap">
+</style><style>.lecs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;margin:0 0 1.4rem}
+.lcard{padding:16px 18px;display:flex;flex-direction:column;gap:.5rem}
+.lcard .k{margin:0;color:var(--rust);font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+.lcard h3{margin:0;font-size:1.12rem;color:var(--navy);text-wrap:balance}
+.lcard .meta{margin:0;color:var(--muted);font-size:.9rem}
+.lcard .qrow{margin:0;font-size:.92rem}.lcard .qrow a{margin-right:.6rem;white-space:nowrap}
+.lcard .btnrow{margin-top:auto}</style><div class="wrap">
 <section class="banner" aria-label="KKKC6353 Nanoelectronic Devices"><div class="in"><p class="k">KKKC6353</p><h1>Nanoelectronic Devices</h1>
 <p class="sub">Interactive animations and quizzes</p>
 <div class="who"><b>Dr Muhammad Faiz Bukhori</b><span>Universiti Kebangsaan Malaysia · 2026</span></div></div></section>
 <p class="artnote">Banner: original artwork made for this course, chip wiring giving way to a quantum interference pattern.</p>
-<div class="sections">
-<a class="card tile" href="animations/index.html"><span class="num">EXPLORE</span><span class="t">Animations</span><span class="b">30 interactive models: change the device and watch the physics respond.</span></a>
-<a class="card tile" href="quiz/index.html"><span class="num">TEST YOURSELF</span><span class="t">Quizzes</span><span class="b">A short quiz for each part of each lecture, with an explanation after every answer.</span></a>
-</div>
-<h2 style="color:var(--navy);font-size:1.15rem;margin:0">By lecture</h2>
-<table class="bylec"><thead><tr><th>Lecture</th><th class="topic">Topic</th><th>Animations</th><th>Quizzes</th><th>Student guide</th></tr></thead><tbody><tr><td><b><span class="ln">Lecture </span>1</b></td><td class="topic">CMOS technology, device physics and short-channel effects</td><td><a href="L1/index.html">11<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#L1">Quizzes</a></td><td><a href="guides/L1-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Guide<span class="ln"> (PDF)</span></a></td></tr><tr><td><b><span class="ln">Lecture </span>2</b></td><td class="topic">Quantum wells, wires and dots</td><td><a href="L2/index.html">7<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#L2">Quizzes</a></td><td><a href="guides/L2-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Guide<span class="ln"> (PDF)</span></a></td></tr><tr><td><b><span class="ln">Lecture </span>3</b></td><td class="topic">Quantum tunnelling devices</td><td><a href="L3/index.html">6<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#L3">Quizzes</a></td><td><a href="guides/L3-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Guide<span class="ln"> (PDF)</span></a></td></tr><tr><td><b><span class="ln">Lecture </span>4</b></td><td class="topic">Beyond planar silicon: nanotubes, FinFETs, SOI and compound semiconductors</td><td><a href="L4/index.html">6<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#L4">Quizzes</a></td><td><a href="guides/L4-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Guide<span class="ln"> (PDF)</span></a></td></tr></tbody></table>
+<h2 style="color:var(--navy);font-size:1.15rem;margin:0 0 .7rem">Lectures</h2>
+<div class="lecs"><div class="card lcard" id="L1"><p class="k">Lecture 1</p><h3>CMOS technology, device physics and short-channel effects</h3><p class="meta">11 animations · 3 quizzes · student guide</p><p class="qrow">Quizzes: <a href="quiz/L1-D1.html" title="CMOS Technology: Where We Are and How We Got Here">Part 1</a> <a href="quiz/L1-D2.html" title="Device Physics for Nanoscale CMOS">Part 2</a> <a href="quiz/L1-D3.html" title="Short-Channel Effects in Nanoscale CMOS">Part 3</a></p><div class="btnrow"><a class="btn" href="L1/index.html">Open the animations</a><a class="btn ghost" href="guides/L1-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Guide (PDF)</a></div></div><div class="card lcard" id="L2"><p class="k">Lecture 2</p><h3>Quantum wells, wires and dots</h3><p class="meta">7 animations · 3 quizzes · student guide</p><p class="qrow">Quizzes: <a href="quiz/L2-D1.html" title="The Quantum World">Part 1</a> <a href="quiz/L2-D2.html" title="Wells, Wires and Dots, and What They Do">Part 2</a> <a href="quiz/L2-D3.html" title="Making Quantum Dots and Nanotubes">Part 3</a></p><div class="btnrow"><a class="btn" href="L2/index.html">Open the animations</a><a class="btn ghost" href="guides/L2-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Guide (PDF)</a></div></div><div class="card lcard" id="L3"><p class="k">Lecture 3</p><h3>Quantum tunnelling devices</h3><p class="meta">6 animations · 3 quizzes · student guide</p><p class="qrow">Quizzes: <a href="quiz/L3-D1.html" title="Tunnelling: Passing Through Walls">Part 1</a> <a href="quiz/L3-D2.html" title="Tunnel Diodes, RTDs and Tunnel Transistors">Part 2</a> <a href="quiz/L3-D3.html" title="One Electron at a Time">Part 3</a></p><div class="btnrow"><a class="btn" href="L3/index.html">Open the animations</a><a class="btn ghost" href="guides/L3-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Guide (PDF)</a></div></div><div class="card lcard" id="L4"><p class="k">Lecture 4</p><h3>Beyond planar silicon: nanotubes, FinFETs, SOI and compound semiconductors</h3><p class="meta">6 animations · 3 quizzes · student guide</p><p class="qrow">Quizzes: <a href="quiz/L4-D2.html" title="Carbon Nanotube Transistors">Part 1</a> <a href="quiz/L4-D3.html" title="FinFETs, Nanosheets and Silicon-on-Insulator">Part 2</a> <a href="quiz/L4-D4.html" title="Compound Semiconductors">Part 3</a></p><div class="btnrow"><a class="btn" href="L4/index.html">Open the animations</a><a class="btn ghost" href="guides/L4-Animations-Student-Guide.pdf" target="_blank" rel="noopener">Guide (PDF)</a></div></div></div>
 <p class="foot" style="padding:0">KKKC6353 Nanoelectronic Devices · Dr Muhammad Faiz Bukhori · Universiti Kebangsaan Malaysia · 2026</p></div>
 </body></html>
