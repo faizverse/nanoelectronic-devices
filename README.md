@@ -8,8 +8,8 @@ Course website for the postgraduate course KKKC6353 Nanoelectronic Devices
 
 | Section | Path | What it holds |
 |---|---|---|
-| Home | `index.html` | The two sections and a by-lecture table |
-| Animations | `animations/`, `L1/` … `L4/` | 30 interactive models; the lecture folders keep their original addresses |
+| Home | `index.html` | One card per lecture: its animations, its quizzes by part and its student guide |
+| Animations | `animations/`, `L1/` … `L4/` | 30 interactive models; the lecture folders keep their original addresses. Each lecture page groups its animations by part, beside a panel with that lecture's quizzes and guide |
 | Quizzes | `quiz/` | One 10-question self-test quiz for each part of each lecture (12 in all); questions in `source/src/quiz/<lecture>-<document>.json` |
 | Student guides | `guides/` | One PDF per lecture: a guide to that lecture's animations, linked from the home page and each lecture's page |
 
