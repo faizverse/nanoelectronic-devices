@@ -14,13 +14,13 @@ js = (SRC / "common.js").read_text()
 # lecture id -> (source folder, short name, tile title, index lede)
 LECTURES = [
     ("L1", "pages", "Lecture 1", "CMOS technology, device physics and short-channel effects",
-     "Eleven interactive models that go with the Lecture 1 notes: how a MOSFET works, how it fails as it shrinks, and why the industry changed the device."),
+     "Eleven interactive models for Lecture 1: how a MOSFET works, how it fails as it shrinks, and why the industry changed the device."),
     ("L2", "L2pages", "Lecture 2", "Quantum wells, wires and dots",
-     "Seven interactive models that go with the Lecture 2 notes: an electron in a box, how trapping electrons shares out their energies, quantum-well and cascade lasers, carbon nanotubes, quantum-dot colour, and how dots are grown. Each opens in a simple view; press More detail for the numbers and graphs."),
+     "Seven interactive models for Lecture 2: an electron in a box, how trapping electrons shares out their energies, quantum-well and cascade lasers, carbon nanotubes, quantum-dot colour, and how dots are grown. Each opens in a simple view; press More detail for the numbers and graphs."),
     ("L3", "L3pages", "Lecture 3", "Quantum tunnelling devices",
-     "Six interactive models that go with the Lecture 3 notes: an electron tunnelling through a wall, the scanning tunnelling microscope, the tunnel diode, the resonant-tunnelling diode, the tunnel FET, and the single-electron transistor. Each opens in a simple view; press More detail for the numbers and graphs."),
+     "Six interactive models for Lecture 3: an electron tunnelling through a wall, the scanning tunnelling microscope, the tunnel diode, the resonant-tunnelling diode, the tunnel FET, and the single-electron transistor. Each opens in a simple view; press More detail for the numbers and graphs."),
     ("L4", "L4pages", "Lecture 4", "Beyond planar silicon: nanotubes, FinFETs, SOI and compound semiconductors",
-     "Six interactive models that go with the Lecture 4 notes: the band structure of a carbon nanotube, the ballistic nanotube transistor, the Schottky-barrier nanotube transistor, FinFET and nanosheet design, partially and fully depleted SOI, and the speed and colour of compound semiconductors. Each opens in a simple view; press More detail for the numbers and graphs."),
+     "Six interactive models for Lecture 4: the band structure of a carbon nanotube, the ballistic nanotube transistor, the Schottky-barrier nanotube transistor, FinFET and nanosheet design, partially and fully depleted SOI, and the speed and colour of compound semiconductors. Each opens in a simple view; press More detail for the numbers and graphs."),
 ]
 
 
@@ -45,7 +45,14 @@ def load(folder):
     out.sort(key=lambda p: p[0]["num"])
     return out
 
-SECTIONS = [("notes", "Notes &amp; Slides"), ("animations", "Animations"), ("quiz", "Quizzes")]
+SECTIONS = [("animations", "Animations"), ("quiz", "Quizzes")]
+GUIDES = pathlib.Path(__file__).parent / "pdf"   # the student guides to the animations (the only PDFs on the site)
+def guide(LID):
+    """Copy a lecture's student guide into guides/ if it exists; return its path from the site root, or None."""
+    import shutil
+    f = GUIDES / f"{LID}-Animations-Student-Guide.pdf"
+    if not f.exists(): return None
+    (OUT / "guides").mkdir(parents=True, exist_ok=True); shutil.copy(f, OUT / "guides" / f.name); return f"guides/{f.name}"
 def topbar(pre, section, fs):
     nav = "".join(f'<a href="{pre}{k}/index.html"' + (' aria-current="page"' if k == section else "") + f'>{t}</a>' for k, t in SECTIONS)
     tools = ('<button id="tbig" type="button" title="Larger text for projection">A+</button>'
@@ -139,7 +146,7 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
     {ltabs(LID, lambda k: f"../{k}/index.html")}<header class="hero"><p class="kicker">{COURSE}</p>
     <h1>{LNAME} — interactive animations</h1><p class="byline">{BYLINE}</p>
     <p class="lede">{LEDE} Each page has the animation, things to try in class, check questions with answers, and a statement of the model behind it.</p>
-    <p class="also">Also for {LNAME}: <a href="../notes/index.html#{LID}">notes and slides</a> · <a href="../quiz/index.html#{LID}">quizzes</a></p></header>
+    <p class="also">Also for {LNAME}: {('<a href="../' + guide(LID) + '" target="_blank" rel="noopener">student guide (PDF)</a> · ') if guide(LID) else ''}<a href="../quiz/index.html#{LID}">quizzes</a></p></header>
     <div class="tiles">{cards}</div>
     <section class="card howto"><h2>Using these in class</h2>
     <ul><li>Use <b>A+</b> for larger text when projecting, and <b>Full screen</b> to show just the animation.</li>
@@ -151,10 +158,9 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
     ANIMS[LID] = pages
     tiles.append(f'<a class="card tile" href="../{LID}/index.html"><span class="num">{LNAME.upper()}</span><span class="t">{LTITLE}</span><span class="b">{N} interactive animations, with things to try in class and check questions.</span></a>')
 
-# ---- notes, quizzes, animations landing and site root
+# ---- quizzes, animations landing and site root
 import shutil
 HERE = pathlib.Path(__file__).parent
-PDFDIR = HERE / "pdf"            # PDFs of notes, slides and student guides (copied to notes/files/ when present)
 # lecture -> [(doc id, kicker, title, file stem, has slides, note)]
 DOCS = {
     "L1": [("D1", "Document 1", "CMOS Technology", "L1-D1-CMOS-Technology", True, ""),
@@ -172,15 +178,8 @@ DOCS = {
            ("D3", "Part 2 · Document 3", "FinFETs, Nanosheets and Silicon-on-Insulator", "L4-D3-FinFETs-Nanosheets-SOI", True, ""),
            ("D4", "Part 3 · Document 4", "Compound Semiconductors", "L4-D4-Compound-Semiconductors", True, "")],
 }
-(OUT / "notes" / "files").mkdir(parents=True, exist_ok=True)
 (OUT / "quiz").mkdir(parents=True, exist_ok=True)
 (OUT / "animations").mkdir(parents=True, exist_ok=True)
-
-def pdf(stem):
-    """Copy a PDF into the site if it exists; return its site path relative to notes/, or None."""
-    f = PDFDIR / f"{stem}.pdf"
-    if not f.exists(): return None
-    shutil.copy(f, OUT / "notes" / "files" / f.name); return f"files/{f.name}"
 
 def quiz_of(LID, D):
     f = QUIZDIR / f"{LID}-{D}.json"
@@ -221,29 +220,6 @@ table.bylec td a{white-space:nowrap}
 def lec_head(LID, LNAME, LTITLE):
     return f'<section class="lec" id="{LID}"><h2>{LNAME} · {LTITLE}</h2>'
 
-# ---------- Notes & Slides
-blocks = []
-for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
-    cards = []
-    for D, kick, title, stem, slides, note in DOCS[LID]:
-        n_pdf, s_pdf, q = pdf(stem), (pdf(stem + "-slides") if slides else None), quiz_of(LID, D)
-        b = [btn(n_pdf, "Notes (PDF)", True) if n_pdf else SOON.format("Notes PDF")]
-        if slides: b.append(btn(s_pdf, "Slides (PDF)", True) if s_pdf else SOON.format("Slides PDF"))
-        if slides: b.append(btn(f"../quiz/{LID}-{D}.html", "Quiz") if q else SOON.format("Quiz"))
-        rel = anims_for(LID, D)
-        rel_html = ('<p class="rel">Animations: ' + " · ".join(f'<a href="../{LID}/{m["slug"]}.html">{m["title"]}</a>' for m in rel) + '</p>') if rel else ""
-        cards.append(f'<div class="card doc"><p class="dk">{kick}</p><h3>{title}</h3>' + (f'<p class="dn">{note}</p>' if note else "")
-                     + f'<div class="btnrow">{"".join(b)}</div>{rel_html}</div>')
-    g = pdf(f"{LID}-Animations-Student-Guide")
-    cards.append(f'<div class="card doc"><p class="dk">Animations</p><h3>Student guide to the {LNAME} animations</h3>'
-                 f'<p class="dn">What each animation shows, the big idea, things to try and questions to answer.</p>'
-                 f'<div class="btnrow">{btn(g, "Guide (PDF)", True) if g else SOON.format("Guide PDF")}{btn(f"../{LID}/index.html", "Open the animations")}</div></div>')
-    blocks.append(lec_head(LID, LNAME, LTITLE) + f'<div class="docs">{"".join(cards)}</div></section>')
-notes = f"""{sec_css}<div class="wrap"><header class="hero"><p class="kicker">{COURSE}</p><h1>Notes &amp; Slides</h1>
-<p class="lede">The lecture notes and slides for each lecture, with the quiz and the animations that go with each part. The PDFs open in your browser; use its download button to keep a copy.</p></header>
-{ltabs(None, lambda k: f"#{k}")}{"".join(blocks)}<p class="foot">{COURSE} · {BYLINE}</p></div>"""
-(OUT / "notes" / "index.html").write_text(shell(f"Notes and slides · {COURSE}", f"Lecture notes and slides for {COURSE}.", notes, pre="../", section="notes", path="notes/"))
-
 # ---------- Quizzes (index; the quiz pages themselves are added per deck)
 blocks = []
 for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
@@ -252,13 +228,13 @@ for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES:
         if not slides: continue
         q = quiz_of(LID, D)
         nq = f"{len(q['questions'])} questions · " if q else ""
-        cards.append(f'<div class="card doc"><p class="dk">{kick}</p><h3>{title}</h3><p class="dn">{nq}Easy questions on the key ideas of this set of slides.</p>'
+        cards.append(f'<div class="card doc"><p class="dk">{kick}</p><h3>{title}</h3><p class="dn">{nq}Easy questions on the key ideas of this part of the lecture.</p>'
                      f'<div class="btnrow">{btn(f"{LID}-{D}.html", "Start the quiz", True).replace(' target="_blank" rel="noopener"', '') if q else SOON.format("Quiz")}</div></div>')
     blocks.append(lec_head(LID, LNAME, LTITLE) + f'<div class="docs">{"".join(cards)}</div></section>')
 quiz = f"""{sec_css}<div class="wrap"><header class="hero"><p class="kicker">{COURSE}</p><h1>Quizzes</h1>
-<p class="lede">One short quiz for each set of slides: easy multiple-choice questions on the foundations, with an explanation after every answer. Nothing is recorded: your best score is kept only in your own browser.</p></header>
+<p class="lede">One short quiz for each part of each lecture: easy questions on the foundations, with an explanation after every answer. Nothing is recorded: your best score is kept only in your own browser.</p></header>
 {ltabs(None, lambda k: f"#{k}")}{"".join(blocks)}<p class="foot">{COURSE} · {BYLINE}</p></div>"""
-(OUT / "quiz" / "index.html").write_text(shell(f"Quizzes · {COURSE}", f"Self-test quizzes for {COURSE}, one per set of slides.", quiz, pre="../", section="quiz", path="quiz/"))
+(OUT / "quiz" / "index.html").write_text(shell(f"Quizzes · {COURSE}", f"Self-test quizzes for {COURSE}, one for each part of each lecture.", quiz, pre="../", section="quiz", path="quiz/"))
 
 # ---------- Quiz pages, one per slide deck with a JSON file
 qjs = (SRC / "quiz.js").read_text()
@@ -303,14 +279,13 @@ if (QUIZDIR / "img").exists():
     for f in (QUIZDIR / "img").iterdir(): shutil.copy(f, OUT / "quiz" / "img" / f.name)
 for f in qfiles:
     Q = json.loads(f.read_text()); qid = f.stem; LID = Q["lecture"]
-    sp = pdf(Q["slides"])
-    meta = {"id": qid, "root": "../", "slides": ("../notes/" + sp) if sp else None}
+    meta = {"id": qid, "root": "../"}
     rel = [m for m in anims_for(LID, Q["doc"])]
     rel_html = " · ".join(f'<a href="../{LID}/{m["slug"]}.html">{m["title"]}</a>' for m in rel)
     body = f"""{qcss}<div class="wrap qwrap"><nav class="bc" aria-label="Breadcrumb"><a href="index.html">Quizzes</a> › {Q["kicker"]}</nav>
 <header class="hero"><p class="kicker">Quiz · {Q["kicker"]}</p><h1>{Q["title"]}</h1>
-<p class="lede">{len(Q["questions"])} easy questions on the key ideas of these slides. Pick an answer to see whether it is right, and why. Keys: A–D (or 1–4) to answer, Enter for the next question.</p>
-<p class="also">{'<a href="../notes/' + sp + '" target="_blank" rel="noopener">Slides (PDF)</a> · ' if sp else ''}<a href="../notes/index.html#{LID}">Notes &amp; slides</a>{' · Animations: ' + rel_html if rel_html else ''}</p></header>
+<p class="lede">{len(Q["questions"])} easy questions on the key ideas of this part of the lecture. Pick an answer to see whether it is right, and why. Keys: A–D (or 1–4) to answer, Enter for the next question.</p>
+{'<p class="also">Animations for this part: ' + rel_html + '</p>' if rel_html else ''}</header>
 <section class="card" id="quiz"><noscript>This quiz needs JavaScript.</noscript></section>
 <p class="qnote">Nothing is recorded or sent anywhere. Your best score is kept only in this browser.</p>
 <p class="foot">{COURSE} · {BYLINE}</p></div>
@@ -327,23 +302,23 @@ anim = f"""{sec_css}<div class="wrap"><header class="hero"><p class="kicker">{CO
 (OUT / "animations" / "index.html").write_text(shell(f"Animations · {COURSE}", f"{total} interactive animations for {COURSE}, by lecture.", anim, pre="../", section="animations", path="animations/"))
 
 # ---------- Site root
-rows = "".join(f'<tr><td><b><span class="ln">Lecture </span>{LNAME.split()[-1]}</b></td><td class="topic">{LTITLE}</td><td><a href="notes/index.html#{LID}">Notes &amp; slides</a></td>'
-               f'<td><a href="{LID}/index.html">{len(ANIMS[LID])}<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#{LID}">Quizzes</a></td></tr>'
+rows = "".join(f'<tr><td><b><span class="ln">Lecture </span>{LNAME.split()[-1]}</b></td><td class="topic">{LTITLE}</td>'
+               f'<td><a href="{LID}/index.html">{len(ANIMS[LID])}<span class="ln"> animations</span></a></td><td><a href="quiz/index.html#{LID}">Quizzes</a></td>'
+               + (f'<td><a href="{guide(LID)}" target="_blank" rel="noopener">Guide<span class="ln"> (PDF)</span></a></td>' if guide(LID) else '<td></td>') + '</tr>'
                for LID, FOLDER, LNAME, LTITLE, LEDE in LECTURES)
 root = f"""{sec_css}<div class="wrap">
 <section class="banner" aria-label="{COURSE}"><div class="in"><p class="k">KKKC6353</p><h1>Nanoelectronic Devices</h1>
-<p class="sub">Lecture notes, slides, interactive animations and quizzes</p>
+<p class="sub">Interactive animations and quizzes</p>
 <div class="who"><b>{AUTHOR}</b><span>{UNI} · 2026</span></div></div></section>
 <p class="artnote">Banner: original artwork made for this course, chip wiring giving way to a quantum interference pattern.</p>
 <div class="sections">
-<a class="card tile" href="notes/index.html"><span class="num">READ</span><span class="t">Notes &amp; Slides</span><span class="b">The lecture notes and slides for every lecture, as PDFs.</span></a>
 <a class="card tile" href="animations/index.html"><span class="num">EXPLORE</span><span class="t">Animations</span><span class="b">{total} interactive models: change the device and watch the physics respond.</span></a>
-<a class="card tile" href="quiz/index.html"><span class="num">TEST YOURSELF</span><span class="t">Quizzes</span><span class="b">A short quiz for each set of slides, with an explanation after every answer.</span></a>
+<a class="card tile" href="quiz/index.html"><span class="num">TEST YOURSELF</span><span class="t">Quizzes</span><span class="b">A short quiz for each part of each lecture, with an explanation after every answer.</span></a>
 </div>
 <h2 style="color:var(--navy);font-size:1.15rem;margin:0">By lecture</h2>
-<table class="bylec"><thead><tr><th>Lecture</th><th class="topic">Topic</th><th>Notes</th><th>Animations</th><th>Quizzes</th></tr></thead><tbody>{rows}</tbody></table>
+<table class="bylec"><thead><tr><th>Lecture</th><th class="topic">Topic</th><th>Animations</th><th>Quizzes</th><th>Student guide</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="foot" style="padding:0">{COURSE} · {BYLINE}</p></div>"""
-(OUT / "index.html").write_text(shell(COURSE, "Lecture notes, slides, interactive animations and quizzes for " + COURSE + ".", root, pre="", section=None, path=""))
+(OUT / "index.html").write_text(shell(COURSE, "Interactive animations and quizzes for " + COURSE + ".", root, pre="", section=None, path=""))
 for img in ("hero.jpg", "og-image.jpg"): shutil.copy(pathlib.Path(__file__).parent / "art" / img, OUT / img)
 (OUT / ".nojekyll").write_text("")
-print("built", total, "animation pages + notes, quizzes and home")
+print("built", total, "animation pages + quizzes and home")

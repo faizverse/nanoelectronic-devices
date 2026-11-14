@@ -12,11 +12,7 @@
   // a best score saved when the quiz had a different number of questions no longer counts
   function best() { try { const b = JSON.parse(localStorage.getItem(KEY) || "null"); return b && b.of === QUIZ.length ? b : null; } catch (e) { return null; } }
   function saveBest(s) { try { const b = best(); if (!b || s > b.score) localStorage.setItem(KEY, JSON.stringify({ score: s, of: QUIZ.length })); } catch (e) {} }
-  function slideRef(q) {
-    if (!q.slide) return "";
-    return QMETA.slides ? `<a href="${QMETA.slides}#page=${q.slide}" target="_blank" rel="noopener">Slide ${q.slide}</a>` : `Slide ${q.slide}`;
-  }
-  function animRef(q) { return q.anim ? ` · <a href="${QMETA.root}${q.anim}">Try the animation</a>` : ""; }
+  function animRef(q) { return q.anim ? `<div class="fbref"><a href="${QMETA.root}${q.anim}">Try the animation</a></div>` : ""; }
 
   function start(reshuffle) {
     // first round keeps the order of the slides; "Try again" reshuffles the questions as well as the options
@@ -64,7 +60,7 @@
       else if (jj === j) b.classList.add("wrong");
     });
     $(".qfb").innerHTML = `<div class="fb ${ok ? "good" : "bad"}"><b>${ok ? "Correct." : "Not quite."}</b> ${fmt(q.explain)}
-      <div class="fbref">${slideRef(q)}${animRef(q)}</div></div>`;
+      ${animRef(q)}</div>`;
     $(".qhead span:last-child").textContent = "Score " + score;
     const last = i === order.length - 1;
     $(".qnext").innerHTML = `<button type="button" class="btn" id="qgo">${last ? "See your score" : "Next question →"}</button>`;
@@ -76,12 +72,12 @@
     saveBest(score);
     const n = order.length, b = best(), pct = score / n;
     const msg = pct === 1 ? "Full marks: you have the key ideas of this part." : pct >= .75 ? "Well done. Look over the questions you missed below." :
-      pct >= .5 ? "A good start. Revisit the slides for the questions you missed, then try again." : "Go back through the slides and animations for these ideas, then try again.";
+      pct >= .5 ? "A good start. Look over the questions you missed below, then try again." : "Go back over these ideas, and the animations, then try again.";
     app.innerHTML = `
       <div class="qdone"><p class="kicker">Your score</p><p class="big">${score} <span>/ ${n}</span></p><p>${msg}</p>
       ${b ? `<p class="best">Your best on this device: ${b.score} / ${b.of}</p>` : ""}</div>
       ${missed.length ? `<h2 class="qrev">Questions to review</h2>` + missed.map(k => { const q = QUIZ[k]; return `<div class="card qmiss"><p class="qmq">${fmt(q.q)}</p>
-        <p><b>Answer:</b> ${fmt(q.options[q.answer])}</p><p class="qme">${fmt(q.explain)}</p><div class="fbref">${slideRef(q)}${animRef(q)}</div></div>`; }).join("") : ""}
+        <p><b>Answer:</b> ${fmt(q.options[q.answer])}</p><p class="qme">${fmt(q.explain)}</p>${animRef(q)}</div>`; }).join("") : ""}
       <div class="btnrow qend"><button type="button" class="btn" id="qagain">Try again (new order)</button>
       <a class="btn ghost" href="index.html">All quizzes</a></div>`;
     $("#qagain").onclick = () => start(true);
