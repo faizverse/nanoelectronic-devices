@@ -1,9 +1,11 @@
 """Shrink a PDF's oversized images for the web copy (the originals on the Mac are untouched).
 
-Usage: python3 pdfshrink.py in.pdf out.pdf [max_ppi=250] [jpeg_quality=85]
+Usage: python3 pdfshrink.py in.pdf out.pdf [max_ppi=250] [jpeg_quality=85] [pal]
 - Images drawn at more than max_ppi are downsampled to max_ppi (placement measured from the page content).
 - Photo-like images (JPEG at least 3x smaller than lossless) become JPEG; diagrams stay lossless (Flate).
 - Images with a soft mask or an unusual colour space are left alone. A new stream is kept only if it is smaller.
+- With "pal": a colour diagram may instead be stored as a 256-colour palette image (lossless when it has 256 colours
+  or fewer), used only when that is smallest and stays within 45 dB PSNR of the original (visually identical).
 """
 import sys, io, zlib
 import pikepdf
@@ -13,6 +15,40 @@ from PIL import Image
 src, dst = sys.argv[1], sys.argv[2]
 MAXPPI = float(sys.argv[3]) if len(sys.argv) > 3 else 250
 Q = int(sys.argv[4]) if len(sys.argv) > 4 else 85
+PAL = len(sys.argv) > 5 and sys.argv[5] == "pal"
+
+
+def png_flate(img):
+    """Lossless Flate data with PNG row predictors, as a PNG file stores it (much smaller than plain Flate for diagrams).
+    Returns (data, DecodeParms) for the PDF image stream."""
+    import struct
+    b = io.BytesIO(); img.save(b, "PNG", optimize=True); png = b.getvalue()
+    pos, idat = 8, b""
+    while pos < len(png):
+        n, typ = struct.unpack(">I4s", png[pos:pos + 8])
+        if typ == b"IDAT": idat += png[pos + 8:pos + 8 + n]
+        pos += 12 + n
+    colors = 1 if img.mode == "L" else 3
+    return idat, pikepdf.Dictionary(Predictor=15, Colors=colors, BitsPerComponent=8, Columns=img.width)
+
+def png_chunks(png):
+    import struct
+    pos, out = 8, {}
+    while pos < len(png):
+        n, typ = struct.unpack(">I4s", png[pos:pos + 8]); out.setdefault(typ, b""); out[typ] += png[pos + 8:pos + 8 + n]; pos += 12 + n
+    return out
+
+def palette_flate(img):
+    """A 256-colour (or fewer) palette version of an RGB image: (data, DecodeParms, ColorSpace, BitsPerComponent, psnr)."""
+    import struct, numpy as np
+    q = img.quantize(256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    a = np.asarray(img, float); b = np.asarray(q.convert("RGB"), float); mse = ((a - b) ** 2).mean()
+    psnr = 99 if mse == 0 else 10 * np.log10(255 ** 2 / mse)
+    bio = io.BytesIO(); q.save(bio, "PNG", optimize=True); ch = png_chunks(bio.getvalue())
+    w, h, bits, ctype = struct.unpack(">IIBB", ch[b"IHDR"][:10]); assert ctype == 3
+    plte = ch[b"PLTE"]; n = len(plte) // 3
+    cs = pikepdf.Array([Name.Indexed, Name.DeviceRGB, n - 1, pikepdf.String(plte)])
+    return ch[b"IDAT"], pikepdf.Dictionary(Predictor=15, Colors=1, BitsPerComponent=bits, Columns=w), cs, bits, psnr
 
 pdf = pikepdf.open(src)
 
@@ -57,15 +93,19 @@ for page in pdf.pages:
         if ppi > MAXPPI:
             s = MAXPPI / ppi
             img = img.resize((max(1, round(img.width * s)), max(1, round(img.height * s))), Image.LANCZOS)
-        raw = img.tobytes(); flate = zlib.compress(raw, 9)
+        flate, parms = png_flate(img)
         jb = io.BytesIO(); img.save(jb, "JPEG", quality=Q, optimize=True, subsampling=0); jpg = jb.getvalue()
         if len(jpg) * 3 <= len(flate): data, filt = jpg, Name.DCTDecode
         else: data, filt = flate, Name.FlateDecode
+        newcs, bpc = None, 8
+        if PAL and img.mode == "RGB":
+            pdata, pparms, pcs, pbits, psnr = palette_flate(img)
+            if psnr >= 45 and len(pdata) < len(data): data, filt, parms, newcs, bpc = pdata, Name.FlateDecode, pparms, pcs, pbits
         if len(data) >= old: after += old; continue
-        x.write(data, filter=filt)
-        x.Width, x.Height, x.BitsPerComponent = img.width, img.height, 8
-        if "/DecodeParms" in x: del x["/DecodeParms"]
-        if cs is None: x.ColorSpace = Name.DeviceGray if img.mode == "L" else Name.DeviceRGB
+        x.write(data, filter=filt, decode_parms=(parms if filt == Name.FlateDecode else None))
+        x.Width, x.Height, x.BitsPerComponent = img.width, img.height, bpc
+        if newcs is not None: x.ColorSpace = newcs
+        elif cs is None: x.ColorSpace = Name.DeviceGray if img.mode == "L" else Name.DeviceRGB
         if "/Decode" in x: del x["/Decode"]
         after += len(data)
 
